@@ -1,0 +1,69 @@
+{
+  "_note": "SAMPLE TASKS for prototype testing. Thresholds are placeholders and will be replaced by the real task list. Never change a task id once released: progress is saved against it.",
+  "bosses": [
+    { "name": "Zulrah", "npcs": ["Zulrah"] },
+    { "name": "Vorkath", "npcs": ["Vorkath"] },
+    { "name": "Corrupted Gauntlet", "npcs": ["Corrupted Hunllef"] },
+    { "name": "TzTok-Jad", "regions": [9551] },
+    { "name": "TzKal-Zuk", "regions": [9043] }
+  ],
+  "tasks": [
+    {
+      "id": "zulrah_speed",
+      "name": "Serpent Unmade",
+      "description": "Kill Zulrah in 0:45 or less.",
+      "boss": "Zulrah",
+      "conditions": [{ "type": "MAX_TIME", "seconds": 45 }]
+    },
+    {
+      "id": "zulrah_flawless_speed",
+      "name": "Untouchable Tides",
+      "description": "Kill Zulrah in 1:00 or less without taking any damage.",
+      "boss": "Zulrah",
+      "conditions": [{ "type": "MAX_TIME", "seconds": 60 }, { "type": "NO_DAMAGE_TAKEN" }]
+    },
+    {
+      "id": "vorkath_flawless_streak",
+      "name": "Dragonbane Discipline",
+      "description": "Kill Vorkath 10 times in a row without taking any damage.",
+      "boss": "Vorkath",
+      "conditions": [{ "type": "NO_DAMAGE_TAKEN" }],
+      "consecutive": 10
+    },
+    {
+      "id": "vorkath_barehanded_spirit",
+      "name": "Faith Abandoned",
+      "description": "Kill Vorkath without praying, eating or drinking.",
+      "boss": "Vorkath",
+      "conditions": [{ "type": "NO_PRAYER" }, { "type": "NO_FOOD" }, { "type": "NO_POTIONS" }]
+    },
+    {
+      "id": "corrupted_gauntlet_speed_flawless",
+      "name": "Crystalline Perfection",
+      "description": "Complete the Corrupted Gauntlet in 5:30 or less without taking damage from the Corrupted Hunllef fight.",
+      "boss": "Corrupted Gauntlet",
+      "conditions": [{ "type": "MAX_TIME", "seconds": 330 }, { "type": "NO_DAMAGE_TAKEN" }]
+    },
+    {
+      "id": "jad_no_prayer",
+      "name": "Faithless Fire",
+      "description": "Complete the Fight Caves without using prayer.",
+      "boss": "TzTok-Jad",
+      "conditions": [{ "type": "NO_PRAYER" }]
+    },
+    {
+      "id": "inferno_speed",
+      "name": "Ashes in Record Time",
+      "description": "Complete the Inferno in 50:00 or less.",
+      "boss": "TzKal-Zuk",
+      "conditions": [{ "type": "MAX_TIME", "seconds": 3000 }]
+    },
+    {
+      "id": "inferno_no_food",
+      "name": "Starved Flame",
+      "description": "Complete the Inferno without eating any food.",
+      "boss": "TzKal-Zuk",
+      "conditions": [{ "type": "NO_FOOD" }]
+    }
+  ]
+}
