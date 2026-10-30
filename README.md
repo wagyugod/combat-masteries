@@ -14,6 +14,11 @@ A RuneLite plugin that adds an achievement system beyond Grandmaster Combat Achi
 - **Reward**: the eyes of your Tzkal slayer helmet glow in your tier's colour. This is
   client-side only, so only you see it, and it only shows while you wear the helmet.
 
+![Tzkal slayer helmet eye glow for each tier](docs/helmet-tiers.png)
+
+*Offline render of the helmet's real model (42733) from the game cache. It uses the client's
+lighting and RuneLite's colour conversion, so in-game results should be close but not identical.*
+
 > **Prototype status:** the tasks in `tasks.json` are placeholders for testing. The real
 > task list replaces them.
 

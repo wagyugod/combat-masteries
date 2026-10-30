@@ -16,9 +16,10 @@ import net.runelite.api.JagexColor;
 public enum GlowStyle
 {
 	/**
-	 * Vivid red. The stock eyes are HSL 0/7/72 under shading; flat and brighter reads as lit.
+	 * Deliberately close to the stock eyes: the same red (HSL 0/7/72, which shading darkens to
+	 * about 55 face-on), drawn unshaded at full saturation so it reads as lit.
 	 */
-	ASCENDED(hsl(0, 7, 80), hsl(0, 7, 52), new Color(255, 40, 25)),
+	ASCENDED(hsl(0, 7, 64), hsl(0, 7, 40), new Color(255, 40, 25)),
 	/**
 	 * Deep saturated blue.
 	 */

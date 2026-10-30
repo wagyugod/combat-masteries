@@ -102,4 +102,12 @@ public class HelmetEyesTest
 	{
 		assertEquals(37999, GlowStyle.IMMORTAL.getBrightHsl());
 	}
+
+	@Test
+	public void ascendedKeepsTheStockRedHue()
+	{
+		int stockHueSaturation = HelmetEyes.BRIGHT_EYE_COLOR & 0xFF80;
+		assertEquals(stockHueSaturation, GlowStyle.ASCENDED.getBrightHsl() & 0xFF80);
+		assertEquals(stockHueSaturation, GlowStyle.ASCENDED.getDimHsl() & 0xFF80);
+	}
 }
