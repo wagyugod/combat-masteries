@@ -111,10 +111,9 @@ public class KillMessageParserTest
 	}
 
 	@Test
-	public void ignoresRoomAndTotalTimes()
+	public void ignoresRoomTimes()
 	{
 		assertNull(KillMessageParser.parseDuration("Challenge complete: Ocellus. Duration: <col=ef1020>2:25.80</col>. Total: <col=ef1020>2:25.80</col> (new personal best)"));
-		assertNull(KillMessageParser.parseDuration("Tombs of Amascut total completion time: <col=ef1020>0:01</col> (new personal best)"));
 		assertNull(KillMessageParser.parseDuration("Your Zulrah kill count is: <col=ff0000>4</col>."));
 	}
 
@@ -124,5 +123,48 @@ public class KillMessageParserTest
 		assertEquals("0:45", KillMessageParser.formatSeconds(45));
 		assertEquals("0:44.40", KillMessageParser.formatSeconds(44.4));
 		assertEquals("1:44:31.20", KillMessageParser.formatSeconds(104 * 60 + 31.2));
+	}
+
+	@Test
+	public void totalCompletionTime()
+	{
+		KillDuration d = KillMessageParser.parseDuration("Tombs of Amascut total completion time: <col=ef1020>0:01</col> (new personal best)");
+		assertNotNull(d);
+		assertTrue(d.isTotal());
+		assertEquals(1, d.getSeconds(), DELTA);
+
+		d = KillMessageParser.parseDuration("Theatre of Blood total completion time: <col=ff0000>24:40.20</col>. Personal best: 20:45.00");
+		assertNotNull(d);
+		assertTrue(d.isTotal());
+		assertEquals(24 * 60 + 40.2, d.getSeconds(), DELTA);
+		assertEquals(20 * 60 + 45, d.getPersonalBestSeconds(), DELTA);
+
+		d = KillMessageParser.parseDuration("Theatre of Blood completion time: <col=ff0000>17:00.20</col> (new personal best)");
+		assertNotNull(d);
+		assertFalse(d.isTotal());
+	}
+
+	@Test
+	public void raidKillCounts()
+	{
+		assertEquals("Theatre of Blood: Hard Mode", KillMessageParser.parseKillCount("Your completed Theatre of Blood: Hard Mode count is: <col=ff0000>5</col>."));
+		assertEquals("Tombs of Amascut: Expert Mode", KillMessageParser.parseKillCount("Your completed Tombs of Amascut: Expert Mode count is: <col=ff0000>1</col>."));
+		assertEquals("Chambers of Xeric Challenge Mode", KillMessageParser.parseKillCount("Your completed Chambers of Xeric Challenge Mode count is: <col=ff0000>13</col>."));
+	}
+
+	@Test
+	public void waves()
+	{
+		assertEquals(4, KillMessageParser.parseWave("<col=ef1020>Wave: 4</col>"));
+		assertEquals(-1, KillMessageParser.parseWave("Fight duration: <col=ff0000>1:36</col>"));
+	}
+
+	@Test
+	public void teamSizes()
+	{
+		assertEquals(Integer.valueOf(1), KillMessageParser.parseTeamSize("Solo"));
+		assertEquals(Integer.valueOf(3), KillMessageParser.parseTeamSize("3 players"));
+		assertNull(KillMessageParser.parseTeamSize("11-15 players"));
+		assertNull(KillMessageParser.parseTeamSize(null));
 	}
 }

@@ -3,6 +3,7 @@ package com.combatmasteries.ui;
 import com.combatmasteries.tasks.MasteryProgress;
 import com.combatmasteries.tasks.MasteryTask;
 import com.combatmasteries.tasks.MasteryTier;
+import com.combatmasteries.tasks.TaskCategory;
 import com.combatmasteries.tasks.TaskList;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -30,7 +31,8 @@ import net.runelite.client.ui.components.ProgressBar;
  */
 public class MasteriesPanel extends PluginPanel
 {
-	private static final String ALL_BOSSES = "All bosses";
+	private static final String ALL_CONTENT = "All content";
+	private static final String ALL_CATEGORIES = "Speed & Challenge";
 	private static final Color COMPLETE_BACKGROUND = new Color(30, 48, 32);
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy");
 
@@ -59,7 +61,8 @@ public class MasteriesPanel extends PluginPanel
 	private final JLabel nextTierLabel = new JLabel();
 	private final ProgressBar progressBar = new ProgressBar();
 	private final JComboBox<StatusFilter> statusFilter = new JComboBox<>(StatusFilter.values());
-	private final JComboBox<String> bossFilter = new JComboBox<>();
+	private final JComboBox<String> contentFilter = new JComboBox<>();
+	private final JComboBox<Object> categoryFilter = new JComboBox<>();
 	private final JPanel taskListPanel = new JPanel();
 
 	private TaskList taskList;
@@ -94,10 +97,17 @@ public class MasteriesPanel extends PluginPanel
 		nextTierLabel.setForeground(ColorScheme.LIGHT_GRAY_COLOR);
 		header.add(nextTierLabel);
 
-		JPanel filters = new JPanel(new GridLayout(1, 2, 4, 0));
+		categoryFilter.addItem(ALL_CATEGORIES);
+		for (TaskCategory category : TaskCategory.values())
+		{
+			categoryFilter.addItem(category);
+		}
+
+		JPanel filters = new JPanel(new GridLayout(3, 1, 0, 4));
 		filters.setBorder(new EmptyBorder(6, 0, 0, 0));
 		filters.add(statusFilter);
-		filters.add(bossFilter);
+		filters.add(categoryFilter);
+		filters.add(contentFilter);
 		filters.setAlignmentX(LEFT_ALIGNMENT);
 		header.add(filters);
 
@@ -107,7 +117,8 @@ public class MasteriesPanel extends PluginPanel
 		}
 
 		statusFilter.addActionListener(e -> rebuildTasks());
-		bossFilter.addActionListener(e -> rebuildTasks());
+		categoryFilter.addActionListener(e -> rebuildTasks());
+		contentFilter.addActionListener(e -> rebuildTasks());
 
 		taskListPanel.setLayout(new BoxLayout(taskListPanel, BoxLayout.Y_AXIS));
 
@@ -128,11 +139,11 @@ public class MasteriesPanel extends PluginPanel
 
 		if (newTasks)
 		{
-			String selected = (String) bossFilter.getSelectedItem();
-			bossFilter.removeAllItems();
-			bossFilter.addItem(ALL_BOSSES);
-			taskList.getTasks().stream().map(MasteryTask::getBoss).distinct().sorted().forEach(bossFilter::addItem);
-			bossFilter.setSelectedItem(selected != null ? selected : ALL_BOSSES);
+			String selected = (String) contentFilter.getSelectedItem();
+			contentFilter.removeAllItems();
+			contentFilter.addItem(ALL_CONTENT);
+			taskList.getTasks().stream().map(MasteryTask::getContent).distinct().forEach(contentFilter::addItem);
+			contentFilter.setSelectedItem(selected != null ? selected : ALL_CONTENT);
 		}
 
 		rebuildHeader();
@@ -197,7 +208,8 @@ public class MasteriesPanel extends PluginPanel
 		}
 
 		StatusFilter status = (StatusFilter) statusFilter.getSelectedItem();
-		String boss = (String) bossFilter.getSelectedItem();
+		String content = (String) contentFilter.getSelectedItem();
+		Object category = categoryFilter.getSelectedItem();
 
 		taskListPanel.removeAll();
 		for (MasteryTask task : taskList.getTasks())
@@ -207,7 +219,11 @@ public class MasteriesPanel extends PluginPanel
 			{
 				continue;
 			}
-			if (boss != null && !ALL_BOSSES.equals(boss) && !Objects.equals(boss, task.getBoss()))
+			if (category instanceof TaskCategory && task.getCategory() != category)
+			{
+				continue;
+			}
+			if (content != null && !ALL_CONTENT.equals(content) && !Objects.equals(content, task.getContent()))
 			{
 				continue;
 			}
@@ -240,7 +256,7 @@ public class MasteriesPanel extends PluginPanel
 		top.add(status, BorderLayout.EAST);
 
 		JLabel description = new JLabel("<html><body style='width:150px'>"
-			+ "<span style='color:#a5a5a5'>" + escapeHtml(task.getBoss()) + "</span><br>"
+			+ "<span style='color:#a5a5a5'>" + escapeHtml(task.getContent()) + " &middot; " + task.getCategory() + "</span><br>"
 			+ escapeHtml(task.getDescription()) + completionText(task)
 			+ "</body></html>");
 		description.setFont(FontManager.getRunescapeSmallFont());
@@ -258,9 +274,9 @@ public class MasteriesPanel extends PluginPanel
 		{
 			return "Done";
 		}
-		if (task.getConsecutive() > 1 && progress != null)
+		if (!task.isTracked())
 		{
-			return progress.getStreak(task.getId()) + "/" + task.getConsecutive();
+			return "Tracking soon";
 		}
 		return "1 pt";
 	}
@@ -272,7 +288,7 @@ public class MasteriesPanel extends PluginPanel
 		{
 			return "";
 		}
-		String how = completion.isFromPersonalBest() ? "Credited from PB" : "Completed";
+		String how = completion.isFromPersonalBest() ? "Credited from your record" : "Completed";
 		return "<br><span style='color:#37f046'>" + how + " " + DATE_FORMAT.format(new Date(completion.getTimestamp())) + "</span>";
 	}
 

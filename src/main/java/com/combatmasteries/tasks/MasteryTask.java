@@ -1,14 +1,12 @@
 package com.combatmasteries.tasks;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
-import lombok.AllArgsConstructor;
+import java.util.Map;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class MasteryTask
 {
 	/**
@@ -18,24 +16,44 @@ public class MasteryTask
 	private String id;
 	private String name;
 	private String description;
+	private TaskCategory category;
 	/**
-	 * The boss as named in its kill count message, e.g. "Zulrah" or "TzKal-Zuk".
+	 * Which content the task belongs to, e.g. "Inferno" or "Awakened DT2". Used for grouping.
+	 */
+	private String content;
+	/**
+	 * The boss as named in its kill count message, e.g. "TzKal-Zuk" or
+	 * "Theatre of Blood: Hard Mode". Not used by trip or delve tasks.
 	 */
 	private String boss;
 	private List<TaskCondition> conditions = new ArrayList<>();
 	/**
-	 * How many qualifying kills in a row are needed. Any kill or death at this boss that
-	 * does not qualify resets the streak.
+	 * For "1 inventory" tasks: kills needed in one trip, boss name to count.
 	 */
-	private int consecutive = 1;
+	private Map<String, Integer> trip = new LinkedHashMap<>();
+	/**
+	 * False while the plugin cannot yet detect this task. It still counts towards the total.
+	 */
+	private boolean tracked = true;
+
+	public boolean isTrip()
+	{
+		return trip != null && !trip.isEmpty();
+	}
+
+	public boolean hasCondition(ConditionType type)
+	{
+		return conditions.stream().anyMatch(c -> c.getType() == type);
+	}
 
 	/**
-	 * @return true if this task can be credited from a personal best alone
+	 * @return true if a recorded personal best is enough to complete this task
 	 */
-	public boolean isRetroCreditable()
+	public boolean isPersonalBestCreditable()
 	{
-		return consecutive <= 1
-			&& !conditions.isEmpty()
-			&& conditions.stream().allMatch(TaskCondition::isTimeOnly);
+		return tracked
+			&& !isTrip()
+			&& hasCondition(ConditionType.UNDER_TIME)
+			&& conditions.stream().allMatch(TaskCondition::isPersonalBestCompatible);
 	}
 }

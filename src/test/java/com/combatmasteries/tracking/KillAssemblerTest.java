@@ -7,7 +7,7 @@ import org.junit.Test;
 
 public class KillAssemblerTest
 {
-	private static final KillDuration DURATION = new KillDuration(44.4, 44.4, true, null);
+	private static final KillDuration DURATION = new KillDuration(44.4, 44.4, true, null, false);
 
 	@Test
 	public void killCountThenDuration()
@@ -42,10 +42,12 @@ public class KillAssemblerTest
 	{
 		KillAssembler assembler = new KillAssembler();
 		assembler.onKillCount("Kalphite Queen", 10);
-		assertNull(assembler.onTick(10));
-		assertNull(assembler.onTick(11));
+		for (int tick = 10; tick < 10 + KillAssembler.WINDOW_TICKS; tick++)
+		{
+			assertNull(assembler.onTick(tick));
+		}
 
-		KillEvent kill = assembler.onTick(12);
+		KillEvent kill = assembler.onTick(10 + KillAssembler.WINDOW_TICKS);
 		assertNotNull(kill);
 		assertNull(kill.getDuration());
 	}
@@ -61,10 +63,29 @@ public class KillAssemblerTest
 		}
 
 		assembler.onKillCount("Zulrah", 20);
-		assertNull(assembler.onTick(20));
-		assertNull(assembler.onTick(21));
-		KillEvent kill = assembler.onTick(22);
+		KillEvent kill = null;
+		for (int tick = 20; kill == null; tick++)
+		{
+			kill = assembler.onTick(tick);
+		}
 		assertNotNull(kill);
 		assertNull(kill.getDuration());
+	}
+
+	@Test
+	public void raidsWaitForTheTotalTime()
+	{
+		KillDuration challenge = new KillDuration(1080, 1000, false, null, false);
+		KillDuration total = new KillDuration(1150, 1100, false, null, true);
+		KillAssembler assembler = new KillAssembler();
+		assembler.onDuration(challenge, 10);
+		assembler.onKillCount("Tombs of Amascut: Expert Mode", 10);
+		assertNull(assembler.onTick(10));
+		assembler.onDuration(total, 11);
+
+		KillEvent kill = assembler.onTick(11);
+		assertNotNull(kill);
+		assertEquals(challenge, kill.getDuration());
+		assertEquals(total, kill.getTotalDuration());
 	}
 }

@@ -1,15 +1,18 @@
 # Combat Masteries
 
 A RuneLite plugin that adds an achievement system beyond Grandmaster Combat Achievements.
+Where Combat Achievements teach PvM, Combat Masteries recognise mastering it: speed and
+challenge tasks from endgame content, mostly solo, and deliberately aspirational.
 
-- **Tasks** are extremely hard boss challenges. Each is worth 1 point.
-- **Tiers** unlock at a share of all tasks completed:
+- **Tasks** are worth 1 point each. Each is either **Speed** or **Challenge**. Tasks are only
+  ever added (new content, or new time tasks as gear improves), never removed.
+- **Tiers** unlock at a fixed share of all points, so thresholds rise as tasks are added:
 
   | Tier | Needs | Tzkal slayer helmet eyes |
   |---|---|---|
-  | Ascended Grandmaster | 25% of tasks | Glowing red |
-  | Exalted Grandmaster | 50% of tasks | Glowing dark blue |
-  | Immortal Grandmaster | 100% of tasks | Glowing white (Radiant oathplate's white) |
+  | Ascended Grandmaster | 25% of points | Glowing red |
+  | Exalted Grandmaster | 50% of points | Glowing dark blue |
+  | Immortal Grandmaster | 100% of points | Glowing white (Radiant oathplate's white) |
 
 - **Reward**: the eyes of your Tzkal slayer helmet glow in your tier's colour. This is
   client-side only, so only you see it, and it only shows while you wear the helmet.
@@ -19,8 +22,8 @@ A RuneLite plugin that adds an achievement system beyond Grandmaster Combat Achi
 *Offline render of the helmet's real model (42733) from the game cache. It uses the client's
 lighting and RuneLite's colour conversion, so in-game results should be close but not identical.*
 
-> **Prototype status:** the tasks in `tasks.json` are placeholders for testing. The real
-> task list replaces them.
+> **Status:** prototype. 37 tasks are in. Tasks with times still TBD are listed under
+> [Planned tasks](#planned-tasks).
 
 ## Testing in-game
 
@@ -44,40 +47,51 @@ a normal RuneLite install.
 | Command | What it does |
 |---|---|
 | `::cmtier ascended` / `exalted` / `immortal` / `off` | Preview a tier's eyes without unlocking it |
-| `::cmkill Boss_Name m:ss [dmg] [prayer] [food] [potion]` | Pretend you killed a boss, to test task completion. Use `_` for spaces, e.g. `::cmkill Zulrah 0:44.40` |
-| `::cmattempt` | Show what the current attempt has recorded |
+| `::cmkill Boss_Name m:ss [team=N] [level=N] [total=m:ss] [pillars]` | Pretend a kill happened, to test task completion. Use `_` for spaces |
+| `::cmdelve N` | Pretend your deepest Doom delve is N |
+| `::cmtrip` | Show kills on the current inventory and what last ended a trip |
+| `::cmattempt` | Show the current Inferno run and pillars seen |
 | `::cmreset` | Wipe this account's mastery progress |
+
+Examples: `::cmkill TzKal-Zuk 44:59`, `::cmkill Theatre_of_Blood 22:30 team=2`,
+`::cmkill Tombs_of_Amascut:_Expert_Mode 30:00 team=1 level=600 total=33:00`.
 
 ### What to check
 
-1. **Helmet**: wear a Tzkal slayer helmet and run `::cmtier ascended`, then `exalted`, then
-   `immortal`. The eye slit should change colour and glow, the halo should hide when you face
-   away, and `::cmtier off` should restore the stock eyes. Please try it with the GPU plugin
-   on and off, and with 117 HD if you use it.
-2. **Side panel**: the helmet icon in the sidebar should list the tasks and show progress.
-3. **Task completion and unlocking**: `::cmkill Zulrah 0:50 dmg` should complete nothing
-   (too slow for one task, took damage for the other). `::cmkill Zulrah 0:44.40` should then
-   complete both Zulrah tasks. That's 2 of the 8 sample tasks, so it also unlocks Ascended:
-   check for the chat messages, notifications, the panel update and the red eyes.
-   `::cmreset` starts over.
-4. **Real kills**: kill any boss in `tasks.json` and check `::cmattempt` during the fight. A
-   real kill also records your in-game personal best for that boss.
+1. **Helmet**: wear a Tzkal slayer helmet and try `::cmtier ascended`, `exalted` and
+   `immortal`. Check with the GPU plugin on and off, and with 117 HD if you use it.
+   `::cmtier off` should restore the stock eyes.
+2. **Side panel**: the sidebar's helmet icon lists the tasks with Speed/Challenge and content filters.
+3. **Real content**, whenever you run it:
+   - **Raids:** after a ToB or ToA, check the chat for a completion message. Also confirm that
+     solo vs. duo and the ToA raid level were picked up, using a matching dev kill as a reference.
+   - **Inferno:** run `::cmattempt` after wave 4 starts. It should show pillars seen 3, and
+     `pillarsCleared=true` only if all three were down.
+   - **Awakened DT2:** after each kill, `::cmtrip` should list it. Banking, a pool, an altar,
+     picking up food or potions, dying, or a heal/veng/energy transfer from someone else
+     should clear it.
+   - **Doom:** delve tasks should complete as soon as you log in, if you have already been that deep.
 
 ## How tracking works
 
-- **Kills and times** come from the game's own kill count and duration chat messages. Turn
-  on *Settings → Precise timing* in-game: without it, times are rounded to whole seconds.
-- **An attempt** starts when you attack the boss or it attacks you. For wave content (Inferno,
-  Fight Caves) it starts when you enter the region. During an attempt the plugin notes damage
-  taken (hitsplats on you), any active prayer, and Eat and Drink clicks. It ends at the kill,
-  or fails on death, logout, hop or leaving the region.
-- **Existing personal bests** credit speed-only tasks, so you don't have to repeat a time you
-  have already beaten. They come from kill messages ("Personal best: 0:41.40") and from
-  RuneLite's Chat Commands plugin, which also reads your POH adventure log. Tasks with
-  restrictions need a kill the plugin watched.
+- **Times** come from the game's own completion messages. Turn on *Settings → Precise timing*
+  in-game. "Sub 40:00" means strictly under 40:00. ToB tasks use the **completion time**;
+  ToA tasks use the **total completion time**.
+- **Team size** comes from the game: Chambers of Xeric prints it, and ToB/ToA store it in game
+  data RuneLite can read. **ToA raid level** is read the same way.
+- **Doom delves** come from the game's permanent record of your deepest delve, so delves you
+  already reached count straight away.
+- **No Pillar Inferno**: the plugin counts the three pillars when the run starts. When wave 4
+  begins, none may be standing.
+- **One inventory**: kills are counted per trip. A trip ends when you open a bank (including
+  group storage), drink from a pool, pray at an altar, gain food or potions (potions count by
+  dose, so combining them is fine), die, or receive heal other, heal group, energy transfer or
+  vengeance other. Teleporting is allowed.
+- **Existing personal bests** credit time tasks without a raid level or pillar rule. They come
+  from kill messages and from RuneLite's Chat Commands plugin (which also reads your POH
+  adventure log).
 - Progress only counts on normal worlds: not Leagues, Deadman, beta, speedrunning or
-  tournament worlds.
-- Everything is stored locally in your RuneLite profile. Nothing is sent anywhere.
+  tournament worlds. Everything is stored locally; nothing is sent anywhere.
 
 ## Writing tasks
 
@@ -85,32 +99,43 @@ Tasks live in `src/main/resources/com/combatmasteries/tasks.json`:
 
 ```json
 {
-  "bosses": [
-    { "name": "Vorkath", "npcs": ["Vorkath"] },
-    { "name": "TzKal-Zuk", "regions": [9043] }
-  ],
-  "tasks": [
-    {
-      "id": "vorkath_flawless_streak",
-      "name": "Dragonbane Discipline",
-      "description": "Kill Vorkath 10 times in a row without taking any damage.",
-      "boss": "Vorkath",
-      "conditions": [{ "type": "NO_DAMAGE_TAKEN" }],
-      "consecutive": 10
-    }
-  ]
+  "id": "tob_duo_sub_22",
+  "name": "Sub 22:00 Duo ToB",
+  "description": "Complete the Theatre of Blood in a duo in under 22:00 (completion time).",
+  "category": "SPEED",
+  "content": "Theatre of Blood",
+  "boss": "Theatre of Blood",
+  "conditions": [{ "type": "TEAM_SIZE", "value": 2 }, { "type": "UNDER_TIME", "seconds": 1320 }]
 }
 ```
 
-- `boss` is the name exactly as the kill count message prints it ("Your **TzKal-Zuk** kill
-  count is...").
-- `npcs` are the NPC names that start an attempt. `regions` make the whole stay in a region one
-  attempt, for wave content.
-- `conditions` must all hold for one kill. The available types are `MAX_TIME` (with `seconds`),
-  `NO_DAMAGE_TAKEN`, `NO_PRAYER`, `NO_FOOD` and `NO_POTIONS`.
-- `consecutive` (default 1) needs that many qualifying kills in a row. Any non-qualifying kill
-  or death at that boss resets it.
+- `boss` is the name exactly as the kill count message prints it ("Your completed
+  **Theatre of Blood: Hard Mode** count is...").
+- `conditions` must all hold for one kill or raid:
+
+  | Type | Field | Meaning |
+  |---|---|---|
+  | `UNDER_TIME` | `seconds` | Strictly faster than this |
+  | `TEAM_SIZE` | `value` | Exactly this many players (1 = solo) |
+  | `MIN_RAID_LEVEL` | `value` | ToA raid level of at least this |
+  | `MIN_DELVE_LEVEL` | `value` | Deepest Doom delve of at least this (no `boss` needed) |
+  | `INFERNO_NO_PILLARS` | | All pillars down before wave 4 |
+
+- `trip` instead of `conditions` makes a one-inventory task, e.g.
+  `"trip": { "Leviathan (awakened)": 2 }`.
+- `"tracked": false` lists a task (it counts towards the total) before the plugin can detect it.
 - Never change an `id` after release: progress is saved against it.
+
+## Planned tasks
+
+These are waiting on time thresholds or game details:
+
+- Solo CM CoX: 6 time tasks (times TBD)
+- Trio, 4-man and 5-man ToB: 5–6 time tasks each (times TBD)
+- Solo ToA 300 speed: 6 time tasks (times TBD)
+- Duo HMT speed (times TBD)
+- Oathplate contract (details TBD)
+- Radiant Contracts is listed but shows "Tracking soon" until its kill message is confirmed
 
 ## Credits
 

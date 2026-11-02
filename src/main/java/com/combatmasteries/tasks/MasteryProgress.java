@@ -2,6 +2,7 @@ package com.combatmasteries.tasks;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import javax.annotation.Nullable;
 import lombok.AllArgsConstructor;
@@ -14,9 +15,8 @@ import lombok.NoArgsConstructor;
 public class MasteryProgress
 {
 	private Map<String, Completion> completed = new LinkedHashMap<>();
-	private Map<String, Integer> streaks = new HashMap<>();
 	/**
-	 * Personal bests in seconds as reported by the game, keyed by boss name.
+	 * Personal bests in seconds as reported by the game, keyed by {@link #personalBestKey}.
 	 */
 	private Map<String, Double> personalBests = new HashMap<>();
 
@@ -30,9 +30,24 @@ public class MasteryProgress
 		 */
 		private long timestamp;
 		/**
-		 * True when credited from a personal best set before the attempt was watched.
+		 * True when credited from a record the game kept from before the plugin was
+		 * watching (a personal best or deepest delve).
 		 */
 		private boolean fromPersonalBest;
+	}
+
+	/**
+	 * Personal bests are kept per boss and team size, in the same form RuneLite's Chat
+	 * Commands plugin uses ("theatre of blood 2 players", "chambers of xeric challenge mode solo").
+	 */
+	public static String personalBestKey(String boss, @Nullable Integer teamSize)
+	{
+		String key = boss.toLowerCase(Locale.ROOT).replace(":", "");
+		if (teamSize == null)
+		{
+			return key;
+		}
+		return key + (teamSize == 1 ? " solo" : " " + teamSize + " players");
 	}
 
 	public boolean isCompleted(String taskId)
@@ -49,7 +64,6 @@ public class MasteryProgress
 	public void complete(String taskId, long timestamp, boolean fromPersonalBest)
 	{
 		completed.putIfAbsent(taskId, new Completion(timestamp, fromPersonalBest));
-		streaks.remove(taskId);
 	}
 
 	/**
@@ -60,31 +74,17 @@ public class MasteryProgress
 		return (int) taskList.getTasks().stream().filter(t -> isCompleted(t.getId())).count();
 	}
 
-	public int getStreak(String taskId)
-	{
-		return streaks.getOrDefault(taskId, 0);
-	}
-
-	void setStreak(String taskId, int streak)
-	{
-		if (streak <= 0)
-		{
-			streaks.remove(taskId);
-		}
-		else
-		{
-			streaks.put(taskId, streak);
-		}
-	}
-
 	@Nullable
-	public Double getPersonalBest(String boss)
+	public Double getPersonalBest(String key)
 	{
-		return personalBests.get(boss);
+		return personalBests.get(key);
 	}
 
-	public void recordPersonalBest(String boss, double seconds)
+	public void recordPersonalBest(String key, double seconds)
 	{
-		personalBests.merge(boss, seconds, Math::min);
+		if (seconds > 0)
+		{
+			personalBests.merge(key, seconds, Math::min);
+		}
 	}
 }

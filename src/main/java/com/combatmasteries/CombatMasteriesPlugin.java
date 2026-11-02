@@ -15,33 +15,34 @@ import com.combatmasteries.tracking.KillAssembler;
 import com.combatmasteries.tracking.KillDuration;
 import com.combatmasteries.tracking.KillEvent;
 import com.combatmasteries.tracking.KillMessageParser;
+import com.combatmasteries.tracking.Supplies;
+import com.combatmasteries.tracking.TripTracker;
 import com.combatmasteries.ui.MasteriesPanel;
+import com.google.common.collect.ImmutableSet;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.inject.Provides;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.Actor;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
-import net.runelite.api.Hitsplat;
-import net.runelite.api.HitsplatID;
+import net.runelite.api.Item;
+import net.runelite.api.ItemComposition;
+import net.runelite.api.ItemContainer;
+import net.runelite.api.MenuAction;
 import net.runelite.api.NPC;
 import net.runelite.api.Player;
-import net.runelite.api.Prayer;
 import net.runelite.api.WorldType;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
@@ -51,10 +52,18 @@ import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.CommandExecuted;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
-import net.runelite.api.events.HitsplatApplied;
-import net.runelite.api.events.InteractingChanged;
+import net.runelite.api.events.GraphicChanged;
+import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.events.MenuOptionClicked;
+import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.VarbitChanged;
+import net.runelite.api.events.WidgetLoaded;
+import net.runelite.api.gameval.InterfaceID;
+import net.runelite.api.gameval.InventoryID;
+import net.runelite.api.gameval.NpcID;
+import net.runelite.api.gameval.SpotanimID;
+import net.runelite.api.gameval.VarPlayerID;
+import net.runelite.api.gameval.VarbitID;
 import net.runelite.client.Notifier;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.chat.ChatColorType;
@@ -77,8 +86,8 @@ import net.runelite.client.util.Text;
 @Slf4j
 @PluginDescriptor(
 	name = "Combat Masteries",
-	description = "Ultra-hard combat tasks beyond Grandmaster, with a glowing-eye Tzkal slayer helmet reward",
-	tags = {"combat", "achievements", "tasks", "pvm", "grandmaster", "zuk", "helmet"}
+	description = "Endgame PvM speed and challenge tasks beyond Grandmaster, with a glowing-eye Tzkal slayer helmet reward",
+	tags = {"combat", "achievements", "tasks", "pvm", "grandmaster", "zuk", "helmet", "speedrun"}
 )
 public class CombatMasteriesPlugin extends Plugin
 {
@@ -87,9 +96,31 @@ public class CombatMasteriesPlugin extends Plugin
 	 * Where RuneLite's Chat Commands plugin keeps personal bests (read only).
 	 */
 	private static final String CHAT_COMMANDS_PB_GROUP = "personalbest";
-	private static final Set<Integer> PRAYER_VARBITS = Arrays.stream(Prayer.values())
-		.map(Prayer::getVarbit)
-		.collect(Collectors.toUnmodifiableSet());
+	private static final String INFERNO_BOSS = "TzKal-Zuk";
+	private static final int PILLAR_DEADLINE_WAVE = 4;
+	private static final int PILLAR_COUNT = 3;
+	/**
+	 * Graphics shown on a player who receives heal other, energy (special attack) transfer,
+	 * heal group or vengeance other. Any of these ends a one-inventory trip.
+	 */
+	private static final Set<Integer> ASSIST_SPOTANIMS = ImmutableSet.of(
+		SpotanimID.QUEST_LUNAR_SPELLBOOK_ENERGY_HEAL_SPOT_ANIM,
+		SpotanimID.QUEST_LUNAR_SPELLBOOK_HEAL_GROUP_SPOT_ANIM,
+		SpotanimID.QUEST_LUNAR_SPELLBOOK_ENERGY_EXCHANGE_SPOT_ANIM,
+		SpotanimID.QUEST_LUNAR_SPELLBOOK_ENERGY_EXCHANGE_SPOT_ANIM_LOW,
+		SpotanimID.QUEST_LUNAR_SPELLBOOK_VENGEANCE_OTHER_SPOT_ANIM
+	);
+	/**
+	 * Object options that restore stats: pools (POH, Ferox Enclave) and altars.
+	 */
+	private static final Set<String> RESTORE_OPTIONS = ImmutableSet.of("Drink", "Pray", "Pray-at");
+	private static final Set<MenuAction> OBJECT_ACTIONS = ImmutableSet.of(
+		MenuAction.GAME_OBJECT_FIRST_OPTION,
+		MenuAction.GAME_OBJECT_SECOND_OPTION,
+		MenuAction.GAME_OBJECT_THIRD_OPTION,
+		MenuAction.GAME_OBJECT_FOURTH_OPTION,
+		MenuAction.GAME_OBJECT_FIFTH_OPTION
+	);
 
 	@Inject
 	private Client client;
@@ -130,7 +161,7 @@ public class CombatMasteriesPlugin extends Plugin
 
 	private final KillAssembler killAssembler = new KillAssembler();
 	private final AttemptTracker attempts = new AttemptTracker();
-	private final Map<String, String> bossByNpc = new HashMap<>();
+	private final TripTracker trip = new TripTracker();
 	private final Map<Integer, String> bossByRegion = new HashMap<>();
 
 	private TaskList taskList;
@@ -148,6 +179,14 @@ public class CombatMasteriesPlugin extends Plugin
 	 */
 	@Nullable
 	private String completedRegionBoss;
+	/**
+	 * Inferno pillars seen since entering the region.
+	 */
+	private int pillarsSeen;
+	/**
+	 * Food and potion doses in the inventory, or -1 until the inventory is first seen.
+	 */
+	private int lastSupplies = -1;
 	/**
 	 * Developer mode only: shows a tier's eyes without having unlocked it.
 	 */
@@ -172,11 +211,9 @@ public class CombatMasteriesPlugin extends Plugin
 			throw new IllegalStateException("Unable to load Combat Masteries task list", e);
 		}
 
-		bossByNpc.clear();
 		bossByRegion.clear();
 		for (BossDefinition boss : taskList.getBosses().values())
 		{
-			boss.getNpcs().forEach(npc -> bossByNpc.put(npc, boss.getName()));
 			boss.getRegions().forEach(region -> bossByRegion.put(region, boss.getName()));
 		}
 
@@ -209,8 +246,11 @@ public class CombatMasteriesPlugin extends Plugin
 		clientThread.invoke(() -> helmetGlow.setStyle(null));
 		killAssembler.reset();
 		attempts.abort();
+		trip.restock("plugin stopped");
 		progress = null;
 		completedRegionBoss = null;
+		pillarsSeen = 0;
+		lastSupplies = -1;
 		previewTier = null;
 	}
 
@@ -245,10 +285,12 @@ public class CombatMasteriesPlugin extends Plugin
 		GameState state = event.getGameState();
 		if (state == GameState.LOGIN_SCREEN || state == GameState.HOPPING)
 		{
-			// Logging out or hopping mid-fight counts as abandoning it
-			failAttempt();
+			// Logging out or hopping mid-run abandons it
+			attempts.abort();
 			killAssembler.reset();
 			completedRegionBoss = null;
+			pillarsSeen = 0;
+			lastSupplies = -1;
 		}
 	}
 
@@ -276,6 +318,17 @@ public class CombatMasteriesPlugin extends Plugin
 		if (duration != null)
 		{
 			killAssembler.onDuration(duration, tick);
+			return;
+		}
+
+		Attempt attempt = attempts.getCurrent();
+		if (attempt != null && INFERNO_BOSS.equals(attempt.getBoss()) && KillMessageParser.parseWave(message) == PILLAR_DEADLINE_WAVE)
+		{
+			int standing = (int) client.getTopLevelWorldView().npcs().stream()
+				.filter(npc -> npc.getId() == NpcID.INFERNO_INVISIBLE_3X3)
+				.count();
+			attempt.setPillarsCleared(pillarsSeen >= PILLAR_COUNT && standing == 0);
+			log.debug("Inferno wave {}: pillars seen {}, standing {}", PILLAR_DEADLINE_WAVE, pillarsSeen, standing);
 		}
 	}
 
@@ -291,93 +344,19 @@ public class CombatMasteriesPlugin extends Plugin
 		KillEvent kill = killAssembler.onTick(tick);
 		if (kill != null)
 		{
-			handleKill(kill, attempts.isRegionAttempt());
+			handleKill(kill);
 		}
 
 		updateRegionAttempt(tick);
-		checkPrayers();
-		if (attempts.checkIdle(tick))
-		{
-			log.debug("Attempt went idle");
-		}
 	}
 
 	@Subscribe
-	public void onHitsplatApplied(HitsplatApplied event)
+	public void onNpcSpawned(NpcSpawned event)
 	{
-		if (progress == null)
+		NPC npc = event.getNpc();
+		if (npc.getId() == NpcID.INFERNO_INVISIBLE_3X3)
 		{
-			return;
-		}
-
-		Player local = client.getLocalPlayer();
-		Actor target = event.getActor();
-		Hitsplat hitsplat = event.getHitsplat();
-		int tick = client.getTickCount();
-
-		if (target == local)
-		{
-			if (local.getInteracting() instanceof NPC)
-			{
-				engage((NPC) local.getInteracting(), tick);
-			}
-			if (isHealthDamage(hitsplat))
-			{
-				attempts.onDamageTaken(hitsplat.getAmount(), tick);
-			}
-		}
-		else if (target instanceof NPC && hitsplat.isMine())
-		{
-			engage((NPC) target, tick);
-		}
-	}
-
-	@Subscribe
-	public void onInteractingChanged(InteractingChanged event)
-	{
-		if (progress == null)
-		{
-			return;
-		}
-
-		Player local = client.getLocalPlayer();
-		int tick = client.getTickCount();
-		if (event.getSource() == local && event.getTarget() instanceof NPC)
-		{
-			engage((NPC) event.getTarget(), tick);
-		}
-		else if (event.getSource() instanceof NPC && event.getTarget() == local)
-		{
-			engage((NPC) event.getSource(), tick);
-		}
-	}
-
-	@Subscribe
-	public void onVarbitChanged(VarbitChanged event)
-	{
-		// Catches prayers flicked on and off within a single tick
-		if (event.getValue() == 1 && PRAYER_VARBITS.contains(event.getVarbitId()))
-		{
-			attempts.onPrayerActive();
-		}
-	}
-
-	@Subscribe
-	public void onMenuOptionClicked(MenuOptionClicked event)
-	{
-		if (attempts.getCurrent() == null)
-		{
-			return;
-		}
-
-		String option = Text.removeTags(event.getMenuOption());
-		if ("Eat".equals(option))
-		{
-			attempts.onEat();
-		}
-		else if ("Drink".equals(option))
-		{
-			attempts.onDrink();
+			pillarsSeen++;
 		}
 	}
 
@@ -386,7 +365,71 @@ public class CombatMasteriesPlugin extends Plugin
 	{
 		if (event.getActor() == client.getLocalPlayer())
 		{
-			failAttempt();
+			attempts.abort();
+			trip.restock("died");
+		}
+	}
+
+	@Subscribe
+	public void onWidgetLoaded(WidgetLoaded event)
+	{
+		if (event.getGroupId() == InterfaceID.BANKMAIN || event.getGroupId() == InterfaceID.SHARED_BANK)
+		{
+			trip.restock("opened a bank");
+		}
+	}
+
+	@Subscribe
+	public void onMenuOptionClicked(MenuOptionClicked event)
+	{
+		String option = Text.removeTags(event.getMenuOption());
+		if (OBJECT_ACTIONS.contains(event.getMenuAction()) && RESTORE_OPTIONS.contains(option))
+		{
+			trip.restock(option + " " + Text.removeTags(event.getMenuTarget()));
+		}
+	}
+
+	@Subscribe
+	public void onItemContainerChanged(ItemContainerChanged event)
+	{
+		if (event.getContainerId() != InventoryID.INV)
+		{
+			return;
+		}
+
+		int supplies = countSupplies(event.getItemContainer());
+		if (lastSupplies >= 0 && supplies > lastSupplies)
+		{
+			trip.restock("gained supplies");
+		}
+		lastSupplies = supplies;
+	}
+
+	@Subscribe
+	public void onGraphicChanged(GraphicChanged event)
+	{
+		Player local = client.getLocalPlayer();
+		if (event.getActor() != local)
+		{
+			return;
+		}
+
+		for (int spotanim : ASSIST_SPOTANIMS)
+		{
+			if (local.hasSpotAnim(spotanim))
+			{
+				trip.restock("assisted by another player");
+				return;
+			}
+		}
+	}
+
+	@Subscribe
+	public void onVarbitChanged(VarbitChanged event)
+	{
+		if (event.getVarpId() == VarPlayerID.DOM_DEEPEST_LEVEL)
+		{
+			checkDeepestDelve(event.getValue());
 		}
 	}
 
@@ -410,6 +453,12 @@ public class CombatMasteriesPlugin extends Plugin
 			case "cmkill":
 				devKill(args);
 				break;
+			case "cmdelve":
+				if (args.length == 1)
+				{
+					checkDeepestDelve(Integer.parseInt(args[0]));
+				}
+				break;
 			case "cmtier":
 				try
 				{
@@ -423,7 +472,10 @@ public class CombatMasteriesPlugin extends Plugin
 				}
 				break;
 			case "cmattempt":
-				devMessage("Attempt: " + attempts.getCurrent());
+				devMessage("Attempt: " + attempts.getCurrent() + ", pillars seen: " + pillarsSeen);
+				break;
+			case "cmtrip":
+				devMessage("Trip kills: " + trip.getKills() + ", last restock: " + trip.getLastRestockReason());
 				break;
 			case "cmreset":
 				if (progress != null)
@@ -435,15 +487,6 @@ public class CombatMasteriesPlugin extends Plugin
 					devMessage("Progress reset");
 				}
 				break;
-		}
-	}
-
-	private void engage(NPC npc, int tick)
-	{
-		String boss = bossByNpc.get(npc.getName());
-		if (boss != null && !attempts.isRegionAttempt())
-		{
-			attempts.engage(boss, tick);
 		}
 	}
 
@@ -466,10 +509,11 @@ public class CombatMasteriesPlugin extends Plugin
 		if (boss == null)
 		{
 			completedRegionBoss = null;
-			if (attempts.isRegionAttempt())
+			pillarsSeen = 0;
+			if (attempts.getCurrent() != null)
 			{
-				// Left the Inferno (etc.) without a kill
-				failAttempt();
+				// Left the Inferno without a kill
+				attempts.abort();
 			}
 		}
 		else if (!boss.equals(completedRegionBoss))
@@ -478,66 +522,94 @@ public class CombatMasteriesPlugin extends Plugin
 		}
 	}
 
-	private void checkPrayers()
+	private int countSupplies(@Nullable ItemContainer inventory)
 	{
-		if (attempts.getCurrent() == null || attempts.getCurrent().isPrayed())
+		if (inventory == null)
 		{
-			return;
+			return 0;
 		}
 
-		for (int varbit : PRAYER_VARBITS)
+		int units = 0;
+		for (Item item : inventory.getItems())
 		{
-			if (client.getVarbitValue(varbit) == 1)
+			if (item.getId() < 0 || item.getQuantity() <= 0)
 			{
-				attempts.onPrayerActive();
-				return;
+				continue;
+			}
+			ItemComposition def = client.getItemDefinition(item.getId());
+			if (Supplies.isConsumable(def.getInventoryActions()))
+			{
+				units += Supplies.units(def.getName(), item.getQuantity());
 			}
 		}
+		return units;
 	}
 
-	private static boolean isHealthDamage(Hitsplat hitsplat)
+	/**
+	 * Adds the raid context the kill messages don't carry: team size and raid level.
+	 */
+	private KillEvent withRaidContext(KillEvent kill)
 	{
-		if (hitsplat.getAmount() <= 0)
+		String boss = kill.getBoss();
+		if (boss.startsWith("Theatre of Blood"))
 		{
-			return false;
+			return kill.withTeamSize(nonZero(countSet(VarbitID.TOB_CLIENT_P0, VarbitID.TOB_CLIENT_P1,
+				VarbitID.TOB_CLIENT_P2, VarbitID.TOB_CLIENT_P3, VarbitID.TOB_CLIENT_P4)));
 		}
-
-		switch (hitsplat.getHitsplatType())
+		if (boss.startsWith("Tombs of Amascut"))
 		{
-			case HitsplatID.HEAL:
-			case HitsplatID.CYAN_UP:
-			case HitsplatID.PRAYER_DRAIN:
-			case HitsplatID.SANITY_DRAIN:
-			case HitsplatID.SANITY_RESTORE:
-				return false;
-			default:
-				return true;
+			return kill
+				.withTeamSize(nonZero(countSet(VarbitID.TOA_CLIENT_P0, VarbitID.TOA_CLIENT_P1, VarbitID.TOA_CLIENT_P2,
+					VarbitID.TOA_CLIENT_P3, VarbitID.TOA_CLIENT_P4, VarbitID.TOA_CLIENT_P5, VarbitID.TOA_CLIENT_P6,
+					VarbitID.TOA_CLIENT_P7)))
+				.withRaidLevel(client.getVarbitValue(VarbitID.TOA_CLIENT_RAID_LEVEL));
 		}
+		if (kill.getDuration() != null && kill.getDuration().getTeamSize() != null)
+		{
+			// Chambers of Xeric prints the team size in its completion message
+			return kill.withTeamSize(KillMessageParser.parseTeamSize(kill.getDuration().getTeamSize()));
+		}
+		return kill;
 	}
 
-	private void handleKill(KillEvent kill, boolean regionAttempt)
+	private int countSet(int... varbits)
+	{
+		int count = 0;
+		for (int varbit : varbits)
+		{
+			count += Math.min(client.getVarbitValue(varbit), 1);
+		}
+		return count;
+	}
+
+	@Nullable
+	private static Integer nonZero(int value)
+	{
+		return value > 0 ? value : null;
+	}
+
+	private void handleKill(KillEvent rawKill)
 	{
 		if (progress == null || !isTrackedWorld())
 		{
-			attempts.complete(kill.getBoss());
+			attempts.complete(rawKill.getBoss());
 			return;
 		}
 
+		KillEvent kill = withRaidContext(rawKill);
 		log.debug("Kill: {}", kill);
 		MasteryTier before = currentTier();
 
-		if (kill.getDuration() != null)
-		{
-			progress.recordPersonalBest(kill.getBoss(), kill.getDuration().getPersonalBestSeconds());
-		}
+		recordPersonalBests(kill);
 
 		Attempt attempt = attempts.complete(kill.getBoss());
-		if (attempt != null && regionAttempt)
+		if (attempt != null)
 		{
 			completedRegionBoss = kill.getBoss();
 		}
+		trip.onKill(kill.getBoss());
 
-		List<MasteryTask> completed = TaskEvaluator.onKill(taskList, progress, kill, attempt, System.currentTimeMillis());
+		List<MasteryTask> completed = TaskEvaluator.onKill(taskList, progress, kill, attempt, trip, System.currentTimeMillis());
 		saveProgress();
 		completed.forEach(task -> announceTask(task, false));
 
@@ -550,15 +622,35 @@ public class CombatMasteriesPlugin extends Plugin
 		afterProgressChanged(before);
 	}
 
-	private void failAttempt()
+	private void recordPersonalBests(KillEvent kill)
 	{
-		Attempt failed = attempts.abort();
-		if (failed != null && progress != null)
+		KillDuration time = taskList.usesTotalTime(kill.getBoss()) ? kill.getTotalDuration() : kill.getDuration();
+		if (time == null)
 		{
-			log.debug("Attempt failed: {}", failed);
-			TaskEvaluator.onAttemptFailed(taskList, progress, failed.getBoss());
+			return;
+		}
+		progress.recordPersonalBest(MasteryProgress.personalBestKey(kill.getBoss(), null), time.getPersonalBestSeconds());
+		if (kill.getTeamSize() != null)
+		{
+			// The reported PB may be for another team size; this kill's own time is known to be for this one
+			progress.recordPersonalBest(MasteryProgress.personalBestKey(kill.getBoss(), kill.getTeamSize()), time.getSeconds());
+		}
+	}
+
+	private void checkDeepestDelve(int deepest)
+	{
+		if (progress == null || deepest <= 0)
+		{
+			return;
+		}
+
+		MasteryTier before = currentTier();
+		List<MasteryTask> completed = TaskEvaluator.onDeepestDelve(taskList, progress, deepest, System.currentTimeMillis());
+		if (!completed.isEmpty())
+		{
 			saveProgress();
-			refreshPanel();
+			completed.forEach(task -> announceTask(task, true));
+			afterProgressChanged(before);
 		}
 	}
 
@@ -580,17 +672,23 @@ public class CombatMasteriesPlugin extends Plugin
 	}
 
 	/**
-	 * @return the best known personal best for a boss, from the game's kill messages or the
-	 * Chat Commands plugin, or null if neither knows one
+	 * @return the best known personal best for a boss and team size, from the game's kill
+	 * messages or the Chat Commands plugin, or null if neither knows one
 	 */
 	@Nullable
-	private Double personalBest(String boss)
+	private Double personalBest(String boss, @Nullable Integer teamSize)
 	{
-		Double ours = progress == null ? null : progress.getPersonalBest(boss);
-		Double theirs = configManager.getRSProfileConfiguration(CHAT_COMMANDS_PB_GROUP, boss.toLowerCase(Locale.ROOT).replace(":", ""), double.class);
-		if (theirs != null && theirs <= 0)
+		String key = MasteryProgress.personalBestKey(boss, teamSize);
+		Double ours = progress == null ? null : progress.getPersonalBest(key);
+		Double theirs = null;
+		if (!taskList.usesTotalTime(boss))
 		{
-			theirs = null;
+			// Chat Commands records challenge times, not total times
+			theirs = configManager.getRSProfileConfiguration(CHAT_COMMANDS_PB_GROUP, key, double.class);
+			if (theirs != null && theirs <= 0)
+			{
+				theirs = null;
+			}
 		}
 		if (ours == null)
 		{
@@ -628,6 +726,7 @@ public class CombatMasteriesPlugin extends Plugin
 		{
 			creditPersonalBests();
 		}
+		checkDeepestDelve(client.getVarpValue(VarPlayerID.DOM_DEEPEST_LEVEL));
 		updateCosmetic();
 		refreshPanel();
 	}
@@ -667,7 +766,7 @@ public class CombatMasteriesPlugin extends Plugin
 		refreshPanel();
 	}
 
-	private void announceTask(MasteryTask task, boolean fromPersonalBest)
+	private void announceTask(MasteryTask task, boolean fromRecord)
 	{
 		if (config.chatMessages())
 		{
@@ -677,7 +776,7 @@ public class CombatMasteriesPlugin extends Plugin
 				.append(ChatColorType.HIGHLIGHT)
 				.append(task.getName())
 				.append(ChatColorType.NORMAL)
-				.append(fromPersonalBest ? " (from your personal best)." : ".")
+				.append(fromRecord ? " (from your existing record)." : ".")
 				.build();
 			queueChat(message);
 		}
@@ -749,29 +848,50 @@ public class CombatMasteriesPlugin extends Plugin
 	}
 
 	/**
-	 * ::cmkill Boss_Name m:ss [dmg] [prayer] [food] [potion]
-	 * Feeds a pretend kill through task evaluation, for testing without the boss.
+	 * ::cmkill Boss_Name m:ss [team=N] [level=N] [total=m:ss] [pillars]
+	 * Feeds a pretend kill through task evaluation, for testing without the content.
 	 */
 	private void devKill(String[] args)
 	{
 		if (progress == null || args.length < 2)
 		{
-			devMessage("Usage: ::cmkill Boss_Name m:ss [dmg] [prayer] [food] [potion]");
+			devMessage("Usage: ::cmkill Boss_Name m:ss [team=N] [level=N] [total=m:ss] [pillars]");
 			return;
 		}
 
 		String boss = args[0].replace('_', ' ');
 		double seconds = KillMessageParser.timeStringToSeconds(args[1]);
-		List<String> flags = Arrays.asList(args).subList(2, args.length);
-		Attempt attempt = Attempt.of(boss,
-			flags.contains("dmg") ? 1 : 0,
-			flags.contains("prayer"),
-			flags.contains("food"),
-			flags.contains("potion"));
+		Integer team = null;
+		Integer level = null;
+		KillDuration total = null;
+		Attempt attempt = null;
+		for (int i = 2; i < args.length; i++)
+		{
+			String arg = args[i].toLowerCase(Locale.ROOT);
+			if (arg.startsWith("team="))
+			{
+				team = Integer.parseInt(arg.substring(5));
+			}
+			else if (arg.startsWith("level="))
+			{
+				level = Integer.parseInt(arg.substring(6));
+			}
+			else if (arg.startsWith("total="))
+			{
+				double t = KillMessageParser.timeStringToSeconds(arg.substring(6));
+				total = new KillDuration(t, t, false, null, true);
+			}
+			else if (arg.equals("pillars"))
+			{
+				attempt = new Attempt(boss, 0);
+				attempt.setPillarsCleared(true);
+			}
+		}
 
 		MasteryTier before = currentTier();
-		KillEvent kill = new KillEvent(boss, new KillDuration(seconds, seconds, false, null));
-		List<MasteryTask> completed = TaskEvaluator.onKill(taskList, progress, kill, attempt, System.currentTimeMillis());
+		KillEvent kill = new KillEvent(boss, new KillDuration(seconds, seconds, false, null, false), total, team, level);
+		trip.onKill(boss);
+		List<MasteryTask> completed = TaskEvaluator.onKill(taskList, progress, kill, attempt, trip, System.currentTimeMillis());
 		saveProgress();
 		completed.forEach(task -> announceTask(task, false));
 		devMessage("Simulated " + boss + " in " + KillMessageParser.formatSeconds(seconds) + ", completed " + completed.size() + " task(s)");

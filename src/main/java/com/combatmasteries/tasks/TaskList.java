@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nullable;
 import lombok.Getter;
 
 /**
@@ -59,26 +60,57 @@ public class TaskList
 		return bosses;
 	}
 
+	@Nullable
+	public BossDefinition getBoss(String name)
+	{
+		return bosses.get(name);
+	}
+
+	/**
+	 * @return true if time tasks for this boss use the raid's total completion time
+	 */
+	public boolean usesTotalTime(String boss)
+	{
+		BossDefinition def = bosses.get(boss);
+		return def != null && def.isTotalTime();
+	}
+
 	private void validate()
 	{
 		Set<String> ids = new HashSet<>();
 		for (MasteryTask task : tasks)
 		{
-			if (task.getId() == null || task.getId().isEmpty())
+			String id = task.getId();
+			if (id == null || id.isEmpty())
 			{
 				throw new IllegalStateException("Task without an id: " + task.getName());
 			}
-			if (!ids.add(task.getId()))
+			if (!ids.add(id))
 			{
-				throw new IllegalStateException("Duplicate task id: " + task.getId());
+				throw new IllegalStateException("Duplicate task id: " + id);
 			}
-			if (task.getConditions() == null || task.getConditions().isEmpty())
+			if (task.getName() == null || task.getCategory() == null || task.getContent() == null)
 			{
-				throw new IllegalStateException("Task has no conditions: " + task.getId());
+				throw new IllegalStateException("Task " + id + " needs a name, category and content");
 			}
-			if (!bosses.containsKey(task.getBoss()))
+			if (!task.isTracked())
 			{
-				throw new IllegalStateException("Task " + task.getId() + " references unknown boss " + task.getBoss());
+				// Listed so it counts towards the total, but has no detection yet
+				continue;
+			}
+			boolean delve = task.hasCondition(ConditionType.MIN_DELVE_LEVEL);
+			if (!task.isTrip() && task.getConditions().isEmpty())
+			{
+				throw new IllegalStateException("Task " + id + " has no conditions or trip");
+			}
+			if (!task.isTrip() && !delve && task.getBoss() == null)
+			{
+				throw new IllegalStateException("Task " + id + " needs a boss");
+			}
+			if (task.hasCondition(ConditionType.INFERNO_NO_PILLARS)
+				&& (getBoss(task.getBoss()) == null || getBoss(task.getBoss()).getRegions().isEmpty()))
+			{
+				throw new IllegalStateException("Task " + id + " needs its boss's region defined");
 			}
 		}
 	}

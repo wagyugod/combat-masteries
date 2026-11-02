@@ -20,6 +20,11 @@ public final class KillMessageParser
 	private static final Pattern RAIDS_DURATION_PATTERN = Pattern.compile("<col=ef20ff>Congratulations - your raid is complete!</col><br>Team size: <col=ff0000>" + TEAM_SIZES + "</col> Duration:</col> <col=ff0000>(?<time>" + TIME + ")</col> Personal best: </col><col=ff0000>(?<pb>" + TIME + ")</col>");
 	private static final Pattern KILL_DURATION_PATTERN = Pattern.compile(DURATION_PREFIX + "(?<time>" + TIME + ")</col>\\. Personal best: (?:<col=ff0000>|@.+?@)?(?<pb>" + TIME + ")");
 	private static final Pattern NEW_PB_PATTERN = Pattern.compile(DURATION_PREFIX + "(?<time>" + TIME + ")</col> \\(new personal best\\)");
+	/**
+	 * Raid time including downtime between rooms. Tombs of Amascut tasks are timed on this.
+	 */
+	private static final Pattern TOTAL_TIME_PATTERN = Pattern.compile("(?i)(?:Theatre of Blood|Tombs of Amascut) total completion time: (?:<col=[0-9a-f]{6}>|@.+?@)(?<time>" + TIME + ")</col>(?: \\((?<newpb>new personal best)\\)|\\. Personal best: (?:<col=ff0000>|@.+?@)?(?<pb>" + TIME + "))");
+	private static final Pattern WAVE_PATTERN = Pattern.compile("Wave: (\\d+)");
 
 	private KillMessageParser()
 	{
@@ -53,33 +58,70 @@ public final class KillMessageParser
 	@Nullable
 	public static KillDuration parseDuration(String message)
 	{
-		Matcher m = NEW_PB_PATTERN.matcher(message);
+		Matcher m = TOTAL_TIME_PATTERN.matcher(message);
 		if (m.find())
 		{
 			double time = timeStringToSeconds(m.group("time"));
-			return new KillDuration(time, time, true, null);
+			boolean newPb = m.group("newpb") != null;
+			return new KillDuration(time, newPb ? time : timeStringToSeconds(m.group("pb")), newPb, null, true);
+		}
+
+		m = NEW_PB_PATTERN.matcher(message);
+		if (m.find())
+		{
+			double time = timeStringToSeconds(m.group("time"));
+			return new KillDuration(time, time, true, null, false);
 		}
 
 		m = KILL_DURATION_PATTERN.matcher(message);
 		if (m.find())
 		{
-			return new KillDuration(timeStringToSeconds(m.group("time")), timeStringToSeconds(m.group("pb")), false, null);
+			return new KillDuration(timeStringToSeconds(m.group("time")), timeStringToSeconds(m.group("pb")), false, null, false);
 		}
 
 		m = RAIDS_PB_PATTERN.matcher(message);
 		if (m.find())
 		{
 			double time = timeStringToSeconds(m.group("time"));
-			return new KillDuration(time, time, true, m.group("teamsize"));
+			return new KillDuration(time, time, true, m.group("teamsize"), false);
 		}
 
 		m = RAIDS_DURATION_PATTERN.matcher(message);
 		if (m.find())
 		{
-			return new KillDuration(timeStringToSeconds(m.group("time")), timeStringToSeconds(m.group("pb")), false, m.group("teamsize"));
+			return new KillDuration(timeStringToSeconds(m.group("time")), timeStringToSeconds(m.group("pb")), false, m.group("teamsize"), false);
 		}
 
 		return null;
+	}
+
+	/**
+	 * @return the wave number from a wave-start message (Inferno, Fight Caves), or -1
+	 */
+	public static int parseWave(String message)
+	{
+		Matcher m = WAVE_PATTERN.matcher(message.replaceAll("<[^>]*>", ""));
+		return m.find() ? Integer.parseInt(m.group(1)) : -1;
+	}
+
+	/**
+	 * Converts a team size as printed by raid messages ("Solo", "3 players") to a number.
+	 *
+	 * @return the team size, or null for ranges such as "11-15 players"
+	 */
+	@Nullable
+	public static Integer parseTeamSize(@Nullable String teamSize)
+	{
+		if (teamSize == null)
+		{
+			return null;
+		}
+		if (teamSize.equals("Solo"))
+		{
+			return 1;
+		}
+		Matcher m = Pattern.compile("^(\\d+) players?$").matcher(teamSize);
+		return m.find() ? Integer.parseInt(m.group(1)) : null;
 	}
 
 	/**

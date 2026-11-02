@@ -3,21 +3,23 @@ package com.combatmasteries.tracking;
 import javax.annotation.Nullable;
 
 /**
- * Pairs kill count messages with kill duration messages.
+ * Pairs kill count messages with the duration messages around them.
  * <p>
- * Most bosses send the kill count first and the duration second, but some send them the
- * other way round, and some send no duration at all. Both messages arrive within a tick
- * of each other, so a kill is emitted once both halves are present, or once a short grace
- * period has passed without a duration.
+ * The kill count and duration messages arrive within a few ticks of each other, in either
+ * order, and some bosses send no duration at all. Raids also send a separate total time. A
+ * kill is emitted once its kill count, duration and total time are all present, or once a
+ * short window has passed.
  */
 public class KillAssembler
 {
-	static final int GRACE_TICKS = 2;
+	static final int WINDOW_TICKS = 4;
 
 	private String pendingBoss;
 	private int bossTick;
-	private KillDuration pendingDuration;
+	private KillDuration duration;
 	private int durationTick;
+	private KillDuration total;
+	private int totalTick;
 
 	public void onKillCount(String boss, int tick)
 	{
@@ -25,10 +27,18 @@ public class KillAssembler
 		bossTick = tick;
 	}
 
-	public void onDuration(KillDuration duration, int tick)
+	public void onDuration(KillDuration d, int tick)
 	{
-		pendingDuration = duration;
-		durationTick = tick;
+		if (d.isTotal())
+		{
+			total = d;
+			totalTick = tick;
+		}
+		else
+		{
+			duration = d;
+			durationTick = tick;
+		}
 	}
 
 	/**
@@ -39,24 +49,43 @@ public class KillAssembler
 	@Nullable
 	public KillEvent onTick(int tick)
 	{
-		if (pendingBoss != null && (pendingDuration != null || tick - bossTick >= GRACE_TICKS))
+		if (pendingBoss == null)
 		{
-			KillEvent kill = new KillEvent(pendingBoss, pendingDuration);
-			reset();
-			return kill;
+			// Durations with no kill count, e.g. raid rooms or Hallowed Sepulchre floors
+			if (duration != null && tick - durationTick > WINDOW_TICKS)
+			{
+				duration = null;
+			}
+			if (total != null && tick - totalTick > WINDOW_TICKS)
+			{
+				total = null;
+			}
+			return null;
 		}
 
-		if (pendingBoss == null && pendingDuration != null && tick - durationTick > GRACE_TICKS)
+		boolean complete = duration != null && (total != null || !isRaid(pendingBoss));
+		if (!complete && tick - bossTick < WINDOW_TICKS)
 		{
-			// A duration with no kill count, e.g. a raid room or a Hallowed Sepulchre floor
-			pendingDuration = null;
+			return null;
 		}
-		return null;
+
+		KillEvent kill = new KillEvent(pendingBoss, duration, total, null, null);
+		reset();
+		return kill;
 	}
 
 	public void reset()
 	{
 		pendingBoss = null;
-		pendingDuration = null;
+		duration = null;
+		total = null;
+	}
+
+	/**
+	 * Raids that also print a total completion time worth waiting for.
+	 */
+	static boolean isRaid(String boss)
+	{
+		return boss.startsWith("Theatre of Blood") || boss.startsWith("Tombs of Amascut");
 	}
 }

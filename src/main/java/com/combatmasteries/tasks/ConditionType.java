@@ -2,28 +2,29 @@ package com.combatmasteries.tasks;
 
 /**
  * The building blocks tasks are made from. A task passes when every one of its
- * conditions holds for a single kill.
+ * conditions holds for a single kill or raid.
  */
 public enum ConditionType
 {
 	/**
-	 * The game-reported kill time is at most {@code seconds}.
+	 * Finished in strictly less than {@code seconds} ("sub 40:00").
 	 */
-	MAX_TIME,
+	UNDER_TIME,
 	/**
-	 * No damage of any kind was taken during the attempt.
+	 * Exactly {@code value} players in the raid (1 = solo).
 	 */
-	NO_DAMAGE_TAKEN,
+	TEAM_SIZE,
 	/**
-	 * No prayer was active at any point during the attempt.
+	 * Tombs of Amascut raid level of at least {@code value}.
 	 */
-	NO_PRAYER,
+	MIN_RAID_LEVEL,
 	/**
-	 * Nothing was eaten during the attempt.
+	 * Doom of Mokhaiotl: deepest delve level of at least {@code value}. Read from the game's
+	 * own record, so it is not tied to a kill.
 	 */
-	NO_FOOD,
+	MIN_DELVE_LEVEL,
 	/**
-	 * Nothing was drunk during the attempt.
+	 * Inferno: all three pillars destroyed before wave 4 begins.
 	 */
-	NO_POTIONS,
+	INFERNO_NO_PILLARS,
 }

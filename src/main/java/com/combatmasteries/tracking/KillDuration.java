@@ -17,4 +17,8 @@ public class KillDuration
 	 */
 	@Nullable
 	String teamSize;
+	/**
+	 * True for a raid's "total completion time", which includes downtime between rooms.
+	 */
+	boolean total;
 }

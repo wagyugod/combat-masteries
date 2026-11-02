@@ -1,6 +1,8 @@
 package com.combatmasteries.tasks;
 
+import static com.combatmasteries.tasks.Tasks.task;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import com.google.gson.Gson;
 import java.util.Arrays;
@@ -16,25 +18,26 @@ public class TaskListTest
 		assertFalse(taskList.getTasks().isEmpty());
 		for (MasteryTask task : taskList.getTasks())
 		{
-			assertTrue(task.getId(), taskList.getBosses().containsKey(task.getBoss()));
-			assertTrue(task.getId(), task.getConsecutive() >= 1);
+			assertNotNull(task.getId(), task.getCategory());
+			assertNotNull(task.getId(), task.getContent());
 		}
+		assertTrue(taskList.usesTotalTime("Tombs of Amascut: Expert Mode"));
+		assertFalse(taskList.usesTotalTime("Theatre of Blood"));
+		// Defaults survive JSON loading
+		assertTrue(taskList.getTasks().get(0).isTracked());
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void duplicateIdsAreRejected()
 	{
-		MasteryTask task = new MasteryTask("a", "A", "", "Zulrah",
-			Collections.singletonList(new TaskCondition(ConditionType.NO_PRAYER, 0)), 1);
-		new TaskList(Arrays.asList(task, task),
-			Collections.singletonList(new BossDefinition("Zulrah", Collections.singletonList("Zulrah"), Collections.emptyList())));
+		MasteryTask a = task("a", "Zulrah", TaskCategory.SPEED, TaskCondition.underTime(60));
+		new TaskList(Arrays.asList(a, a), Collections.emptyList());
 	}
 
 	@Test(expected = IllegalStateException.class)
-	public void unknownBossIsRejected()
+	public void pillarTaskNeedsARegion()
 	{
-		MasteryTask task = new MasteryTask("a", "A", "", "Nobody",
-			Collections.singletonList(new TaskCondition(ConditionType.NO_PRAYER, 0)), 1);
-		new TaskList(Collections.singletonList(task), Collections.emptyList());
+		MasteryTask a = task("a", "TzKal-Zuk", TaskCategory.CHALLENGE, TaskCondition.of(ConditionType.INFERNO_NO_PILLARS, 0));
+		new TaskList(Collections.singletonList(a), Collections.emptyList());
 	}
 }

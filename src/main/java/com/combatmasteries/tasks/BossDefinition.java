@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Tells the attempt tracker when a fight with a boss begins.
+ * Per-boss settings that tasks need beyond the kill message.
  */
 @Data
 @NoArgsConstructor
@@ -19,13 +19,13 @@ public class BossDefinition
 	 */
 	private String name;
 	/**
-	 * NPC names that start an attempt when the player attacks them or they attack the
-	 * player.
-	 */
-	private List<String> npcs = new ArrayList<>();
-	/**
 	 * Region IDs where the whole stay counts as one attempt, for wave content such as the
-	 * Inferno. Takes priority over {@link #npcs}.
+	 * Inferno.
 	 */
 	private List<Integer> regions = new ArrayList<>();
+	/**
+	 * Time tasks use the raid's total completion time (including downtime) instead of the
+	 * challenge time. True for Tombs of Amascut.
+	 */
+	private boolean totalTime;
 }
