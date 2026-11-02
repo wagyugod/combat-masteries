@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * Tiers unlock at a percentage of all tasks completed. Every task is worth one point.
+ * Immortal is 90%, the same share as the gilded collection log staff.
  */
 @Getter
 @RequiredArgsConstructor
@@ -14,7 +15,7 @@ public enum MasteryTier
 {
 	ASCENDED("Ascended Grandmaster", 25, new Color(230, 50, 40)),
 	EXALTED("Exalted Grandmaster", 50, new Color(70, 100, 255)),
-	IMMORTAL("Immortal Grandmaster", 100, new Color(240, 245, 255));
+	IMMORTAL("Immortal Grandmaster", 90, new Color(240, 245, 255));
 
 	private final String displayName;
 	private final int percent;

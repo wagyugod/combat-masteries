@@ -12,7 +12,7 @@ challenge tasks from endgame content, mostly solo, and deliberately aspirational
   |---|---|---|
   | Ascended Grandmaster | 25% of points | Glowing red |
   | Exalted Grandmaster | 50% of points | Glowing dark blue |
-  | Immortal Grandmaster | 100% of points | Glowing white (Radiant oathplate's white) |
+  | Immortal Grandmaster | 90% of points (like the gilded collection log staff) | Glowing white (Radiant oathplate's white) |
 
 - **Reward**: the eyes of your Tzkal slayer helmet glow in your tier's colour. This is
   client-side only, so only you see it, and it only shows while you wear the helmet.

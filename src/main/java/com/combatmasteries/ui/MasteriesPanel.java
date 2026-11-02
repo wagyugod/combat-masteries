@@ -191,7 +191,7 @@ public class MasteriesPanel extends PluginPanel
 		}
 		else if (next == null)
 		{
-			nextTierLabel.setText("Every mastery task complete");
+			nextTierLabel.setText(points >= total ? "Every mastery task complete" : "Highest tier reached");
 		}
 		else
 		{
