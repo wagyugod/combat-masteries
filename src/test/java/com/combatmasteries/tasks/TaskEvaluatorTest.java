@@ -137,8 +137,9 @@ public class TaskEvaluatorTest
 	@Test
 	public void deepestDelveCompletesFromTheGameRecord()
 	{
-		assertTrue(TaskEvaluator.onDeepestDelve(taskList, progress, 23, 1).isEmpty());
-		assertEquals(1, TaskEvaluator.onDeepestDelve(taskList, progress, 30, 1).size());
+		// Level 24 only counts as cleared once level 25 is on record
+		assertTrue(TaskEvaluator.onDeepestDelve(taskList, progress, 24, 1).isEmpty());
+		assertEquals(1, TaskEvaluator.onDeepestDelve(taskList, progress, 25, 1).size());
 		assertTrue(progress.getCompletion("delve_24").isFromPersonalBest());
 	}
 

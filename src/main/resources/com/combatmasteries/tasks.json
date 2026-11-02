@@ -436,8 +436,8 @@
     },
     {
       "id": "doom_delve_24",
-      "name": "Delve 24",
-      "description": "Reach delve level 24 against the Doom of Mokhaiotl.",
+      "name": "Doom 1-24",
+      "description": "Clear Doom of Mokhaiotl delve levels 1 to 24 in a single delve.",
       "category": "CHALLENGE",
       "content": "Doom of Mokhaiotl",
       "conditions": [
@@ -449,8 +449,8 @@
     },
     {
       "id": "doom_delve_32",
-      "name": "Delve 32",
-      "description": "Reach delve level 32 against the Doom of Mokhaiotl.",
+      "name": "Doom 1-32",
+      "description": "Clear Doom of Mokhaiotl delve levels 1 to 32 in a single delve.",
       "category": "CHALLENGE",
       "content": "Doom of Mokhaiotl",
       "conditions": [
@@ -462,8 +462,8 @@
     },
     {
       "id": "doom_delve_40",
-      "name": "Delve 40",
-      "description": "Reach delve level 40 against the Doom of Mokhaiotl.",
+      "name": "Doom 1-40",
+      "description": "Clear Doom of Mokhaiotl delve levels 1 to 40 in a single delve.",
       "category": "CHALLENGE",
       "content": "Doom of Mokhaiotl",
       "conditions": [
@@ -475,8 +475,8 @@
     },
     {
       "id": "doom_delve_48",
-      "name": "Delve 48",
-      "description": "Reach delve level 48 against the Doom of Mokhaiotl.",
+      "name": "Doom 1-48",
+      "description": "Clear Doom of Mokhaiotl delve levels 1 to 48 in a single delve.",
       "category": "CHALLENGE",
       "content": "Doom of Mokhaiotl",
       "conditions": [
@@ -488,8 +488,8 @@
     },
     {
       "id": "doom_delve_56",
-      "name": "Delve 56",
-      "description": "Reach delve level 56 against the Doom of Mokhaiotl.",
+      "name": "Doom 1-56",
+      "description": "Clear Doom of Mokhaiotl delve levels 1 to 56 in a single delve.",
       "category": "CHALLENGE",
       "content": "Doom of Mokhaiotl",
       "conditions": [
@@ -501,8 +501,8 @@
     },
     {
       "id": "doom_delve_64",
-      "name": "Delve 64",
-      "description": "Reach delve level 64 against the Doom of Mokhaiotl.",
+      "name": "Doom 1-64",
+      "description": "Clear Doom of Mokhaiotl delve levels 1 to 64 in a single delve.",
       "category": "CHALLENGE",
       "content": "Doom of Mokhaiotl",
       "conditions": [
@@ -515,7 +515,7 @@
     {
       "id": "dt2_awakened_all_one_inventory",
       "name": "Awakened Quartet",
-      "description": "Defeat all four awakened Desert Treasure II bosses on one inventory.",
+      "description": "Defeat all four awakened Desert Treasure II bosses on one inventory. No looting bag.",
       "category": "CHALLENGE",
       "content": "Awakened DT2",
       "trip": {
@@ -528,7 +528,7 @@
     {
       "id": "dt2_awakened_leviathan_x2_one_inventory",
       "name": "Twice-Awakened Leviathan",
-      "description": "Defeat the awakened Leviathan twice on one inventory.",
+      "description": "Defeat the awakened Leviathan twice on one inventory. No looting bag.",
       "category": "CHALLENGE",
       "content": "Awakened DT2",
       "trip": {
@@ -538,7 +538,7 @@
     {
       "id": "dt2_awakened_vardorvis_x2_one_inventory",
       "name": "Twice-Awakened Vardorvis",
-      "description": "Defeat awakened Vardorvis twice on one inventory.",
+      "description": "Defeat awakened Vardorvis twice on one inventory. No looting bag.",
       "category": "CHALLENGE",
       "content": "Awakened DT2",
       "trip": {

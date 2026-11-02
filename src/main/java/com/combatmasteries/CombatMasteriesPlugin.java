@@ -60,6 +60,7 @@ import net.runelite.api.events.VarbitChanged;
 import net.runelite.api.events.WidgetLoaded;
 import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.gameval.InventoryID;
+import net.runelite.api.gameval.ItemID;
 import net.runelite.api.gameval.NpcID;
 import net.runelite.api.gameval.SpotanimID;
 import net.runelite.api.gameval.VarPlayerID;
@@ -114,6 +115,10 @@ public class CombatMasteriesPlugin extends Plugin
 	 * Object options that restore stats: pools (POH, Ferox Enclave) and altars.
 	 */
 	private static final Set<String> RESTORE_OPTIONS = ImmutableSet.of("Drink", "Pray", "Pray-at");
+	/**
+	 * Carrying a looting bag fails one-inventory tasks: it holds extra supplies.
+	 */
+	private static final Set<Integer> LOOTING_BAGS = ImmutableSet.of(ItemID.LOOTING_BAG, ItemID.LOOTING_BAG_OPEN);
 	private static final Set<MenuAction> OBJECT_ACTIONS = ImmutableSet.of(
 		MenuAction.GAME_OBJECT_FIRST_OPTION,
 		MenuAction.GAME_OBJECT_SECOND_OPTION,
@@ -188,6 +193,10 @@ public class CombatMasteriesPlugin extends Plugin
 	 */
 	private int lastSupplies = -1;
 	/**
+	 * True while a looting bag is in the inventory; kills then don't count towards a trip.
+	 */
+	private boolean holdingLootingBag;
+	/**
 	 * Developer mode only: shows a tier's eyes without having unlocked it.
 	 */
 	@Nullable
@@ -251,6 +260,7 @@ public class CombatMasteriesPlugin extends Plugin
 		completedRegionBoss = null;
 		pillarsSeen = 0;
 		lastSupplies = -1;
+		holdingLootingBag = false;
 		previewTier = null;
 	}
 
@@ -397,12 +407,19 @@ public class CombatMasteriesPlugin extends Plugin
 			return;
 		}
 
-		int supplies = countSupplies(event.getItemContainer());
+		ItemContainer inventory = event.getItemContainer();
+		int supplies = countSupplies(inventory);
 		if (lastSupplies >= 0 && supplies > lastSupplies)
 		{
 			trip.restock("gained supplies");
 		}
 		lastSupplies = supplies;
+
+		holdingLootingBag = inventory != null && LOOTING_BAGS.stream().anyMatch(inventory::contains);
+		if (holdingLootingBag)
+		{
+			trip.restock("looting bag in inventory");
+		}
 	}
 
 	@Subscribe
@@ -473,6 +490,13 @@ public class CombatMasteriesPlugin extends Plugin
 				break;
 			case "cmattempt":
 				devMessage("Attempt: " + attempts.getCurrent() + ", pillars seen: " + pillarsSeen);
+				break;
+			case "cmdoom":
+				devMessage("Doom: deepest " + client.getVarpValue(VarPlayerID.DOM_DEEPEST_LEVEL)
+					+ ", previous deepest " + client.getVarpValue(VarPlayerID.DOM_PREVIOUS_DEEPEST_LEVEL)
+					+ ", last delve " + client.getVarpValue(VarPlayerID.DOM_LAST_DELVE_LEVEL)
+					+ ", current " + client.getVarpValue(VarPlayerID.DOM_CURRENT_LEVEL_TEMP)
+					+ ", 8+ clears " + client.getVarpValue(VarPlayerID.DOM_LEVEL_8_PLUS_COMPLETIONS));
 				break;
 			case "cmtrip":
 				devMessage("Trip kills: " + trip.getKills() + ", last restock: " + trip.getLastRestockReason());
@@ -607,7 +631,14 @@ public class CombatMasteriesPlugin extends Plugin
 		{
 			completedRegionBoss = kill.getBoss();
 		}
-		trip.onKill(kill.getBoss());
+		if (holdingLootingBag)
+		{
+			trip.restock("looting bag in inventory");
+		}
+		else
+		{
+			trip.onKill(kill.getBoss());
+		}
 
 		List<MasteryTask> completed = TaskEvaluator.onKill(taskList, progress, kill, attempt, trip, System.currentTimeMillis());
 		saveProgress();

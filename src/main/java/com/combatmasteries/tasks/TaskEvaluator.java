@@ -62,6 +62,8 @@ public final class TaskEvaluator
 
 	/**
 	 * Completes delve tasks from the game's record of the deepest Doom of Mokhaiotl level.
+	 * Deliberately conservative: level N counts as cleared once level N + 1 is on record, so
+	 * a task is never awarded for reaching a level without clearing it.
 	 */
 	public static List<MasteryTask> onDeepestDelve(TaskList taskList, MasteryProgress progress, int deepest, long now)
 	{
@@ -75,7 +77,7 @@ public final class TaskEvaluator
 
 			boolean passed = task.getConditions().stream()
 				.filter(c -> c.getType() == ConditionType.MIN_DELVE_LEVEL)
-				.allMatch(c -> deepest >= c.getValue());
+				.allMatch(c -> deepest > c.getValue());
 			if (passed)
 			{
 				progress.complete(task.getId(), now, true);

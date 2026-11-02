@@ -48,7 +48,8 @@ a normal RuneLite install.
 |---|---|
 | `::cmtier ascended` / `exalted` / `immortal` / `off` | Preview a tier's eyes without unlocking it |
 | `::cmkill Boss_Name m:ss [team=N] [level=N] [total=m:ss] [pillars]` | Pretend a kill happened, to test task completion. Use `_` for spaces |
-| `::cmdelve N` | Pretend your deepest Doom delve is N |
+| `::cmdelve N` | Pretend the game's deepest Doom level record is N |
+| `::cmdoom` | Show the game's Doom delve values |
 | `::cmtrip` | Show kills on the current inventory and what last ended a trip |
 | `::cmattempt` | Show the current Inferno run and pillars seen |
 | `::cmreset` | Wipe this account's mastery progress |
@@ -68,9 +69,10 @@ Examples: `::cmkill TzKal-Zuk 44:59`, `::cmkill Theatre_of_Blood 22:30 team=2`,
    - **Inferno:** run `::cmattempt` after wave 4 starts. It should show pillars seen 3, and
      `pillarsCleared=true` only if all three were down.
    - **Awakened DT2:** after each kill, `::cmtrip` should list it. Banking, a pool, an altar,
-     picking up food or potions, dying, or a heal/veng/energy transfer from someone else
-     should clear it.
-   - **Doom:** delve tasks should complete as soon as you log in, if you have already been that deep.
+     picking up food or potions, a looting bag, dying, or a heal/veng/energy transfer from
+     someone else should clear it. Logging out or hopping should not.
+   - **Doom:** after a delve, run `::cmdoom` and tell me the deepest level you *cleared* and
+     what "deepest" shows. That settles whether the game's record means reached or cleared.
 
 ## How tracking works
 
@@ -79,14 +81,16 @@ Examples: `::cmkill TzKal-Zuk 44:59`, `::cmkill Theatre_of_Blood 22:30 team=2`,
   ToA tasks use the **total completion time**.
 - **Team size** comes from the game: Chambers of Xeric prints it, and ToB/ToA store it in game
   data RuneLite can read. **ToA raid level** is read the same way.
-- **Doom delves** come from the game's permanent record of your deepest delve, so delves you
-  already reached count straight away.
+- **Doom 1–N** means clearing delve levels 1 to N in one delve. It's read from the game's
+  permanent record of your deepest level, so past delves count straight away. Until it's
+  confirmed whether that record means reached or cleared, level N only counts once level N+1
+  is on record. This can delay a task, but never awards one early.
 - **No Pillar Inferno**: the plugin counts the three pillars when the run starts. When wave 4
   begins, none may be standing.
 - **One inventory**: kills are counted per trip. A trip ends when you open a bank (including
   group storage), drink from a pool, pray at an altar, gain food or potions (potions count by
-  dose, so combining them is fine), die, or receive heal other, heal group, energy transfer or
-  vengeance other. Teleporting is allowed.
+  dose, so combining them is fine), carry a looting bag, die, or receive heal other, heal group,
+  energy transfer or vengeance other. Teleporting, logging out and changing worlds are allowed.
 - **Existing personal bests** credit time tasks without a raid level or pillar rule. They come
   from kill messages and from RuneLite's Chat Commands plugin (which also reads your POH
   adventure log).
@@ -118,7 +122,7 @@ Tasks live in `src/main/resources/com/combatmasteries/tasks.json`:
   | `UNDER_TIME` | `seconds` | Strictly faster than this |
   | `TEAM_SIZE` | `value` | Exactly this many players (1 = solo) |
   | `MIN_RAID_LEVEL` | `value` | ToA raid level of at least this |
-  | `MIN_DELVE_LEVEL` | `value` | Deepest Doom delve of at least this (no `boss` needed) |
+  | `MIN_DELVE_LEVEL` | `value` | Doom delve levels 1 to this cleared (no `boss` needed) |
   | `INFERNO_NO_PILLARS` | | All pillars down before wave 4 |
 
 - `trip` instead of `conditions` makes a one-inventory task, e.g.

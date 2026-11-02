@@ -19,8 +19,10 @@ public enum ConditionType
 	 */
 	MIN_RAID_LEVEL,
 	/**
-	 * Doom of Mokhaiotl: deepest delve level of at least {@code value}. Read from the game's
-	 * own record, so it is not tied to a kill.
+	 * Doom of Mokhaiotl: delve levels 1 to {@code value} cleared in one delve. Read from the
+	 * game's record of the deepest level, so it is not tied to a kill. Until it is confirmed
+	 * whether that record means reached or cleared, a level only counts as cleared once the
+	 * next one has been reached.
 	 */
 	MIN_DELVE_LEVEL,
 	/**
