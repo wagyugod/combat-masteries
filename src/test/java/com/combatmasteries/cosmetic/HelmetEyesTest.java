@@ -76,9 +76,9 @@ public class HelmetEyesTest
 		Arrays.fill(c3, 7);
 
 		GlowStyle style = GlowStyle.EXALTED;
-		assertFalse(HelmetEyes.isPainted(c1, c3, location, style.getBrightHsl()));
-		HelmetEyes.paint(c1, c2, c3, location, style.getBrightHsl(), style.getDimHsl());
-		assertTrue(HelmetEyes.isPainted(c1, c3, location, style.getBrightHsl()));
+		assertFalse(HelmetEyes.isPainted(c1, c3, location, style.brightAt(0)));
+		HelmetEyes.paint(c1, c2, c3, location, style.brightAt(0), style.dimAt(0));
+		assertTrue(HelmetEyes.isPainted(c1, c3, location, style.brightAt(0)));
 
 		int painted = 0;
 		for (int f = 0; f < n; f++)
@@ -86,7 +86,7 @@ public class HelmetEyesTest
 			if (c3[f] == -1)
 			{
 				painted++;
-				int expected = unlit[f] == HelmetEyes.BRIGHT_EYE_COLOR ? style.getBrightHsl() : style.getDimHsl();
+				int expected = unlit[f] == HelmetEyes.BRIGHT_EYE_COLOR ? style.brightAt(0) : style.dimAt(0);
 				assertEquals(expected, c1[f]);
 				assertEquals(expected, c2[f]);
 			}
@@ -99,17 +99,34 @@ public class HelmetEyesTest
 	}
 
 	@Test
-	public void immortalUsesRadiantOathplateWhite()
+	public void immortalStartsOnRadiantOathplateWhite()
 	{
-		assertEquals(37999, GlowStyle.IMMORTAL.getBrightHsl());
+		assertEquals(37999, GlowStyle.IMMORTAL.brightAt(0));
 	}
 
 	@Test
-	public void ascendedKeepsTheStockRedHue()
+	public void ascendedStaysRedToOrange()
 	{
-		int stockHueSaturation = HelmetEyes.BRIGHT_EYE_COLOR & 0xFF80;
-		assertEquals(stockHueSaturation, GlowStyle.ASCENDED.getBrightHsl() & 0xFF80);
-		assertEquals(stockHueSaturation, GlowStyle.ASCENDED.getDimHsl() & 0xFF80);
+		for (float phase = 0; phase <= 1; phase += 0.1f)
+		{
+			int hue = (GlowStyle.ASCENDED.brightAt(phase) >> 10) & 63;
+			assertTrue("hue " + hue, hue >= 0 && hue <= 5);
+		}
+	}
+
+	@Test
+	public void glowDriftsSubtly()
+	{
+		assertEquals(0f, GlowStyle.phase(0), 1e-6);
+		assertEquals(1f, GlowStyle.phase(GlowStyle.PERIOD_MS / 2), 1e-6);
+		for (GlowStyle style : GlowStyle.values())
+		{
+			int a = style.brightAt(0);
+			int b = style.brightAt(1);
+			assertTrue(style + " hue", Math.abs(((a >> 10) & 63) - ((b >> 10) & 63)) <= 3);
+			assertTrue(style + " luminance", Math.abs((a & 127) - (b & 127)) <= 16);
+			assertTrue(style + " dim is darker", (style.dimAt(0.5f) & 127) < (style.brightAt(0.5f) & 127));
+		}
 	}
 
 	/**
@@ -157,7 +174,7 @@ public class HelmetEyesTest
 		HelmetEyes.Location location = HelmetEyes.findLit(model[0], model[1], model[0].length);
 		assertNotNull(location);
 		GlowStyle style = GlowStyle.EXALTED;
-		HelmetEyes.paint(model[0], new int[model[0].length], model[1], location, style.getBrightHsl(), style.getDimHsl());
+		HelmetEyes.paint(model[0], new int[model[0].length], model[1], location, style.brightAt(0), style.dimAt(0));
 		model[1][10] = -2;
 		model[0][10] = 12345;
 

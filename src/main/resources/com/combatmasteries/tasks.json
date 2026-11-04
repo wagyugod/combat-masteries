@@ -313,26 +313,8 @@
       ]
     },
     {
-      "id": "tob_duo_sub_23",
-      "name": "Theatre of Blood (Duo) Speed-Runner II",
-      "description": "Complete the Theatre of Blood with a team of 2 in less than 23 minutes.",
-      "category": "SPEED",
-      "content": "Theatre of Blood",
-      "boss": "Theatre of Blood",
-      "conditions": [
-        {
-          "type": "TEAM_SIZE",
-          "value": 2
-        },
-        {
-          "type": "UNDER_TIME",
-          "seconds": 1380
-        }
-      ]
-    },
-    {
       "id": "tob_duo_sub_22",
-      "name": "Theatre of Blood (Duo) Speed-Runner III",
+      "name": "Theatre of Blood (Duo) Speed-Runner II",
       "description": "Complete the Theatre of Blood with a team of 2 in less than 22 minutes.",
       "category": "SPEED",
       "content": "Theatre of Blood",
@@ -350,7 +332,7 @@
     },
     {
       "id": "tob_duo_sub_21",
-      "name": "Theatre of Blood (Duo) Speed-Runner IV",
+      "name": "Theatre of Blood (Duo) Speed-Runner III",
       "description": "Complete the Theatre of Blood with a team of 2 in less than 21 minutes.",
       "category": "SPEED",
       "content": "Theatre of Blood",
@@ -368,7 +350,7 @@
     },
     {
       "id": "tob_duo_sub_20",
-      "name": "Theatre of Blood (Duo) Speed-Runner V",
+      "name": "Theatre of Blood (Duo) Speed-Runner IV",
       "description": "Complete the Theatre of Blood with a team of 2 in less than 20 minutes.",
       "category": "SPEED",
       "content": "Theatre of Blood",
@@ -385,6 +367,186 @@
       ]
     },
     {
+      "id": "tob_duo_sub_19",
+      "name": "Theatre of Blood (Duo) Speed-Runner V",
+      "description": "Complete the Theatre of Blood with a team of 2 in less than 19 minutes.",
+      "category": "SPEED",
+      "content": "Theatre of Blood",
+      "boss": "Theatre of Blood",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 2
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1140
+        }
+      ]
+    },
+    {
+      "id": "tob_trio_sub_16",
+      "name": "Theatre of Blood (Trio) Speed-Runner I",
+      "description": "Complete the Theatre of Blood with a team of 3 in less than 16 minutes.",
+      "category": "SPEED",
+      "content": "Theatre of Blood",
+      "boss": "Theatre of Blood",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 3
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 960
+        }
+      ]
+    },
+    {
+      "id": "tob_trio_sub_15",
+      "name": "Theatre of Blood (Trio) Speed-Runner II",
+      "description": "Complete the Theatre of Blood with a team of 3 in less than 15 minutes.",
+      "category": "SPEED",
+      "content": "Theatre of Blood",
+      "boss": "Theatre of Blood",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 3
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 900
+        }
+      ]
+    },
+    {
+      "id": "tob_trio_sub_14_30",
+      "name": "Theatre of Blood (Trio) Speed-Runner III",
+      "description": "Complete the Theatre of Blood with a team of 3 in less than 14:30.",
+      "category": "SPEED",
+      "content": "Theatre of Blood",
+      "boss": "Theatre of Blood",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 3
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 870
+        }
+      ]
+    },
+    {
+      "id": "tob_trio_sub_14",
+      "name": "Theatre of Blood (Trio) Speed-Runner IV",
+      "description": "Complete the Theatre of Blood with a team of 3 in less than 14 minutes.",
+      "category": "SPEED",
+      "content": "Theatre of Blood",
+      "boss": "Theatre of Blood",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 3
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 840
+        }
+      ]
+    },
+    {
+      "id": "tob_trio_sub_13_30",
+      "name": "Theatre of Blood (Trio) Speed-Runner V",
+      "description": "Complete the Theatre of Blood with a team of 3 in less than 13:30.",
+      "category": "SPEED",
+      "content": "Theatre of Blood",
+      "boss": "Theatre of Blood",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 3
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 810
+        }
+      ]
+    },
+    {
+      "id": "tob_5s_sub_13_30",
+      "name": "Theatre of Blood (5-Scale) Speed-Runner I",
+      "description": "Complete the Theatre of Blood with a team of 5 in less than 13:30.",
+      "category": "SPEED",
+      "content": "Theatre of Blood",
+      "boss": "Theatre of Blood",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 5
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 810
+        }
+      ]
+    },
+    {
+      "id": "tob_5s_sub_13",
+      "name": "Theatre of Blood (5-Scale) Speed-Runner II",
+      "description": "Complete the Theatre of Blood with a team of 5 in less than 13 minutes.",
+      "category": "SPEED",
+      "content": "Theatre of Blood",
+      "boss": "Theatre of Blood",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 5
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 780
+        }
+      ]
+    },
+    {
+      "id": "tob_5s_sub_12_30",
+      "name": "Theatre of Blood (5-Scale) Speed-Runner III",
+      "description": "Complete the Theatre of Blood with a team of 5 in less than 12:30.",
+      "category": "SPEED",
+      "content": "Theatre of Blood",
+      "boss": "Theatre of Blood",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 5
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 750
+        }
+      ]
+    },
+    {
+      "id": "tob_5s_sub_12",
+      "name": "Theatre of Blood (5-Scale) Speed-Runner IV",
+      "description": "Complete the Theatre of Blood with a team of 5 in less than 12 minutes.",
+      "category": "SPEED",
+      "content": "Theatre of Blood",
+      "boss": "Theatre of Blood",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 5
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 720
+        }
+      ]
+    },
+    {
       "id": "hmt_solo",
       "name": "HM Theatre of One",
       "description": "Complete the Theatre of Blood: Hard Mode solo.",
@@ -395,6 +557,276 @@
         {
           "type": "TEAM_SIZE",
           "value": 1
+        }
+      ]
+    },
+    {
+      "id": "cm_solo_sub_30",
+      "name": "Chambers of Xeric: CM (Solo) Speed-Runner II",
+      "description": "Complete the Chambers of Xeric: Challenge Mode solo in less than 30 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 1
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1800
+        }
+      ]
+    },
+    {
+      "id": "cm_solo_sub_28",
+      "name": "Chambers of Xeric: CM (Solo) Speed-Runner III",
+      "description": "Complete the Chambers of Xeric: Challenge Mode solo in less than 28 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 1
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1680
+        }
+      ]
+    },
+    {
+      "id": "cm_solo_sub_26",
+      "name": "Chambers of Xeric: CM (Solo) Speed-Runner IV",
+      "description": "Complete the Chambers of Xeric: Challenge Mode solo in less than 26 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 1
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1560
+        }
+      ]
+    },
+    {
+      "id": "cm_solo_sub_25",
+      "name": "Chambers of Xeric: CM (Solo) Speed-Runner V",
+      "description": "Complete the Chambers of Xeric: Challenge Mode solo in less than 25 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 1
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1500
+        }
+      ]
+    },
+    {
+      "id": "cm_solo_sub_24",
+      "name": "Chambers of Xeric: CM (Solo) Speed-Runner VI",
+      "description": "Complete the Chambers of Xeric: Challenge Mode solo in less than 24 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 1
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1440
+        }
+      ]
+    },
+    {
+      "id": "cm_trio_sub_24",
+      "name": "Chambers of Xeric: CM (Trio) Speed-Runner II",
+      "description": "Complete the Chambers of Xeric: Challenge Mode with a team of 3 in less than 24 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 3
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1440
+        }
+      ]
+    },
+    {
+      "id": "cm_trio_sub_22",
+      "name": "Chambers of Xeric: CM (Trio) Speed-Runner III",
+      "description": "Complete the Chambers of Xeric: Challenge Mode with a team of 3 in less than 22 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 3
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1320
+        }
+      ]
+    },
+    {
+      "id": "cm_trio_sub_20",
+      "name": "Chambers of Xeric: CM (Trio) Speed-Runner IV",
+      "description": "Complete the Chambers of Xeric: Challenge Mode with a team of 3 in less than 20 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 3
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1200
+        }
+      ]
+    },
+    {
+      "id": "cm_trio_sub_19",
+      "name": "Chambers of Xeric: CM (Trio) Speed-Runner V",
+      "description": "Complete the Chambers of Xeric: Challenge Mode with a team of 3 in less than 19 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 3
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1140
+        }
+      ]
+    },
+    {
+      "id": "cm_trio_sub_18",
+      "name": "Chambers of Xeric: CM (Trio) Speed-Runner VI",
+      "description": "Complete the Chambers of Xeric: Challenge Mode with a team of 3 in less than 18 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 3
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1080
+        }
+      ]
+    },
+    {
+      "id": "cm_5s_sub_22",
+      "name": "Chambers of Xeric: CM (5-Scale) Speed-Runner II",
+      "description": "Complete the Chambers of Xeric: Challenge Mode with a team of 5 in less than 22 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 5
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1320
+        }
+      ]
+    },
+    {
+      "id": "cm_5s_sub_20",
+      "name": "Chambers of Xeric: CM (5-Scale) Speed-Runner III",
+      "description": "Complete the Chambers of Xeric: Challenge Mode with a team of 5 in less than 20 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 5
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1200
+        }
+      ]
+    },
+    {
+      "id": "cm_5s_sub_19",
+      "name": "Chambers of Xeric: CM (5-Scale) Speed-Runner IV",
+      "description": "Complete the Chambers of Xeric: Challenge Mode with a team of 5 in less than 19 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 5
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1140
+        }
+      ]
+    },
+    {
+      "id": "cm_5s_sub_18",
+      "name": "Chambers of Xeric: CM (5-Scale) Speed-Runner V",
+      "description": "Complete the Chambers of Xeric: Challenge Mode with a team of 5 in less than 18 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 5
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1080
+        }
+      ]
+    },
+    {
+      "id": "cm_5s_sub_17",
+      "name": "Chambers of Xeric: CM (5-Scale) Speed-Runner VI",
+      "description": "Complete the Chambers of Xeric: Challenge Mode with a team of 5 in less than 17 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 5
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1020
         }
       ]
     },

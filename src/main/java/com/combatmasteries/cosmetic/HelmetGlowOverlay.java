@@ -4,8 +4,11 @@ import com.combatmasteries.CombatMasteriesConfig;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.MultipleGradientPaint;
 import java.awt.RadialGradientPaint;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
 import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.Model;
@@ -105,19 +108,33 @@ public class HelmetGlowOverlay extends Overlay
 			return null;
 		}
 
-		float radius = Math.max(3f, (float) Math.hypot(probe.getX() - centre.getX(), probe.getY() - centre.getY()) * 1.6f);
-		Color c = style.getHaloColor();
-		int alpha = Math.min(255, intensity * 2);
-		RadialGradientPaint paint = new RadialGradientPaint(
-			centre.getX(), centre.getY(), radius,
-			new float[]{0f, 0.35f, 1f},
+		// A flat ellipse hugging the eye slit, so the glow doesn't haze the mouth opening
+		float rx = Math.max(3f, (float) Math.hypot(probe.getX() - centre.getX(), probe.getY() - centre.getY()) * 1.3f);
+		float ry = rx * 0.45f;
+		float phase = GlowStyle.phase(System.currentTimeMillis());
+		Color c = style.haloAt(phase);
+		// Breathes gently with the eye colour, between 85% and 100% strength
+		float strength = intensity * 2.4f * style.getHaloStrength() * (0.85f + 0.15f * phase);
+		int alpha = Math.min(255, Math.round(strength));
+
+		// A circular gradient squashed vertically about the eye centre
+		AffineTransform squash = new AffineTransform();
+		squash.translate(centre.getX(), centre.getY());
+		squash.scale(1, ry / rx);
+		squash.translate(-centre.getX(), -centre.getY());
+		Point2D.Float middle = new Point2D.Float(centre.getX(), centre.getY());
+		RadialGradientPaint paint = new RadialGradientPaint(middle, rx, middle,
+			new float[]{0f, 0.4f, 1f},
 			new Color[]{
 				new Color(c.getRed(), c.getGreen(), c.getBlue(), alpha),
-				new Color(c.getRed(), c.getGreen(), c.getBlue(), alpha / 3),
+				new Color(c.getRed(), c.getGreen(), c.getBlue(), alpha * 35 / 100),
 				new Color(c.getRed(), c.getGreen(), c.getBlue(), 0)
-			});
+			},
+			MultipleGradientPaint.CycleMethod.NO_CYCLE,
+			MultipleGradientPaint.ColorSpaceType.SRGB,
+			squash);
 		graphics.setPaint(paint);
-		graphics.fill(new Ellipse2D.Float(centre.getX() - radius, centre.getY() - radius, radius * 2, radius * 2));
+		graphics.fill(new Ellipse2D.Float(centre.getX() - rx, centre.getY() - ry, rx * 2, ry * 2));
 		return null;
 	}
 

@@ -105,13 +105,15 @@ public class HelmetGlow
 		int[] colors1 = model.getFaceColors1();
 		int[] colors2 = model.getFaceColors2();
 		int[] colors3 = model.getFaceColors3();
-		if (HelmetEyes.isPainted(colors1, colors3, location, style.getBrightHsl()))
+		float phase = GlowStyle.phase(System.currentTimeMillis());
+		int bright = style.brightAt(phase);
+		if (HelmetEyes.isPainted(colors1, colors3, location, bright))
 		{
 			return;
 		}
 
 		remember(colors1, colors2, colors3, location);
-		HelmetEyes.paint(colors1, colors2, colors3, location, style.getBrightHsl(), style.getDimHsl());
+		HelmetEyes.paint(colors1, colors2, colors3, location, bright, style.dimAt(phase));
 	}
 
 	/**
@@ -154,7 +156,7 @@ public class HelmetGlow
 		if (style != null)
 		{
 			Model again = player.getModel();
-			sb.append(", painted=").append(HelmetEyes.isPainted(model.getFaceColors1(), model.getFaceColors3(), location, style.getBrightHsl()))
+			sb.append(", painted=").append(model.getFaceColors3()[location.getOffset() + location.getVariant().getBrightFaces()[0]] == -1)
 				.append(", sharedColours=").append(again != null && again.getFaceColors1() == model.getFaceColors1());
 		}
 		return sb.toString();

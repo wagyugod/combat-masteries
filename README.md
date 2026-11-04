@@ -10,19 +10,22 @@ challenge tasks from endgame content, mostly solo, and deliberately aspirational
 
   | Tier | Needs | Tzkal slayer helmet eyes |
   |---|---|---|
-  | Ascended Grandmaster | 25% of points | Glowing red |
-  | Exalted Grandmaster | 50% of points | Glowing dark blue |
-  | Immortal Grandmaster | 90% of points (like the gilded collection log staff) | Glowing white (Radiant oathplate's white) |
+  | Ascended Grandmaster | 25% of points | Red drifting to orange |
+  | Exalted Grandmaster | 50% of points | Ice blue drifting to azure |
+  | Immortal Grandmaster | 90% of points (like the gilded collection log staff) | Radiant oathplate's white drifting to a cool white |
 
 - **Reward**: the eyes of your Tzkal slayer helmet glow in your tier's colour. This is
   client-side only, so only you see it, and it only shows while you wear the helmet.
 
-![Tzkal slayer helmet eye glow for each tier](docs/helmet-tiers.png)
+![Tzkal slayer helmet eye glow for each tier](docs/helmet-glow.gif)
 
-*Offline render of the helmet's real model (42733) from the game cache. It uses the client's
-lighting and RuneLite's colour conversion, so in-game results should be close but not identical.*
+*Offline render of the helmet's real model (42733) from the game cache, with the plugin's colours
+and halo. Each tier drifts slowly between two shades. In-game results should be close but not
+identical.*
 
-> **Status:** prototype. 36 tasks are in. Tasks with times still TBD are listed under
+![The side panel's Overview and Tasks tabs](docs/panel.png)
+
+> **Status:** prototype. 60 tasks are in. Tasks with times still TBD are listed under
 > [Planned tasks](#planned-tasks).
 
 ## Testing in-game
@@ -145,16 +148,6 @@ Tasks live in `src/main/resources/com/combatmasteries/tasks.json`:
 
 ## Planned tasks
 
-These are waiting on time thresholds or game details. Titles follow these conventions:
-
-- Chambers of Xeric CM speed, 6 tasks per team size (times TBD):
-  - **Chambers of Xeric: CM (Solo) Speed-Runner II, III, …**
-  - **Chambers of Xeric: CM (Trio) Speed-Runner II, III, …**
-  - **Chambers of Xeric: CM (5-Scale) Speed-Runner II, III, …**
-- Theatre of Blood speed, 5–6 tasks per team size (times TBD):
-  - **Theatre of Blood (Trio) Speed-Runner I, II, …**
-  - **Theatre of Blood (4-Scale) Speed-Runner I, II, …**
-  - **Theatre of Blood (5-Scale) Speed-Runner I, II, …**
 - Solo ToA 300 speed, 6 tasks (times TBD): **Tombs Speed-Runner IV, V, VI, …** (the official
   Combat Achievements already have I–III)
 - You Did What? is listed but shows "Tracking soon" until its kill message is confirmed
