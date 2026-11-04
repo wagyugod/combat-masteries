@@ -112,6 +112,49 @@ public class HelmetGlow
 	}
 
 	/**
+	 * Developer mode diagnostics: reports each step of the effect for the local player.
+	 */
+	public String describe()
+	{
+		Player player = client.getLocalPlayer();
+		if (player == null || player.getPlayerComposition() == null)
+		{
+			return "no local player";
+		}
+
+		PlayerComposition composition = player.getPlayerComposition();
+		StringBuilder sb = new StringBuilder();
+		sb.append("style=").append(style)
+			.append(", head raw=").append(composition.getEquipmentIds()[KitType.HEAD.getIndex()])
+			.append(" item=").append(composition.getEquipmentId(KitType.HEAD))
+			.append(", recognised=").append(isWearingHelmet(player));
+
+		Model model = player.getModel();
+		if (model == null)
+		{
+			return sb.append(", model=null").toString();
+		}
+		short[] unlit = model.getUnlitFaceColors();
+		sb.append(", faces=").append(model.getFaceCount())
+			.append(", unlit=").append(unlit == null ? "null" : String.valueOf(unlit.length));
+
+		HelmetEyes.Location location = HelmetEyes.find(unlit, model.getFaceCount());
+		if (location == null)
+		{
+			return sb.append(", eyes=not found").toString();
+		}
+		sb.append(", eyes=").append(location.getVariant()).append("@").append(location.getOffset());
+
+		if (style != null)
+		{
+			Model again = player.getModel();
+			sb.append(", painted=").append(HelmetEyes.isPainted(model.getFaceColors1(), model.getFaceColors3(), location, style.getBrightHsl()))
+				.append(", sharedColours=").append(again != null && again.getFaceColors1() == model.getFaceColors1());
+		}
+		return sb.toString();
+	}
+
+	/**
 	 * Finds the helmet in a model, caching the result for the model's colour array.
 	 */
 	@Nullable

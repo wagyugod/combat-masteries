@@ -50,6 +50,7 @@ a normal RuneLite install.
 | `::cmkill Boss_Name m:ss [team=N] [level=N] [total=m:ss] [pillars]` | Pretend a kill happened, to test task completion. Use `_` for spaces |
 | `::cmdelve N` | Pretend the game's deepest Doom level record is N |
 | `::cmdoom` | Show the game's Doom delve values |
+| `::cmhelm` | Diagnose the helmet glow: helmet detected, eye faces found, colours applied |
 | `::cmtrip` | Show kills on the current inventory and what last ended a trip |
 | `::cmattempt` | Show the current Inferno run and pillars seen |
 | `::cmreset` | Wipe this account's mastery progress |

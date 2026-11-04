@@ -491,6 +491,9 @@ public class CombatMasteriesPlugin extends Plugin
 			case "cmattempt":
 				devMessage("Attempt: " + attempts.getCurrent() + ", pillars seen: " + pillarsSeen);
 				break;
+			case "cmhelm":
+				devMessage("Helmet: " + helmetGlow.describe());
+				break;
 			case "cmdoom":
 				devMessage("Doom: deepest " + client.getVarpValue(VarPlayerID.DOM_DEEPEST_LEVEL)
 					+ ", previous deepest " + client.getVarpValue(VarPlayerID.DOM_PREVIOUS_DEEPEST_LEVEL)
