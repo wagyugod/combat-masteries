@@ -4,6 +4,7 @@ import com.combatmasteries.cosmetic.GlowStyle;
 import com.combatmasteries.cosmetic.HelmetGlow;
 import com.combatmasteries.cosmetic.HelmetGlowOverlay;
 import com.combatmasteries.tasks.BossDefinition;
+import com.combatmasteries.tasks.ConditionType;
 import com.combatmasteries.tasks.MasteryProgress;
 import com.combatmasteries.tasks.MasteryTask;
 import com.combatmasteries.tasks.MasteryTier;
@@ -11,12 +12,14 @@ import com.combatmasteries.tasks.TaskEvaluator;
 import com.combatmasteries.tasks.TaskList;
 import com.combatmasteries.tracking.Attempt;
 import com.combatmasteries.tracking.AttemptTracker;
+import com.combatmasteries.tracking.DevKill;
 import com.combatmasteries.tracking.KillAssembler;
 import com.combatmasteries.tracking.KillDuration;
 import com.combatmasteries.tracking.KillEvent;
 import com.combatmasteries.tracking.KillMessageParser;
 import com.combatmasteries.tracking.Supplies;
 import com.combatmasteries.tracking.TripTracker;
+import com.combatmasteries.ui.CompletionPopup;
 import com.combatmasteries.ui.MasteriesPanel;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.Gson;
@@ -98,6 +101,11 @@ public class CombatMasteriesPlugin extends Plugin
 	 */
 	private static final String CHAT_COMMANDS_PB_GROUP = "personalbest";
 	private static final String INFERNO_BOSS = "TzKal-Zuk";
+	/**
+	 * The game's colour tag for combat task names: dark green on an opaque chatbox, bright
+	 * green on a transparent one.
+	 */
+	private static final String TASK_COLOUR = "@ach_comp@";
 	private static final int PILLAR_DEADLINE_WAVE = 4;
 	private static final int PILLAR_COUNT = 3;
 	/**
@@ -159,6 +167,9 @@ public class CombatMasteriesPlugin extends Plugin
 
 	@Inject
 	private HelmetGlowOverlay helmetGlowOverlay;
+
+	@Inject
+	private CompletionPopup popup;
 
 	@Inject
 	@Named("developerMode")
@@ -337,14 +348,24 @@ public class CombatMasteriesPlugin extends Plugin
 			int standing = (int) client.getTopLevelWorldView().npcs().stream()
 				.filter(npc -> npc.getId() == NpcID.INFERNO_INVISIBLE_3X3)
 				.count();
-			attempt.setPillarsCleared(pillarsSeen >= PILLAR_COUNT && standing == 0);
+			boolean cleared = pillarsSeen >= PILLAR_COUNT && standing == 0;
+			attempt.setPillarsCleared(cleared);
 			log.debug("Inferno wave {}: pillars seen {}, standing {}", PILLAR_DEADLINE_WAVE, pillarsSeen, standing);
+			if (!cleared)
+			{
+				taskList.getTasks().stream()
+					.filter(t -> t.isTracked() && t.hasCondition(ConditionType.INFERNO_NO_PILLARS) && !progress.isCompleted(t.getId()))
+					.forEach(t -> announceFailure(t, standing > 0
+						? "A pillar was still standing when wave 4 began."
+						: "The run was not watched from the start."));
+			}
 		}
 	}
 
 	@Subscribe
 	public void onGameTick(GameTick event)
 	{
+		popup.onTick();
 		if (progress == null)
 		{
 			return;
@@ -376,7 +397,7 @@ public class CombatMasteriesPlugin extends Plugin
 		if (event.getActor() == client.getLocalPlayer())
 		{
 			attempts.abort();
-			trip.restock("died");
+			restockTrip("You died.");
 		}
 	}
 
@@ -385,7 +406,7 @@ public class CombatMasteriesPlugin extends Plugin
 	{
 		if (event.getGroupId() == InterfaceID.BANKMAIN || event.getGroupId() == InterfaceID.SHARED_BANK)
 		{
-			trip.restock("opened a bank");
+			restockTrip("You opened a bank.");
 		}
 	}
 
@@ -395,7 +416,7 @@ public class CombatMasteriesPlugin extends Plugin
 		String option = Text.removeTags(event.getMenuOption());
 		if (OBJECT_ACTIONS.contains(event.getMenuAction()) && RESTORE_OPTIONS.contains(option))
 		{
-			trip.restock(option + " " + Text.removeTags(event.getMenuTarget()));
+			restockTrip("You restored your stats at " + Text.removeTags(event.getMenuTarget()) + ".");
 		}
 	}
 
@@ -411,14 +432,14 @@ public class CombatMasteriesPlugin extends Plugin
 		int supplies = countSupplies(inventory);
 		if (lastSupplies >= 0 && supplies > lastSupplies)
 		{
-			trip.restock("gained supplies");
+			restockTrip("You gained food or potions.");
 		}
 		lastSupplies = supplies;
 
 		holdingLootingBag = inventory != null && LOOTING_BAGS.stream().anyMatch(inventory::contains);
 		if (holdingLootingBag)
 		{
-			trip.restock("looting bag in inventory");
+			restockTrip("You had a looting bag in your inventory.");
 		}
 	}
 
@@ -435,7 +456,7 @@ public class CombatMasteriesPlugin extends Plugin
 		{
 			if (local.hasSpotAnim(spotanim))
 			{
-				trip.restock("assisted by another player");
+				restockTrip("Another player assisted you.");
 				return;
 			}
 		}
@@ -636,7 +657,7 @@ public class CombatMasteriesPlugin extends Plugin
 		}
 		if (holdingLootingBag)
 		{
-			trip.restock("looting bag in inventory");
+			restockTrip("You had a looting bag in your inventory.");
 		}
 		else
 		{
@@ -645,7 +666,7 @@ public class CombatMasteriesPlugin extends Plugin
 
 		List<MasteryTask> completed = TaskEvaluator.onKill(taskList, progress, kill, attempt, trip, System.currentTimeMillis());
 		saveProgress();
-		completed.forEach(task -> announceTask(task, false));
+		completed.forEach(this::announceTask);
 
 		if (config.creditPersonalBests())
 		{
@@ -683,7 +704,7 @@ public class CombatMasteriesPlugin extends Plugin
 		if (!completed.isEmpty())
 		{
 			saveProgress();
-			completed.forEach(task -> announceTask(task, true));
+			completed.forEach(this::announceTask);
 			afterProgressChanged(before);
 		}
 	}
@@ -700,7 +721,7 @@ public class CombatMasteriesPlugin extends Plugin
 		if (!completed.isEmpty())
 		{
 			saveProgress();
-			completed.forEach(task -> announceTask(task, true));
+			completed.forEach(this::announceTask);
 			afterProgressChanged(before);
 		}
 	}
@@ -800,37 +821,70 @@ public class CombatMasteriesPlugin extends Plugin
 		refreshPanel();
 	}
 
-	private void announceTask(MasteryTask task, boolean fromRecord)
+	/**
+	 * Announces a completed task the way the game announces a combat task: the same chat
+	 * message wording and colour tag, and the game's own notification pop-up.
+	 */
+	private void announceTask(MasteryTask task)
 	{
 		if (config.chatMessages())
 		{
-			String message = new ChatMessageBuilder()
-				.append(ChatColorType.NORMAL)
-				.append("Congratulations, you've completed a combat mastery task: ")
-				.append(ChatColorType.HIGHLIGHT)
-				.append(task.getName())
-				.append(ChatColorType.NORMAL)
-				.append(fromRecord ? " (from your existing record)." : ".")
-				.build();
-			queueChat(message);
+			queueGameMessage("Congratulations, you've completed a combat mastery task: " + TASK_COLOUR + task.getName() + "</col> (1 point).");
+		}
+		if (config.completionPopup())
+		{
+			popup.show("Combat Mastery Task Completed!", "Task Completed: <col=ffffff>" + task.getName() + "</col> (1 point)");
 		}
 		notifier.notify(config.taskNotification(), "Combat mastery task completed: " + task.getName());
+	}
+
+	/**
+	 * Announces that an attempt at a task has failed, worded like the game's combat task
+	 * failure messages.
+	 */
+	private void announceFailure(MasteryTask task, String reason)
+	{
+		if (config.chatMessages())
+		{
+			queueGameMessage("You have failed " + TASK_COLOUR + task.getName() + "</col>: " + reason);
+		}
 	}
 
 	private void announceTier(MasteryTier tier)
 	{
 		if (config.chatMessages())
 		{
-			String message = new ChatMessageBuilder()
-				.append(ChatColorType.NORMAL)
-				.append("You have unlocked ")
-				.append(tier.getColor(), tier.getDisplayName())
-				.append(ChatColorType.NORMAL)
-				.append("! Your Tzkal slayer helmet's eyes now glow.")
-				.build();
-			queueChat(message);
+			queueGameMessage("Congratulations, you've unlocked " + TASK_COLOUR + tier.getDisplayName() + "</col>! Your Tzkal slayer helmet's eyes now glow.");
+		}
+		if (config.completionPopup())
+		{
+			popup.show("Combat Mastery Tier Unlocked!", "<col=ffffff>" + tier.getDisplayName() + "</col>");
 		}
 		notifier.notify(config.taskNotification(), "Combat Masteries: " + tier.getDisplayName() + " unlocked!");
+	}
+
+	/**
+	 * Ends the current one-inventory trip, announcing any task it had started on as failed.
+	 */
+	private void restockTrip(String reason)
+	{
+		if (progress != null)
+		{
+			TaskEvaluator.tripTasksInProgress(taskList, progress, trip).forEach(task -> announceFailure(task, reason));
+		}
+		trip.restock(reason);
+	}
+
+	/**
+	 * Adds a plain game message, so the game's own colour tags (such as {@link #TASK_COLOUR})
+	 * render exactly as they do for real combat tasks.
+	 */
+	private void queueGameMessage(String message)
+	{
+		chatMessageManager.queue(QueuedMessage.builder()
+			.type(ChatMessageType.GAMEMESSAGE)
+			.value(message)
+			.build());
 	}
 
 	private void queueChat(String message)
@@ -882,53 +936,51 @@ public class CombatMasteriesPlugin extends Plugin
 	}
 
 	/**
-	 * ::cmkill Boss_Name m:ss [team=N] [level=N] [total=m:ss] [pillars]
+	 * ::cmkill, e.g. "::cmkill Solo ToB 44:44" or "::cmkill toa 30:00 solo level=600".
 	 * Feeds a pretend kill through task evaluation, for testing without the content.
 	 */
 	private void devKill(String[] args)
 	{
-		if (progress == null || args.length < 2)
+		if (progress == null)
 		{
-			devMessage("Type ::cmkill followed by the boss and time, e.g. ::cmkill TzKal-Zuk 44:59 (use _ for spaces; optional team=N level=N total=m:ss pillars)");
+			devMessage("Log in to a normal world first");
 			return;
 		}
 
-		String boss = args[0].replace('_', ' ');
-		double seconds = KillMessageParser.timeStringToSeconds(args[1]);
-		Integer team = null;
-		Integer level = null;
-		KillDuration total = null;
-		Attempt attempt = null;
-		for (int i = 2; i < args.length; i++)
+		DevKill dev;
+		try
 		{
-			String arg = args[i].toLowerCase(Locale.ROOT);
-			if (arg.startsWith("team="))
-			{
-				team = Integer.parseInt(arg.substring(5));
-			}
-			else if (arg.startsWith("level="))
-			{
-				level = Integer.parseInt(arg.substring(6));
-			}
-			else if (arg.startsWith("total="))
-			{
-				double t = KillMessageParser.timeStringToSeconds(arg.substring(6));
-				total = new KillDuration(t, t, false, null, true);
-			}
-			else if (arg.equals("pillars"))
-			{
-				attempt = new Attempt(boss, 0);
-				attempt.setPillarsCleared(true);
-			}
+			dev = DevKill.parse(args);
+		}
+		catch (IllegalArgumentException e)
+		{
+			devMessage(e.getMessage() + ". Examples: ::cmkill Solo ToB 44:44, ::cmkill inferno 44:59 pillars, "
+				+ "::cmkill toa 30:00 solo level=600, ::cmkill awakened levi");
+			return;
+		}
+
+		String boss = dev.getBoss();
+		KillDuration time = dev.getSeconds() == null ? null : new KillDuration(dev.getSeconds(), dev.getSeconds(), false, null, false);
+		Double totalSeconds = dev.getTotalSeconds() != null ? dev.getTotalSeconds() : dev.getSeconds();
+		KillDuration total = totalSeconds == null ? null : new KillDuration(totalSeconds, totalSeconds, false, null, true);
+		Attempt attempt = null;
+		if (dev.isPillarsCleared())
+		{
+			attempt = new Attempt(boss, 0);
+			attempt.setPillarsCleared(true);
 		}
 
 		MasteryTier before = currentTier();
-		KillEvent kill = new KillEvent(boss, new KillDuration(seconds, seconds, false, null, false), total, team, level);
+		KillEvent kill = new KillEvent(boss, time, total, dev.getTeamSize(), dev.getRaidLevel());
 		trip.onKill(boss);
 		List<MasteryTask> completed = TaskEvaluator.onKill(taskList, progress, kill, attempt, trip, System.currentTimeMillis());
 		saveProgress();
-		completed.forEach(task -> announceTask(task, false));
-		devMessage("Simulated " + boss + " in " + KillMessageParser.formatSeconds(seconds) + ", completed " + completed.size() + " task(s)");
+		completed.forEach(this::announceTask);
+		devMessage("Simulated " + boss
+			+ (dev.getSeconds() != null ? " in " + KillMessageParser.formatSeconds(dev.getSeconds()) : "")
+			+ (dev.getTeamSize() != null ? ", team " + dev.getTeamSize() : "")
+			+ (dev.getRaidLevel() != null ? ", level " + dev.getRaidLevel() : "")
+			+ ": completed " + completed.size() + " task(s)");
 		afterProgressChanged(before);
 	}
 

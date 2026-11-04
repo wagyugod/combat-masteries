@@ -33,7 +33,7 @@
     {
       "id": "inferno_sub_50",
       "name": "Sub 50:00 Inferno",
-      "description": "Complete the Inferno in under 50:00.",
+      "description": "Complete the Inferno in less than 50 minutes.",
       "category": "SPEED",
       "content": "Inferno",
       "boss": "TzKal-Zuk",
@@ -47,7 +47,7 @@
     {
       "id": "inferno_sub_48",
       "name": "Sub 48:00 Inferno",
-      "description": "Complete the Inferno in under 48:00.",
+      "description": "Complete the Inferno in less than 48 minutes.",
       "category": "SPEED",
       "content": "Inferno",
       "boss": "TzKal-Zuk",
@@ -61,7 +61,7 @@
     {
       "id": "inferno_sub_46",
       "name": "Sub 46:00 Inferno",
-      "description": "Complete the Inferno in under 46:00.",
+      "description": "Complete the Inferno in less than 46 minutes.",
       "category": "SPEED",
       "content": "Inferno",
       "boss": "TzKal-Zuk",
@@ -75,7 +75,7 @@
     {
       "id": "inferno_sub_45",
       "name": "Sub 45:00 Inferno",
-      "description": "Complete the Inferno in under 45:00.",
+      "description": "Complete the Inferno in less than 45 minutes.",
       "category": "SPEED",
       "content": "Inferno",
       "boss": "TzKal-Zuk",
@@ -89,7 +89,7 @@
     {
       "id": "inferno_sub_44",
       "name": "Sub 44:00 Inferno",
-      "description": "Complete the Inferno in under 44:00.",
+      "description": "Complete the Inferno in less than 44 minutes.",
       "category": "SPEED",
       "content": "Inferno",
       "boss": "TzKal-Zuk",
@@ -103,7 +103,7 @@
     {
       "id": "inferno_sub_43",
       "name": "Sub 43:00 Inferno",
-      "description": "Complete the Inferno in under 43:00.",
+      "description": "Complete the Inferno in less than 43 minutes.",
       "category": "SPEED",
       "content": "Inferno",
       "boss": "TzKal-Zuk",
@@ -117,7 +117,7 @@
     {
       "id": "inferno_sub_42",
       "name": "Sub 42:00 Inferno",
-      "description": "Complete the Inferno in under 42:00.",
+      "description": "Complete the Inferno in less than 42 minutes.",
       "category": "SPEED",
       "content": "Inferno",
       "boss": "TzKal-Zuk",
@@ -131,7 +131,7 @@
     {
       "id": "inferno_sub_41",
       "name": "Sub 41:00 Inferno",
-      "description": "Complete the Inferno in under 41:00.",
+      "description": "Complete the Inferno in less than 41 minutes.",
       "category": "SPEED",
       "content": "Inferno",
       "boss": "TzKal-Zuk",
@@ -145,7 +145,7 @@
     {
       "id": "inferno_sub_40",
       "name": "Sub 40:00 Inferno",
-      "description": "Complete the Inferno in under 40:00.",
+      "description": "Complete the Inferno in less than 40 minutes.",
       "category": "SPEED",
       "content": "Inferno",
       "boss": "TzKal-Zuk",
@@ -159,7 +159,7 @@
     {
       "id": "colosseum_sub_22",
       "name": "Sub 22:00 Colosseum",
-      "description": "Complete the Fortis Colosseum in under 22:00.",
+      "description": "Complete the Fortis Colosseum in less than 22 minutes.",
       "category": "SPEED",
       "content": "Colosseum",
       "boss": "Sol Heredit",
@@ -173,7 +173,7 @@
     {
       "id": "colosseum_sub_20",
       "name": "Sub 20:00 Colosseum",
-      "description": "Complete the Fortis Colosseum in under 20:00.",
+      "description": "Complete the Fortis Colosseum in less than 20 minutes.",
       "category": "SPEED",
       "content": "Colosseum",
       "boss": "Sol Heredit",
@@ -187,7 +187,7 @@
     {
       "id": "colosseum_sub_18",
       "name": "Sub 18:00 Colosseum",
-      "description": "Complete the Fortis Colosseum in under 18:00.",
+      "description": "Complete the Fortis Colosseum in less than 18 minutes.",
       "category": "SPEED",
       "content": "Colosseum",
       "boss": "Sol Heredit",
@@ -201,7 +201,7 @@
     {
       "id": "colosseum_sub_16",
       "name": "Sub 16:00 Colosseum",
-      "description": "Complete the Fortis Colosseum in under 16:00.",
+      "description": "Complete the Fortis Colosseum in less than 16 minutes.",
       "category": "SPEED",
       "content": "Colosseum",
       "boss": "Sol Heredit",
@@ -215,7 +215,7 @@
     {
       "id": "colosseum_sub_14",
       "name": "Sub 14:00 Colosseum",
-      "description": "Complete the Fortis Colosseum in under 14:00.",
+      "description": "Complete the Fortis Colosseum in less than 14 minutes.",
       "category": "SPEED",
       "content": "Colosseum",
       "boss": "Sol Heredit",
@@ -243,7 +243,7 @@
     {
       "id": "tob_solo_sub_60",
       "name": "Sub 60:00 Solo ToB",
-      "description": "Complete the Theatre of Blood solo in under 60:00 (completion time).",
+      "description": "Complete the Theatre of Blood solo in less than 60 minutes.",
       "category": "SPEED",
       "content": "Theatre of Blood",
       "boss": "Theatre of Blood",
@@ -261,7 +261,7 @@
     {
       "id": "tob_solo_sub_50",
       "name": "Sub 50:00 Solo ToB",
-      "description": "Complete the Theatre of Blood solo in under 50:00 (completion time).",
+      "description": "Complete the Theatre of Blood solo in less than 50 minutes.",
       "category": "SPEED",
       "content": "Theatre of Blood",
       "boss": "Theatre of Blood",
@@ -279,7 +279,7 @@
     {
       "id": "tob_solo_sub_45",
       "name": "Sub 45:00 Solo ToB",
-      "description": "Complete the Theatre of Blood solo in under 45:00 (completion time).",
+      "description": "Complete the Theatre of Blood solo in less than 45 minutes.",
       "category": "SPEED",
       "content": "Theatre of Blood",
       "boss": "Theatre of Blood",
@@ -297,7 +297,7 @@
     {
       "id": "tob_duo_sub_24",
       "name": "Sub 24:00 Duo ToB",
-      "description": "Complete the Theatre of Blood in a duo in under 24:00 (completion time).",
+      "description": "Complete the Theatre of Blood with a team of 2 in less than 24 minutes.",
       "category": "SPEED",
       "content": "Theatre of Blood",
       "boss": "Theatre of Blood",
@@ -315,7 +315,7 @@
     {
       "id": "tob_duo_sub_23",
       "name": "Sub 23:00 Duo ToB",
-      "description": "Complete the Theatre of Blood in a duo in under 23:00 (completion time).",
+      "description": "Complete the Theatre of Blood with a team of 2 in less than 23 minutes.",
       "category": "SPEED",
       "content": "Theatre of Blood",
       "boss": "Theatre of Blood",
@@ -333,7 +333,7 @@
     {
       "id": "tob_duo_sub_22",
       "name": "Sub 22:00 Duo ToB",
-      "description": "Complete the Theatre of Blood in a duo in under 22:00 (completion time).",
+      "description": "Complete the Theatre of Blood with a team of 2 in less than 22 minutes.",
       "category": "SPEED",
       "content": "Theatre of Blood",
       "boss": "Theatre of Blood",
@@ -351,7 +351,7 @@
     {
       "id": "tob_duo_sub_21",
       "name": "Sub 21:00 Duo ToB",
-      "description": "Complete the Theatre of Blood in a duo in under 21:00 (completion time).",
+      "description": "Complete the Theatre of Blood with a team of 2 in less than 21 minutes.",
       "category": "SPEED",
       "content": "Theatre of Blood",
       "boss": "Theatre of Blood",
@@ -369,7 +369,7 @@
     {
       "id": "tob_duo_sub_20",
       "name": "Sub 20:00 Duo ToB",
-      "description": "Complete the Theatre of Blood in a duo in under 20:00 (completion time).",
+      "description": "Complete the Theatre of Blood with a team of 2 in less than 20 minutes.",
       "category": "SPEED",
       "content": "Theatre of Blood",
       "boss": "Theatre of Blood",
@@ -401,7 +401,7 @@
     {
       "id": "toa_solo_575",
       "name": "Solo 575 ToA",
-      "description": "Complete the Tombs of Amascut solo at raid level 575 or higher.",
+      "description": "Complete the Tombs of Amascut solo at raid level 575 or above.",
       "category": "CHALLENGE",
       "content": "Tombs of Amascut",
       "boss": "Tombs of Amascut: Expert Mode",
@@ -419,7 +419,7 @@
     {
       "id": "toa_solo_600",
       "name": "Solo 600 ToA",
-      "description": "Complete the Tombs of Amascut solo at raid level 600 or higher.",
+      "description": "Complete the Tombs of Amascut solo at raid level 600 or above.",
       "category": "CHALLENGE",
       "content": "Tombs of Amascut",
       "boss": "Tombs of Amascut: Expert Mode",
@@ -437,7 +437,7 @@
     {
       "id": "doom_delve_24",
       "name": "Doom 1-24",
-      "description": "Clear Doom of Mokhaiotl delve levels 1 to 24 in a single delve.",
+      "description": "Complete delve levels 1 to 24 of the Doom of Mokhaiotl in a single delve.",
       "category": "CHALLENGE",
       "content": "Doom of Mokhaiotl",
       "conditions": [
@@ -450,7 +450,7 @@
     {
       "id": "doom_delve_32",
       "name": "Doom 1-32",
-      "description": "Clear Doom of Mokhaiotl delve levels 1 to 32 in a single delve.",
+      "description": "Complete delve levels 1 to 32 of the Doom of Mokhaiotl in a single delve.",
       "category": "CHALLENGE",
       "content": "Doom of Mokhaiotl",
       "conditions": [
@@ -463,7 +463,7 @@
     {
       "id": "doom_delve_40",
       "name": "Doom 1-40",
-      "description": "Clear Doom of Mokhaiotl delve levels 1 to 40 in a single delve.",
+      "description": "Complete delve levels 1 to 40 of the Doom of Mokhaiotl in a single delve.",
       "category": "CHALLENGE",
       "content": "Doom of Mokhaiotl",
       "conditions": [
@@ -476,7 +476,7 @@
     {
       "id": "doom_delve_48",
       "name": "Doom 1-48",
-      "description": "Clear Doom of Mokhaiotl delve levels 1 to 48 in a single delve.",
+      "description": "Complete delve levels 1 to 48 of the Doom of Mokhaiotl in a single delve.",
       "category": "CHALLENGE",
       "content": "Doom of Mokhaiotl",
       "conditions": [
@@ -489,7 +489,7 @@
     {
       "id": "doom_delve_56",
       "name": "Doom 1-56",
-      "description": "Clear Doom of Mokhaiotl delve levels 1 to 56 in a single delve.",
+      "description": "Complete delve levels 1 to 56 of the Doom of Mokhaiotl in a single delve.",
       "category": "CHALLENGE",
       "content": "Doom of Mokhaiotl",
       "conditions": [
@@ -502,7 +502,7 @@
     {
       "id": "doom_delve_64",
       "name": "Doom 1-64",
-      "description": "Clear Doom of Mokhaiotl delve levels 1 to 64 in a single delve.",
+      "description": "Complete delve levels 1 to 64 of the Doom of Mokhaiotl in a single delve.",
       "category": "CHALLENGE",
       "content": "Doom of Mokhaiotl",
       "conditions": [
@@ -515,7 +515,7 @@
     {
       "id": "dt2_awakened_all_one_inventory",
       "name": "Awakened Quartet",
-      "description": "Defeat all four awakened Desert Treasure II bosses on one inventory. No looting bag.",
+      "description": "Defeat all four awakened Desert Treasure II bosses on one inventory, without a looting bag.",
       "category": "CHALLENGE",
       "content": "Awakened DT2",
       "trip": {
@@ -528,7 +528,7 @@
     {
       "id": "dt2_awakened_leviathan_x2_one_inventory",
       "name": "Twice-Awakened Leviathan",
-      "description": "Defeat the awakened Leviathan twice on one inventory. No looting bag.",
+      "description": "Defeat the awakened Leviathan twice on one inventory, without a looting bag.",
       "category": "CHALLENGE",
       "content": "Awakened DT2",
       "trip": {
@@ -538,7 +538,7 @@
     {
       "id": "dt2_awakened_vardorvis_x2_one_inventory",
       "name": "Twice-Awakened Vardorvis",
-      "description": "Defeat awakened Vardorvis twice on one inventory. No looting bag.",
+      "description": "Defeat awakened Vardorvis twice on one inventory, without a looting bag.",
       "category": "CHALLENGE",
       "content": "Awakened DT2",
       "trip": {
@@ -548,7 +548,7 @@
     {
       "id": "yama_radiant_contracts_one_inventory",
       "name": "Radiant Contracts",
-      "description": "Complete all five Radiant contracts against Yama on one inventory.",
+      "description": "Complete all five Radiant contracts against Yama on one inventory, without a looting bag.",
       "category": "CHALLENGE",
       "content": "Yama Contracts",
       "tracked": false

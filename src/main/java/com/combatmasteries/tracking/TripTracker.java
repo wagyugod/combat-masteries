@@ -46,6 +46,21 @@ public class TripTracker
 		return !required.isEmpty();
 	}
 
+	/**
+	 * @return true if this trip includes a kill of any of these bosses
+	 */
+	public boolean hasAnyKill(Iterable<String> bosses)
+	{
+		for (String boss : bosses)
+		{
+			if (kills.getOrDefault(key(boss), 0) > 0)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public Map<String, Integer> getKills()
 	{
 		return Collections.unmodifiableMap(kills);

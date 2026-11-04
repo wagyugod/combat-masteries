@@ -143,6 +143,16 @@ public class TaskEvaluatorTest
 	}
 
 	@Test
+	public void restockFailsOnlyTripTasksWithProgress()
+	{
+		assertTrue(TaskEvaluator.tripTasksInProgress(taskList, progress, trip).isEmpty());
+		trip.onKill("Vardorvis (awakened)");
+		assertTrue(TaskEvaluator.tripTasksInProgress(taskList, progress, trip).isEmpty());
+		trip.onKill(LEVI);
+		assertEquals("levi_x2", TaskEvaluator.tripTasksInProgress(taskList, progress, trip).get(0).getId());
+	}
+
+	@Test
 	public void deepestDelveCompletesFromTheGameRecord()
 	{
 		// Level 24 only counts as cleared once level 25 is on record

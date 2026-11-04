@@ -61,6 +61,23 @@ public final class TaskEvaluator
 	}
 
 	/**
+	 * @return incomplete one-inventory tasks the current trip has made progress on, which a
+	 * restock would fail
+	 */
+	public static List<MasteryTask> tripTasksInProgress(TaskList taskList, MasteryProgress progress, TripTracker trip)
+	{
+		List<MasteryTask> inProgress = new ArrayList<>();
+		for (MasteryTask task : taskList.getTasks())
+		{
+			if (task.isTracked() && task.isTrip() && !progress.isCompleted(task.getId()) && trip.hasAnyKill(task.getTrip().keySet()))
+			{
+				inProgress.add(task);
+			}
+		}
+		return inProgress;
+	}
+
+	/**
 	 * Completes delve tasks from the game's record of the deepest Doom of Mokhaiotl level.
 	 * Deliberately conservative: level N counts as cleared once level N + 1 is on record, so
 	 * a task is never awarded for reaching a level without clearing it.

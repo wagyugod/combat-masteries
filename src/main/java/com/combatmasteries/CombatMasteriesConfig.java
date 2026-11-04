@@ -22,7 +22,7 @@ public interface CombatMasteriesConfig extends Config
 	@ConfigItem(
 		keyName = "chatMessages",
 		name = "Chat messages",
-		description = "Announce completed tasks and tier unlocks in the chatbox",
+		description = "Announce completed and failed tasks and tier unlocks in the chatbox, like combat tasks",
 		position = 1
 	)
 	default boolean chatMessages()
@@ -31,10 +31,21 @@ public interface CombatMasteriesConfig extends Config
 	}
 
 	@ConfigItem(
+		keyName = "completionPopup",
+		name = "Completion pop-up",
+		description = "Show the game's task-completed pop-up when a task or tier is completed",
+		position = 2
+	)
+	default boolean completionPopup()
+	{
+		return true;
+	}
+
+	@ConfigItem(
 		keyName = "taskNotification",
 		name = "Task notification",
 		description = "Send a notification when a task or tier is completed",
-		position = 2
+		position = 3
 	)
 	default Notification taskNotification()
 	{
@@ -46,7 +57,7 @@ public interface CombatMasteriesConfig extends Config
 		name = "Credit existing PBs",
 		description = "Complete speed tasks from personal bests you set before installing the plugin."
 			+ " Uses PBs from kill messages and from RuneLite's Chat Commands plugin (which reads your POH adventure log)",
-		position = 3
+		position = 4
 	)
 	default boolean creditPersonalBests()
 	{

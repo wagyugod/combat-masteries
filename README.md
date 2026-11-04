@@ -47,7 +47,7 @@ a normal RuneLite install.
 | Command | What it does |
 |---|---|
 | `::cmtier ascended` / `exalted` / `immortal` / `off` | Preview a tier's eyes without unlocking it |
-| `::cmkill Boss_Name m:ss [team=N] [level=N] [total=m:ss] [pillars]` | Pretend a kill happened, to test task completion. Use `_` for spaces |
+| `::cmkill <boss> [time] [solo/duo/trio] [level=N] [total=m:ss] [pillars]` | Pretend a kill happened, to test task completion |
 | `::cmdelve N` | Pretend the game's deepest Doom level record is N |
 | `::cmdoom` | Show the game's Doom delve values |
 | `::cmhelm` | Diagnose the helmet glow: helmet detected, eye faces found, colours applied |
@@ -55,8 +55,15 @@ a normal RuneLite install.
 | `::cmattempt` | Show the current Inferno run and pillars seen |
 | `::cmreset` | Wipe this account's mastery progress |
 
-Examples: `::cmkill TzKal-Zuk 44:59`, `::cmkill Theatre_of_Blood 22:30 team=2`,
-`::cmkill Tombs_of_Amascut:_Expert_Mode 30:00 team=1 level=600 total=33:00`.
+`::cmkill` understands short names: `inferno`, `colo`, `tob`, `hmt`, `toa`, `cm`,
+`awakened levi`, `awakened vard`, `awakened duke`, `awakened whisperer`. Exact kill-message names
+work too, with `_` for spaces. Examples:
+
+- `::cmkill Solo ToB 44:44`: solo ToB in 44:44
+- `::cmkill duo tob 21:30`
+- `::cmkill inferno 44:59 pillars`: also counts as a No Pillar run
+- `::cmkill toa 30:00 solo level=600`: ToA uses the total time, which defaults to the same time
+- `::cmkill awakened levi`: no time needed for one-inventory tasks
 
 ### What to check
 
@@ -95,6 +102,9 @@ Examples: `::cmkill TzKal-Zuk 44:59`, `::cmkill Theatre_of_Blood 22:30 team=2`,
 - **Existing personal bests** credit time tasks without a raid level or pillar rule. They come
   from kill messages and from RuneLite's Chat Commands plugin (which also reads your POH
   adventure log).
+- **Announcements** match the game's combat tasks: the same chat wording and green task name,
+  "You have failed …" messages (a pillar standing at wave 4, or a one-inventory trip ending
+  early), and the game's own task-completed pop-up. Each can be turned off in the plugin's settings.
 - Progress only counts on normal worlds: not Leagues, Deadman, beta, speedrunning or
   tournament worlds. Everything is stored locally; nothing is sent anywhere.
 
