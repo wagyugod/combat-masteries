@@ -239,4 +239,12 @@ public class HelmetEyesTest
 		// Left and right ends of the slit are at different points of the cycle at the same moment
 		assertTrue(Math.abs(GlowStyle.phaseAcross(3000, -0.67f) - GlowStyle.phaseAcross(3000, 0.67f)) > 0.1f);
 	}
+
+	@Test
+	public void onlyAscendedLightsTheMetal()
+	{
+		assertTrue(GlowStyle.ASCENDED.lightsMetal());
+		assertFalse(GlowStyle.EXALTED.lightsMetal());
+		assertFalse(GlowStyle.IMMORTAL.lightsMetal());
+	}
 }

@@ -278,6 +278,13 @@ public class HelmetGlow
 				flat(faces[i], style.dimAt(GlowStyle.phaseAcross(millis, v.getDimX()[k])));
 			}
 
+			if (!style.lightsMetal())
+			{
+				// Leave the metal as it was (it may have been tinted by another tier)
+				restoreFrom(i);
+				return;
+			}
+
 			// Metal around it: the glow's hue over the face's own shading
 			float phase = GlowStyle.phase(millis);
 			int hue = style.hueAt(phase);
@@ -307,6 +314,16 @@ public class HelmetGlow
 				colors3[face] = HelmetEyes.tint(saved[i * 3 + 2], hue, saturation, luminance);
 			}
 			return start + count;
+		}
+
+		private void restoreFrom(int start)
+		{
+			for (int i = start; i < faces.length; i++)
+			{
+				colors1[faces[i]] = saved[i * 3];
+				colors2[faces[i]] = saved[i * 3 + 1];
+				colors3[faces[i]] = saved[i * 3 + 2];
+			}
 		}
 
 		void restore()
