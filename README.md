@@ -143,14 +143,20 @@ Tasks live in `src/main/resources/com/combatmasteries/tasks.json`:
 
 ## Planned tasks
 
-These are waiting on time thresholds or game details:
+These are waiting on time thresholds or game details. Titles follow these conventions:
 
-- Solo CM CoX: 6 time tasks (times TBD)
-- Trio, 4-man and 5-man ToB: 5–6 time tasks each (times TBD)
-- Solo ToA 300 speed: 6 time tasks (times TBD)
-- Duo HMT speed (times TBD)
+- Chambers of Xeric CM speed, 6 tasks per team size (times TBD):
+  - **Chambers of Xeric: CM (Solo) Speed-Runner II, III, …**
+  - **Chambers of Xeric: CM (Trio) Speed-Runner II, III, …**
+  - **Chambers of Xeric: CM (5-Scale) Speed-Runner II, III, …**
+- Theatre of Blood speed, 5–6 tasks per team size (times TBD):
+  - **Theatre of Blood (Trio) Speed-Runner I, II, …**
+  - **Theatre of Blood (4-Scale) Speed-Runner I, II, …**
+  - **Theatre of Blood (5-Scale) Speed-Runner I, II, …**
+- Solo ToA 300 speed: 6 tasks (times and title TBD)
+- Duo HMT speed (times and title TBD)
 - Oathplate contract (details TBD)
-- Radiant Contracts is listed but shows "Tracking soon" until its kill message is confirmed
+- Contractual Chaos is listed but shows "Tracking soon" until its kill message is confirmed
 
 ## Credits
 

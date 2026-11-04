@@ -19,7 +19,7 @@
   "tasks": [
     {
       "id": "inferno_no_pillar",
-      "name": "Pillarless",
+      "name": "No Pillars, No Problem",
       "description": "Complete the Inferno with all three pillars destroyed before wave 4 begins.",
       "category": "CHALLENGE",
       "content": "Inferno",
@@ -242,7 +242,7 @@
     },
     {
       "id": "tob_solo_sub_60",
-      "name": "Theatre (Solo) Speed-Runner I",
+      "name": "Theatre of Blood (Solo) Speed-Runner I",
       "description": "Complete the Theatre of Blood solo in less than 60 minutes.",
       "category": "SPEED",
       "content": "Theatre of Blood",
@@ -260,7 +260,7 @@
     },
     {
       "id": "tob_solo_sub_50",
-      "name": "Theatre (Solo) Speed-Runner II",
+      "name": "Theatre of Blood (Solo) Speed-Runner II",
       "description": "Complete the Theatre of Blood solo in less than 50 minutes.",
       "category": "SPEED",
       "content": "Theatre of Blood",
@@ -278,7 +278,7 @@
     },
     {
       "id": "tob_solo_sub_45",
-      "name": "Theatre (Solo) Speed-Runner III",
+      "name": "Theatre of Blood (Solo) Speed-Runner III",
       "description": "Complete the Theatre of Blood solo in less than 45 minutes.",
       "category": "SPEED",
       "content": "Theatre of Blood",
@@ -296,7 +296,7 @@
     },
     {
       "id": "tob_duo_sub_24",
-      "name": "Theatre (Duo) Speed-Runner II",
+      "name": "Theatre of Blood (Duo) Speed-Runner I",
       "description": "Complete the Theatre of Blood with a team of 2 in less than 24 minutes.",
       "category": "SPEED",
       "content": "Theatre of Blood",
@@ -314,7 +314,7 @@
     },
     {
       "id": "tob_duo_sub_23",
-      "name": "Theatre (Duo) Speed-Runner III",
+      "name": "Theatre of Blood (Duo) Speed-Runner II",
       "description": "Complete the Theatre of Blood with a team of 2 in less than 23 minutes.",
       "category": "SPEED",
       "content": "Theatre of Blood",
@@ -332,7 +332,7 @@
     },
     {
       "id": "tob_duo_sub_22",
-      "name": "Theatre (Duo) Speed-Runner IV",
+      "name": "Theatre of Blood (Duo) Speed-Runner III",
       "description": "Complete the Theatre of Blood with a team of 2 in less than 22 minutes.",
       "category": "SPEED",
       "content": "Theatre of Blood",
@@ -350,7 +350,7 @@
     },
     {
       "id": "tob_duo_sub_21",
-      "name": "Theatre (Duo) Speed-Runner V",
+      "name": "Theatre of Blood (Duo) Speed-Runner IV",
       "description": "Complete the Theatre of Blood with a team of 2 in less than 21 minutes.",
       "category": "SPEED",
       "content": "Theatre of Blood",
@@ -368,7 +368,7 @@
     },
     {
       "id": "tob_duo_sub_20",
-      "name": "Theatre (Duo) Speed-Runner VI",
+      "name": "Theatre of Blood (Duo) Speed-Runner V",
       "description": "Complete the Theatre of Blood with a team of 2 in less than 20 minutes.",
       "category": "SPEED",
       "content": "Theatre of Blood",
@@ -386,7 +386,7 @@
     },
     {
       "id": "hmt_solo",
-      "name": "Hard Mode Hermit",
+      "name": "HM Theatre of One",
       "description": "Complete the Theatre of Blood: Hard Mode solo.",
       "category": "CHALLENGE",
       "content": "Theatre of Blood: Hard Mode",
@@ -418,7 +418,7 @@
     },
     {
       "id": "toa_solo_600",
-      "name": "Wardens' Bane II",
+      "name": "Maxed Out",
       "description": "Complete the Tombs of Amascut solo at raid level 600 or above.",
       "category": "CHALLENGE",
       "content": "Tombs of Amascut",
@@ -527,7 +527,7 @@
     },
     {
       "id": "dt2_awakened_leviathan_x2_one_inventory",
-      "name": "Twice-Awakened Leviathan",
+      "name": "Snake Charmer",
       "description": "Defeat the awakened Leviathan twice on one inventory, without a looting bag.",
       "category": "CHALLENGE",
       "content": "Awakened DT2",
@@ -537,7 +537,7 @@
     },
     {
       "id": "dt2_awakened_vardorvis_x2_one_inventory",
-      "name": "Twice-Awakened Vardorvis",
+      "name": "I'm Wide Awake",
       "description": "Defeat awakened Vardorvis twice on one inventory, without a looting bag.",
       "category": "CHALLENGE",
       "content": "Awakened DT2",
@@ -547,7 +547,7 @@
     },
     {
       "id": "yama_radiant_contracts_one_inventory",
-      "name": "Radiant Contracts",
+      "name": "Contractual Chaos",
       "description": "Complete all five Radiant contracts against Yama on one inventory, without a looting bag.",
       "category": "CHALLENGE",
       "content": "Yama Contracts",
