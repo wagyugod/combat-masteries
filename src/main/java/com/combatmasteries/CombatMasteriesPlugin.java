@@ -204,6 +204,11 @@ public class CombatMasteriesPlugin extends Plugin
 	 */
 	private int lastSupplies = -1;
 	/**
+	 * Highest Tombs of Amascut raid level seen since the current raid started. The level shown
+	 * at the end can be lower: missed invocation time limits are taken off it.
+	 */
+	private int toaPeakRaidLevel;
+	/**
 	 * True while a looting bag is in the inventory; kills then don't count towards a trip.
 	 */
 	private boolean holdingLootingBag;
@@ -469,6 +474,18 @@ public class CombatMasteriesPlugin extends Plugin
 		{
 			checkDeepestDelve(event.getValue());
 		}
+
+		int varbit = event.getVarbitId();
+		if (varbit == VarbitID.TOA_CLIENT_RAID_LEVEL_STOP_AUTO_UPDATING && event.getValue() == 1)
+		{
+			// The raid has started and its level is locked in
+			toaPeakRaidLevel = client.getVarbitValue(VarbitID.TOA_CLIENT_RAID_LEVEL);
+		}
+		else if (varbit == VarbitID.TOA_CLIENT_RAID_LEVEL
+			&& client.getVarbitValue(VarbitID.TOA_CLIENT_RAID_LEVEL_STOP_AUTO_UPDATING) == 1)
+		{
+			toaPeakRaidLevel = Math.max(toaPeakRaidLevel, event.getValue());
+		}
 	}
 
 	@Subscribe
@@ -514,6 +531,11 @@ public class CombatMasteriesPlugin extends Plugin
 				break;
 			case "cmhelm":
 				devMessage("Helmet: " + helmetGlow.describe());
+				break;
+			case "cmtoa":
+				devMessage("ToA: raid level " + client.getVarbitValue(VarbitID.TOA_CLIENT_RAID_LEVEL)
+					+ ", locked " + client.getVarbitValue(VarbitID.TOA_CLIENT_RAID_LEVEL_STOP_AUTO_UPDATING)
+					+ ", peak this raid " + toaPeakRaidLevel);
 				break;
 			case "cmdoom":
 				devMessage("Doom: deepest " + client.getVarpValue(VarPlayerID.DOM_DEEPEST_LEVEL)
@@ -610,7 +632,7 @@ public class CombatMasteriesPlugin extends Plugin
 				.withTeamSize(nonZero(countSet(VarbitID.TOA_CLIENT_P0, VarbitID.TOA_CLIENT_P1, VarbitID.TOA_CLIENT_P2,
 					VarbitID.TOA_CLIENT_P3, VarbitID.TOA_CLIENT_P4, VarbitID.TOA_CLIENT_P5, VarbitID.TOA_CLIENT_P6,
 					VarbitID.TOA_CLIENT_P7)))
-				.withRaidLevel(client.getVarbitValue(VarbitID.TOA_CLIENT_RAID_LEVEL));
+				.withRaidLevel(Math.max(toaPeakRaidLevel, client.getVarbitValue(VarbitID.TOA_CLIENT_RAID_LEVEL)));
 		}
 		if (kill.getDuration() != null && kill.getDuration().getTeamSize() != null)
 		{
@@ -645,6 +667,10 @@ public class CombatMasteriesPlugin extends Plugin
 		}
 
 		KillEvent kill = withRaidContext(rawKill);
+		if (kill.getBoss().startsWith("Tombs of Amascut"))
+		{
+			toaPeakRaidLevel = 0;
+		}
 		log.debug("Kill: {}", kill);
 		MasteryTier before = currentTier();
 

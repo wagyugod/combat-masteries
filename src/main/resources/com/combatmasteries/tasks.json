@@ -399,27 +399,9 @@
       ]
     },
     {
-      "id": "toa_solo_575",
-      "name": "Wardens' Bane",
-      "description": "Complete the Tombs of Amascut solo at raid level 575 or above.",
-      "category": "CHALLENGE",
-      "content": "Tombs of Amascut",
-      "boss": "Tombs of Amascut: Expert Mode",
-      "conditions": [
-        {
-          "type": "TEAM_SIZE",
-          "value": 1
-        },
-        {
-          "type": "MIN_RAID_LEVEL",
-          "value": 575
-        }
-      ]
-    },
-    {
       "id": "toa_solo_600",
       "name": "Maxed Out",
-      "description": "Complete the Tombs of Amascut solo at raid level 600 or above.",
+      "description": "Complete a solo Tombs of Amascut with every invocation activated. Note: You do not need to meet the invocation time limits to complete this achievement.",
       "category": "CHALLENGE",
       "content": "Tombs of Amascut",
       "boss": "Tombs of Amascut: Expert Mode",
@@ -547,7 +529,7 @@
     },
     {
       "id": "yama_radiant_contracts_one_inventory",
-      "name": "Contractual Chaos",
+      "name": "You Did What?",
       "description": "Complete all five Radiant contracts against Yama on one inventory, without a looting bag.",
       "category": "CHALLENGE",
       "content": "Yama Contracts",

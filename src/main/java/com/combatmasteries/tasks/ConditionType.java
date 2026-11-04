@@ -15,7 +15,9 @@ public enum ConditionType
 	 */
 	TEAM_SIZE,
 	/**
-	 * Tombs of Amascut raid level of at least {@code value}.
+	 * Tombs of Amascut raid level of at least {@code value}, taken as the highest level during
+	 * the raid: missed invocation time limits lower the level shown at the end, so a raid with
+	 * every invocation (600) finishes reading 575.
 	 */
 	MIN_RAID_LEVEL,
 	/**

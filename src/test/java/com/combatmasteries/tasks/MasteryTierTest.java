@@ -16,7 +16,7 @@ public class MasteryTierTest
 		assertEquals(25, MasteryTier.ASCENDED.threshold(100));
 		assertEquals(50, MasteryTier.EXALTED.threshold(100));
 		assertEquals(90, MasteryTier.IMMORTAL.threshold(100));
-		// The current list: 37 tasks gives 10 / 19 / 34
+		// Rounding up, e.g. 37 tasks gives 10 / 19 / 34
 		assertEquals(10, MasteryTier.ASCENDED.threshold(37));
 		assertEquals(19, MasteryTier.EXALTED.threshold(37));
 		assertEquals(34, MasteryTier.IMMORTAL.threshold(37));

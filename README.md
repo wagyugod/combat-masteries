@@ -22,7 +22,7 @@ challenge tasks from endgame content, mostly solo, and deliberately aspirational
 *Offline render of the helmet's real model (42733) from the game cache. It uses the client's
 lighting and RuneLite's colour conversion, so in-game results should be close but not identical.*
 
-> **Status:** prototype. 37 tasks are in. Tasks with times still TBD are listed under
+> **Status:** prototype. 36 tasks are in. Tasks with times still TBD are listed under
 > [Planned tasks](#planned-tasks).
 
 ## Testing in-game
@@ -50,6 +50,7 @@ a normal RuneLite install.
 | `::cmkill <boss> [time] [solo/duo/trio] [level=N] [total=m:ss] [pillars]` | Pretend a kill happened, to test task completion |
 | `::cmdelve N` | Pretend the game's deepest Doom level record is N |
 | `::cmdoom` | Show the game's Doom delve values |
+| `::cmtoa` | Show the ToA raid level, whether it's locked in, and the peak this raid |
 | `::cmhelm` | Diagnose the helmet glow: helmet detected, eye faces found, colours applied |
 | `::cmtrip` | Show kills on the current inventory and what last ended a trip |
 | `::cmattempt` | Show the current Inferno run and pillars seen |
@@ -88,7 +89,8 @@ work too, with `_` for spaces. Examples:
   in-game. "Sub 40:00" means strictly under 40:00. ToB tasks use the **completion time**;
   ToA tasks use the **total completion time**.
 - **Team size** comes from the game: Chambers of Xeric prints it, and ToB/ToA store it in game
-  data RuneLite can read. **ToA raid level** is read the same way.
+  data RuneLite can read. **ToA raid level** is the highest level during the raid, because
+  missed invocation time limits lower the level shown at the end (a full 600 finishes as 575).
 - **Doom 1–N** means clearing delve levels 1 to N in one delve. It's read from the game's
   permanent record of your deepest level, so past delves count straight away. Until it's
   confirmed whether that record means reached or cleared, level N only counts once level N+1
@@ -153,10 +155,9 @@ These are waiting on time thresholds or game details. Titles follow these conven
   - **Theatre of Blood (Trio) Speed-Runner I, II, …**
   - **Theatre of Blood (4-Scale) Speed-Runner I, II, …**
   - **Theatre of Blood (5-Scale) Speed-Runner I, II, …**
-- Solo ToA 300 speed: 6 tasks (times and title TBD)
-- Duo HMT speed (times and title TBD)
-- Oathplate contract (details TBD)
-- Contractual Chaos is listed but shows "Tracking soon" until its kill message is confirmed
+- Solo ToA 300 speed, 6 tasks (times TBD): **Tombs Speed-Runner IV, V, VI, …** (the official
+  Combat Achievements already have I–III)
+- You Did What? is listed but shows "Tracking soon" until its kill message is confirmed
 
 ## Credits
 
