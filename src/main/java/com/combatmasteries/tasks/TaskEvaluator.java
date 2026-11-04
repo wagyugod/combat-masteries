@@ -47,7 +47,7 @@ public final class TaskEvaluator
 			}
 			else
 			{
-				passed = kill.getBoss().equals(task.getBoss())
+				passed = kill.getBoss().equalsIgnoreCase(task.getBoss())
 					&& task.getConditions().stream().allMatch(c -> holds(c, kill, attempt, taskList.usesTotalTime(kill.getBoss())));
 			}
 

@@ -77,6 +77,14 @@ public class TaskEvaluatorTest
 	}
 
 	@Test
+	public void bossNamesIgnoreCase()
+	{
+		kill(new KillEvent("tzkal-zuk", time(44 * 60 + 4)), null);
+		assertTrue(progress.isCompleted("inferno_sub_50"));
+		assertTrue(taskList.usesTotalTime("tombs of amascut: expert mode"));
+	}
+
+	@Test
 	public void noPillarNeedsTheWatchedRunToClearThem()
 	{
 		Attempt run = new Attempt("TzKal-Zuk", 0);

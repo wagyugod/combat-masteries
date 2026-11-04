@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nullable;
@@ -31,7 +32,7 @@ public class TaskList
 		Map<String, BossDefinition> byName = new LinkedHashMap<>();
 		for (BossDefinition boss : bosses)
 		{
-			byName.put(boss.getName(), boss);
+			byName.put(boss.getName().toLowerCase(Locale.ROOT), boss);
 		}
 		this.bosses = Collections.unmodifiableMap(byName);
 		validate();
@@ -63,7 +64,7 @@ public class TaskList
 	@Nullable
 	public BossDefinition getBoss(String name)
 	{
-		return bosses.get(name);
+		return name == null ? null : bosses.get(name.toLowerCase(Locale.ROOT));
 	}
 
 	/**
@@ -71,7 +72,7 @@ public class TaskList
 	 */
 	public boolean usesTotalTime(String boss)
 	{
-		BossDefinition def = bosses.get(boss);
+		BossDefinition def = getBoss(boss);
 		return def != null && def.isTotalTime();
 	}
 

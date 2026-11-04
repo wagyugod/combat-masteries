@@ -34,7 +34,7 @@ public class AttemptTracker
 	@Nullable
 	public Attempt complete(String boss)
 	{
-		if (current == null || !current.getBoss().equals(boss))
+		if (current == null || !current.getBoss().equalsIgnoreCase(boss))
 		{
 			return null;
 		}
