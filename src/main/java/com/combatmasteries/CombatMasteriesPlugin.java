@@ -2,7 +2,6 @@ package com.combatmasteries;
 
 import com.combatmasteries.cosmetic.GlowStyle;
 import com.combatmasteries.cosmetic.HelmetGlow;
-import com.combatmasteries.cosmetic.HelmetGlowOverlay;
 import com.combatmasteries.tasks.BossDefinition;
 import com.combatmasteries.tasks.ConditionType;
 import com.combatmasteries.tasks.MasteryProgress;
@@ -166,9 +165,6 @@ public class CombatMasteriesPlugin extends Plugin
 	private HelmetGlow helmetGlow;
 
 	@Inject
-	private HelmetGlowOverlay helmetGlowOverlay;
-
-	@Inject
 	private CompletionPopup popup;
 
 	@Inject
@@ -251,7 +247,6 @@ public class CombatMasteriesPlugin extends Plugin
 			.panel(panel)
 			.build();
 		clientToolbar.addNavigation(navButton);
-		overlayManager.add(helmetGlowOverlay);
 
 		refreshPanel();
 		clientThread.invokeLater(() ->
@@ -267,7 +262,6 @@ public class CombatMasteriesPlugin extends Plugin
 	protected void shutDown()
 	{
 		clientToolbar.removeNavigation(navButton);
-		overlayManager.remove(helmetGlowOverlay);
 		clientThread.invoke(() -> helmetGlow.setStyle(null));
 		killAssembler.reset();
 		attempts.abort();

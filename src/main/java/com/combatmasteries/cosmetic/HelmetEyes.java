@@ -26,6 +26,9 @@ public final class HelmetEyes
 	public enum Variant
 	{
 		MALE(472, new int[]{221, 222, 223, 224, 225, 344}, new int[]{226, 343},
+			new float[]{-0.25f, -0.08f, 0.08f, 0.25f, 0.42f, -0.42f}, new float[]{0.67f, -0.67f},
+			new int[]{105, 106, 107, 219, 220, 227, 228, 332, 333, 334, 335, 342, 370, 371, 372, 373, 420, 421},
+			new int[]{43, 84, 85, 96, 97, 102, 103, 104, 108, 109, 217, 218, 229, 287, 336, 337, 350, 375, 376, 377, 387, 388, 389, 419},
 			"00220000000000000000220000000000000000000000004440000020002200000002000000000000"
 			+ "00000000004400000002244224442200000440000440000000000000000004444444000444444000"
 			+ "00000044444440000444444400000000000004444440002422224222222447777774420044004400"
@@ -33,6 +36,9 @@ public final class HelmetEyes
 			+ "22422244024422222200224770224244424400000000222444222222200000000000220000000222"
 			+ "000000000000000000024400000000000220000000000000000022000000020000000404"),
 		FEMALE(470, new int[]{221, 222, 223, 224, 343}, new int[]{225, 342},
+			new float[]{-0.21f, 0.0f, 0.21f, 0.38f, -0.38f}, new float[]{0.58f, -0.58f},
+			new int[]{105, 106, 107, 219, 220, 226, 227, 331, 332, 333, 334, 341, 369, 370, 371, 372, 419, 420},
+			new int[]{43, 84, 85, 96, 97, 102, 103, 104, 108, 109, 217, 218, 228, 286, 335, 336, 349, 374, 375, 376, 386, 387, 388, 418},
 			"00220000000000000000220000000000000000000000004440000020002200000002000000000000"
 			+ "00000000004400000002244224442200000440000440000000000000000004444444000444444000"
 			+ "00000044444440000444444400000000000004444440002422224222222447777744200440044004"
@@ -43,6 +49,17 @@ public final class HelmetEyes
 		private final int faceCount;
 		private final int[] brightFaces;
 		private final int[] dimFaces;
+		/**
+		 * Horizontal position of each bright and dim face across the slit, -1 (left) to 1 (right).
+		 */
+		private final float[] brightX;
+		private final float[] dimX;
+		/**
+		 * Helmet faces touching the slit, and the ring beyond, at or above its bottom edge.
+		 * The glow tints these so it appears to light the metal around the eyes.
+		 */
+		private final int[] innerRim;
+		private final int[] outerRim;
 		/**
 		 * Saturation of every face in the cache model (all faces have hue 0), one digit per face.
 		 */
@@ -202,6 +219,21 @@ public final class HelmetEyes
 	{
 		int face = location.getOffset() + location.getVariant().brightFaces[0];
 		return colors1[face] == brightHsl && colors3[face] == -1;
+	}
+
+	/**
+	 * Recolours a lit colour towards a glow: the glow's hue and saturation, with the face's
+	 * own shading kept and brightened by {@code addLuminance}. -1 and -2 (flat and hidden
+	 * markers) pass through unchanged.
+	 */
+	public static int tint(int litHsl, int hue, int saturation, int addLuminance)
+	{
+		if (litHsl < 0)
+		{
+			return litHsl;
+		}
+		int luminance = Math.min(126, (litHsl & 127) + addLuminance);
+		return (hue << 10) | (saturation << 7) | luminance;
 	}
 
 	private static void setFlat(int[] colors1, int[] colors2, int[] colors3, int face, int hsl)

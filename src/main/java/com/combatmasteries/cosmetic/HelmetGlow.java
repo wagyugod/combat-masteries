@@ -102,18 +102,8 @@ public class HelmetGlow
 			return;
 		}
 
-		int[] colors1 = model.getFaceColors1();
-		int[] colors2 = model.getFaceColors2();
-		int[] colors3 = model.getFaceColors3();
-		float phase = GlowStyle.phase(System.currentTimeMillis());
-		int bright = style.brightAt(phase);
-		if (HelmetEyes.isPainted(colors1, colors3, location, bright))
-		{
-			return;
-		}
-
-		remember(colors1, colors2, colors3, location);
-		HelmetEyes.paint(colors1, colors2, colors3, location, bright, style.dimAt(phase));
+		Painted painted = remember(model.getFaceColors1(), model.getFaceColors2(), model.getFaceColors3(), location);
+		painted.paint(style, System.currentTimeMillis());
 	}
 
 	/**
@@ -156,7 +146,8 @@ public class HelmetGlow
 		if (style != null)
 		{
 			Model again = player.getModel();
-			sb.append(", painted=").append(model.getFaceColors3()[location.getOffset() + location.getVariant().getBrightFaces()[0]] == -1)
+			int eye = location.getOffset() + location.getVariant().getBrightFaces()[0];
+			sb.append(", painted=").append(model.getFaceColors3()[eye] == -1)
 				.append(", sharedColours=").append(again != null && again.getFaceColors1() == model.getFaceColors1());
 		}
 		return sb.toString();
@@ -206,13 +197,13 @@ public class HelmetGlow
 		painted.clear();
 	}
 
-	private void remember(int[] colors1, int[] colors2, int[] colors3, HelmetEyes.Location location)
+	private Painted remember(int[] colors1, int[] colors2, int[] colors3, HelmetEyes.Location location)
 	{
 		for (Painted p : painted)
 		{
 			if (p.colors1 == colors1)
 			{
-				return;
+				return p;
 			}
 		}
 
@@ -220,17 +211,21 @@ public class HelmetGlow
 		{
 			painted.removeFirst();
 		}
-		painted.addLast(new Painted(colors1, colors2, colors3, location));
+		Painted p = new Painted(colors1, colors2, colors3, location);
+		painted.addLast(p);
+		return p;
 	}
 
 	/**
-	 * Original eye colours of one model, for restoring.
+	 * One model's eye and rim faces: their original colours, for repainting each frame and
+	 * for restoring.
 	 */
 	private static final class Painted
 	{
 		final int[] colors1;
 		final int[] colors2;
 		final int[] colors3;
+		final HelmetEyes.Location location;
 		final int[] faces;
 		final int[] saved;
 
@@ -239,23 +234,79 @@ public class HelmetGlow
 			this.colors1 = colors1;
 			this.colors2 = colors2;
 			this.colors3 = colors3;
+			this.location = location;
 
-			HelmetEyes.Variant variant = location.getVariant();
-			int bright = variant.getBrightFaces().length;
-			faces = new int[bright + variant.getDimFaces().length];
-			for (int i = 0; i < faces.length; i++)
+			HelmetEyes.Variant v = location.getVariant();
+			int[][] groups = {v.getBrightFaces(), v.getDimFaces(), v.getInnerRim(), v.getOuterRim()};
+			int count = 0;
+			for (int[] g : groups)
 			{
-				int face = i < bright ? variant.getBrightFaces()[i] : variant.getDimFaces()[i - bright];
-				faces[i] = location.getOffset() + face;
+				count += g.length;
+			}
+			faces = new int[count];
+			int i = 0;
+			for (int[] g : groups)
+			{
+				for (int face : g)
+				{
+					faces[i++] = location.getOffset() + face;
+				}
 			}
 
 			saved = new int[faces.length * 3];
-			for (int i = 0; i < faces.length; i++)
+			for (i = 0; i < faces.length; i++)
 			{
 				saved[i * 3] = colors1[faces[i]];
 				saved[i * 3 + 1] = colors2[faces[i]];
 				saved[i * 3 + 2] = colors3[faces[i]];
 			}
+		}
+
+		void paint(GlowStyle style, long millis)
+		{
+			HelmetEyes.Variant v = location.getVariant();
+			int offset = location.getOffset();
+			int i = 0;
+
+			// Eye slit: flat colour, brightness travelling across it
+			for (int k = 0; k < v.getBrightFaces().length; k++, i++)
+			{
+				flat(faces[i], style.brightAt(GlowStyle.phaseAcross(millis, v.getBrightX()[k])));
+			}
+			for (int k = 0; k < v.getDimFaces().length; k++, i++)
+			{
+				flat(faces[i], style.dimAt(GlowStyle.phaseAcross(millis, v.getDimX()[k])));
+			}
+
+			// Metal around it: the glow's hue over the face's own shading
+			float phase = GlowStyle.phase(millis);
+			int hue = style.hueAt(phase);
+			int saturation = style.saturationAt(phase);
+			i = tintRim(i, v.getInnerRim().length, hue, Math.min(saturation, GlowStyle.INNER_RIM_SATURATION), GlowStyle.INNER_RIM_LUMINANCE);
+			tintRim(i, v.getOuterRim().length, hue, Math.min(saturation, GlowStyle.OUTER_RIM_SATURATION), GlowStyle.OUTER_RIM_LUMINANCE);
+		}
+
+		private void flat(int face, int hsl)
+		{
+			colors1[face] = hsl;
+			colors2[face] = hsl;
+			colors3[face] = -1;
+		}
+
+		private int tintRim(int start, int count, int hue, int saturation, int luminance)
+		{
+			for (int i = start; i < start + count; i++)
+			{
+				int face = faces[i];
+				if (saved[i * 3 + 2] == -2)
+				{
+					continue;
+				}
+				colors1[face] = HelmetEyes.tint(saved[i * 3], hue, saturation, luminance);
+				colors2[face] = HelmetEyes.tint(saved[i * 3 + 1], hue, saturation, luminance);
+				colors3[face] = HelmetEyes.tint(saved[i * 3 + 2], hue, saturation, luminance);
+			}
+			return start + count;
 		}
 
 		void restore()

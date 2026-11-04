@@ -5,7 +5,6 @@ import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigSection;
 import net.runelite.client.config.Notification;
-import net.runelite.client.config.Range;
 
 @ConfigGroup(CombatMasteriesConfig.GROUP)
 public interface CombatMasteriesConfig extends Config
@@ -87,19 +86,6 @@ public interface CombatMasteriesConfig extends Config
 	default DisplayTier displayTier()
 	{
 		return DisplayTier.HIGHEST;
-	}
-
-	@Range(max = 100)
-	@ConfigItem(
-		keyName = "haloIntensity",
-		name = "Glow halo",
-		description = "Strength of the soft glow drawn around the eyes, 0 to turn it off",
-		position = 3,
-		section = cosmeticSection
-	)
-	default int haloIntensity()
-	{
-		return 45;
 	}
 
 	enum DisplayTier

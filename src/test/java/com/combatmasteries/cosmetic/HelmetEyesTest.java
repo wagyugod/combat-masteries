@@ -201,4 +201,42 @@ public class HelmetEyesTest
 			assertEquals(variant.getFaceCount(), variant.getSaturations().length());
 		}
 	}
+
+	@Test
+	public void rimTintKeepsShading()
+	{
+		int lit = (0 << 10) | (2 << 7) | 40;
+		int tinted = HelmetEyes.tint(lit, 36, 4, 7);
+		assertEquals(36, (tinted >> 10) & 63);
+		assertEquals(4, (tinted >> 7) & 7);
+		assertEquals(47, tinted & 127);
+		assertEquals(-1, HelmetEyes.tint(-1, 36, 4, 7));
+		assertEquals(-2, HelmetEyes.tint(-2, 36, 4, 7));
+		assertEquals(126, HelmetEyes.tint(125, 36, 4, 7) & 127);
+	}
+
+	@Test
+	public void rimsStayOnTheHelmetAndOffTheEyes()
+	{
+		for (HelmetEyes.Variant v : HelmetEyes.Variant.values())
+		{
+			for (int[] rim : new int[][]{v.getInnerRim(), v.getOuterRim()})
+			{
+				for (int face : rim)
+				{
+					assertTrue(face < v.getFaceCount());
+					assertFalse(v.isEye(face));
+				}
+			}
+			assertEquals(v.getBrightFaces().length, v.getBrightX().length);
+			assertEquals(v.getDimFaces().length, v.getDimX().length);
+		}
+	}
+
+	@Test
+	public void shimmerTravelsAcrossTheSlit()
+	{
+		// Left and right ends of the slit are at different points of the cycle at the same moment
+		assertTrue(Math.abs(GlowStyle.phaseAcross(3000, -0.67f) - GlowStyle.phaseAcross(3000, 0.67f)) > 0.1f);
+	}
 }

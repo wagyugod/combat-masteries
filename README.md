@@ -19,9 +19,9 @@ challenge tasks from endgame content, mostly solo, and deliberately aspirational
 
 ![Tzkal slayer helmet eye glow for each tier](docs/helmet-glow.gif)
 
-*Offline render of the helmet's real model (42733) from the game cache, with the plugin's colours
-and halo. Each tier drifts slowly between two shades. In-game results should be close but not
-identical.*
+*Earlier offline render of the helmet's real model (42733). The glow now has no screen halo:
+the brightness travels slowly across the slit over 12 seconds, and a little of the colour
+spills onto the metal around the eyes.*
 
 ![The side panel's Overview and Tasks tabs](docs/panel.png)
 
