@@ -14,9 +14,9 @@ import net.runelite.api.JagexColor;
 public enum GlowStyle
 {
 	/**
-	 * Red drifting to orange, staying close to the stock eye colour (HSL 0/7/72).
+	 * Red, close to the stock eye colour (HSL 0/7/72), shimmering in brightness only.
 	 */
-	ASCENDED(new int[]{1, 7, 60}, new int[]{4, 7, 68}, true),
+	ASCENDED(new int[]{1, 7, 58}, new int[]{1, 7, 68}, true),
 	/**
 	 * Ice blue drifting to azure: lighter blues read better against the black helmet.
 	 */
