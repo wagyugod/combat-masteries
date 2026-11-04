@@ -43,13 +43,14 @@ public interface CombatMasteriesConfig extends Config
 
 	@ConfigItem(
 		keyName = "taskNotification",
-		name = "Task notification",
-		description = "Send a notification when a task or tier is completed",
+		name = "Desktop notification",
+		description = "Also send a RuneLite notification, e.g. for when you're tabbed out. Off by default because"
+			+ " RuneLite's notification settings may copy it into the chatbox as an extra red line",
 		position = 3
 	)
 	default Notification taskNotification()
 	{
-		return Notification.ON;
+		return Notification.OFF;
 	}
 
 	@ConfigItem(
