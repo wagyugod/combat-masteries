@@ -45,7 +45,10 @@ public class HelmetGlow
 	@Nullable
 	private GlowStyle style;
 
-	private short[] lastUnlit;
+	/**
+	 * The colour array last searched (unlit or lit), so the search runs once per model.
+	 */
+	private Object lastSearched;
 	private HelmetEyes.Location lastLocation;
 
 	@Inject
@@ -138,7 +141,10 @@ public class HelmetGlow
 		sb.append(", faces=").append(model.getFaceCount())
 			.append(", unlit=").append(unlit == null ? "null" : String.valueOf(unlit.length));
 
-		HelmetEyes.Location location = HelmetEyes.find(unlit, model.getFaceCount());
+		HelmetEyes.Location location = unlit != null
+			? HelmetEyes.find(unlit, model.getFaceCount())
+			: HelmetEyes.findLit(model.getFaceColors1(), model.getFaceColors3(), model.getFaceCount());
+		sb.append(", search=").append(unlit != null ? "unlit" : "lit");
 		if (location == null)
 		{
 			return sb.append(", eyes=not found").toString();
@@ -166,14 +172,22 @@ public class HelmetGlow
 		}
 
 		short[] unlit = model.getUnlitFaceColors();
-		if (unlit == null)
+		if (unlit != null)
 		{
-			return null;
+			if (unlit != lastSearched)
+			{
+				lastSearched = unlit;
+				lastLocation = HelmetEyes.find(unlit, model.getFaceCount());
+			}
+			return lastLocation;
 		}
-		if (unlit != lastUnlit)
+
+		// Player models often have no unlit colours; match the helmet's lit colour pattern
+		int[] colors1 = model.getFaceColors1();
+		if (colors1 != lastSearched)
 		{
-			lastUnlit = unlit;
-			lastLocation = HelmetEyes.find(unlit, model.getFaceCount());
+			lastSearched = colors1;
+			lastLocation = HelmetEyes.findLit(colors1, model.getFaceColors3(), model.getFaceCount());
 		}
 		return lastLocation;
 	}

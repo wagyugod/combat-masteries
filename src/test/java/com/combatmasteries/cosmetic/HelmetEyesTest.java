@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
+import java.util.Random;
 import org.junit.Test;
 
 public class HelmetEyesTest
@@ -109,5 +110,78 @@ public class HelmetEyesTest
 		int stockHueSaturation = HelmetEyes.BRIGHT_EYE_COLOR & 0xFF80;
 		assertEquals(stockHueSaturation, GlowStyle.ASCENDED.getBrightHsl() & 0xFF80);
 		assertEquals(stockHueSaturation, GlowStyle.ASCENDED.getDimHsl() & 0xFF80);
+	}
+
+	/**
+	 * Lit colours as the client produces them: the helmet's hue and saturation per face with
+	 * a varying luminance, embedded after {@code before} faces of other equipment.
+	 */
+	private static int[][] litModel(HelmetEyes.Variant variant, int before)
+	{
+		int n = before + variant.getFaceCount() + 200;
+		int[] c1 = new int[n];
+		int[] c3 = new int[n];
+		Random random = new Random(7);
+		for (int f = 0; f < n; f++)
+		{
+			// Other equipment: a saturated green, which never matches the helmet
+			c1[f] = (21 << 10) | (5 << 7) | random.nextInt(128);
+			c3[f] = c1[f];
+		}
+		for (int face = 0; face < variant.getFaceCount(); face++)
+		{
+			int saturation = variant.getSaturations().charAt(face) - '0';
+			c1[before + face] = (saturation << 7) | (2 + random.nextInt(120));
+			c3[before + face] = c1[before + face];
+		}
+		return new int[][]{c1, c3};
+	}
+
+	@Test
+	public void findsHelmetFromLitColours()
+	{
+		for (HelmetEyes.Variant variant : HelmetEyes.Variant.values())
+		{
+			int[][] model = litModel(variant, 311);
+			HelmetEyes.Location location = HelmetEyes.findLit(model[0], model[1], model[0].length);
+			assertNotNull(variant.name(), location);
+			assertEquals(variant, location.getVariant());
+			assertEquals(311, location.getOffset());
+		}
+	}
+
+	@Test
+	public void litSearchToleratesPaintedEyesAndHiddenFaces()
+	{
+		int[][] model = litModel(HelmetEyes.Variant.MALE, 0);
+		HelmetEyes.Location location = HelmetEyes.findLit(model[0], model[1], model[0].length);
+		assertNotNull(location);
+		GlowStyle style = GlowStyle.EXALTED;
+		HelmetEyes.paint(model[0], new int[model[0].length], model[1], location, style.getBrightHsl(), style.getDimHsl());
+		model[1][10] = -2;
+		model[0][10] = 12345;
+
+		HelmetEyes.Location again = HelmetEyes.findLit(model[0], model[1], model[0].length);
+		assertNotNull(again);
+		assertEquals(0, again.getOffset());
+	}
+
+	@Test
+	public void litSearchRejectsOtherModels()
+	{
+		int[][] model = litModel(HelmetEyes.Variant.MALE, 50);
+		// One face with the wrong saturation is enough to reject
+		model[0][50 + 3] = (6 << 7) | 40;
+		assertNull(HelmetEyes.findLit(model[0], model[1], model[0].length));
+		assertNull(HelmetEyes.findLit(null, null, 0));
+	}
+
+	@Test
+	public void signaturesCoverEveryFace()
+	{
+		for (HelmetEyes.Variant variant : HelmetEyes.Variant.values())
+		{
+			assertEquals(variant.getFaceCount(), variant.getSaturations().length());
+		}
 	}
 }
