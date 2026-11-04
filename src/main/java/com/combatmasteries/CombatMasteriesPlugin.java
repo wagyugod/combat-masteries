@@ -485,7 +485,7 @@ public class CombatMasteriesPlugin extends Plugin
 				}
 				catch (IllegalArgumentException e)
 				{
-					devMessage("Usage: ::cmtier ascended|exalted|immortal|off");
+					devMessage("Unknown tier \"" + String.join(" ", args) + "\". Type ::cmtier followed by ascended, exalted, immortal or off");
 				}
 				break;
 			case "cmattempt":
@@ -889,7 +889,7 @@ public class CombatMasteriesPlugin extends Plugin
 	{
 		if (progress == null || args.length < 2)
 		{
-			devMessage("Usage: ::cmkill Boss_Name m:ss [team=N] [level=N] [total=m:ss] [pillars]");
+			devMessage("Type ::cmkill followed by the boss and time, e.g. ::cmkill TzKal-Zuk 44:59 (use _ for spaces; optional team=N level=N total=m:ss pillars)");
 			return;
 		}
 
