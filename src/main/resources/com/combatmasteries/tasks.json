@@ -19,7 +19,7 @@
   "tasks": [
     {
       "id": "inferno_no_pillar",
-      "name": "No Pillar Inferno",
+      "name": "Pillarless",
       "description": "Complete the Inferno with all three pillars destroyed before wave 4 begins.",
       "category": "CHALLENGE",
       "content": "Inferno",
@@ -32,7 +32,7 @@
     },
     {
       "id": "inferno_sub_50",
-      "name": "Sub 50:00 Inferno",
+      "name": "Inferno Speed-Runner II",
       "description": "Complete the Inferno in less than 50 minutes.",
       "category": "SPEED",
       "content": "Inferno",
@@ -46,7 +46,7 @@
     },
     {
       "id": "inferno_sub_48",
-      "name": "Sub 48:00 Inferno",
+      "name": "Inferno Speed-Runner III",
       "description": "Complete the Inferno in less than 48 minutes.",
       "category": "SPEED",
       "content": "Inferno",
@@ -60,7 +60,7 @@
     },
     {
       "id": "inferno_sub_46",
-      "name": "Sub 46:00 Inferno",
+      "name": "Inferno Speed-Runner IV",
       "description": "Complete the Inferno in less than 46 minutes.",
       "category": "SPEED",
       "content": "Inferno",
@@ -74,7 +74,7 @@
     },
     {
       "id": "inferno_sub_45",
-      "name": "Sub 45:00 Inferno",
+      "name": "Inferno Speed-Runner V",
       "description": "Complete the Inferno in less than 45 minutes.",
       "category": "SPEED",
       "content": "Inferno",
@@ -88,7 +88,7 @@
     },
     {
       "id": "inferno_sub_44",
-      "name": "Sub 44:00 Inferno",
+      "name": "Inferno Speed-Runner VI",
       "description": "Complete the Inferno in less than 44 minutes.",
       "category": "SPEED",
       "content": "Inferno",
@@ -102,7 +102,7 @@
     },
     {
       "id": "inferno_sub_43",
-      "name": "Sub 43:00 Inferno",
+      "name": "Inferno Speed-Runner VII",
       "description": "Complete the Inferno in less than 43 minutes.",
       "category": "SPEED",
       "content": "Inferno",
@@ -116,7 +116,7 @@
     },
     {
       "id": "inferno_sub_42",
-      "name": "Sub 42:00 Inferno",
+      "name": "Inferno Speed-Runner VIII",
       "description": "Complete the Inferno in less than 42 minutes.",
       "category": "SPEED",
       "content": "Inferno",
@@ -130,7 +130,7 @@
     },
     {
       "id": "inferno_sub_41",
-      "name": "Sub 41:00 Inferno",
+      "name": "Inferno Speed-Runner IX",
       "description": "Complete the Inferno in less than 41 minutes.",
       "category": "SPEED",
       "content": "Inferno",
@@ -144,7 +144,7 @@
     },
     {
       "id": "inferno_sub_40",
-      "name": "Sub 40:00 Inferno",
+      "name": "Inferno Speed-Runner X",
       "description": "Complete the Inferno in less than 40 minutes.",
       "category": "SPEED",
       "content": "Inferno",
@@ -158,7 +158,7 @@
     },
     {
       "id": "colosseum_sub_22",
-      "name": "Sub 22:00 Colosseum",
+      "name": "Colosseum Speed-Runner II",
       "description": "Complete the Fortis Colosseum in less than 22 minutes.",
       "category": "SPEED",
       "content": "Colosseum",
@@ -172,7 +172,7 @@
     },
     {
       "id": "colosseum_sub_20",
-      "name": "Sub 20:00 Colosseum",
+      "name": "Colosseum Speed-Runner III",
       "description": "Complete the Fortis Colosseum in less than 20 minutes.",
       "category": "SPEED",
       "content": "Colosseum",
@@ -186,7 +186,7 @@
     },
     {
       "id": "colosseum_sub_18",
-      "name": "Sub 18:00 Colosseum",
+      "name": "Colosseum Speed-Runner IV",
       "description": "Complete the Fortis Colosseum in less than 18 minutes.",
       "category": "SPEED",
       "content": "Colosseum",
@@ -200,7 +200,7 @@
     },
     {
       "id": "colosseum_sub_16",
-      "name": "Sub 16:00 Colosseum",
+      "name": "Colosseum Speed-Runner V",
       "description": "Complete the Fortis Colosseum in less than 16 minutes.",
       "category": "SPEED",
       "content": "Colosseum",
@@ -214,7 +214,7 @@
     },
     {
       "id": "colosseum_sub_14",
-      "name": "Sub 14:00 Colosseum",
+      "name": "Colosseum Speed-Runner VI",
       "description": "Complete the Fortis Colosseum in less than 14 minutes.",
       "category": "SPEED",
       "content": "Colosseum",
@@ -228,7 +228,7 @@
     },
     {
       "id": "tob_solo",
-      "name": "Solo ToB",
+      "name": "Theatre of One",
       "description": "Complete the Theatre of Blood solo.",
       "category": "CHALLENGE",
       "content": "Theatre of Blood",
@@ -242,7 +242,7 @@
     },
     {
       "id": "tob_solo_sub_60",
-      "name": "Sub 60:00 Solo ToB",
+      "name": "Theatre (Solo) Speed-Runner I",
       "description": "Complete the Theatre of Blood solo in less than 60 minutes.",
       "category": "SPEED",
       "content": "Theatre of Blood",
@@ -260,7 +260,7 @@
     },
     {
       "id": "tob_solo_sub_50",
-      "name": "Sub 50:00 Solo ToB",
+      "name": "Theatre (Solo) Speed-Runner II",
       "description": "Complete the Theatre of Blood solo in less than 50 minutes.",
       "category": "SPEED",
       "content": "Theatre of Blood",
@@ -278,7 +278,7 @@
     },
     {
       "id": "tob_solo_sub_45",
-      "name": "Sub 45:00 Solo ToB",
+      "name": "Theatre (Solo) Speed-Runner III",
       "description": "Complete the Theatre of Blood solo in less than 45 minutes.",
       "category": "SPEED",
       "content": "Theatre of Blood",
@@ -296,7 +296,7 @@
     },
     {
       "id": "tob_duo_sub_24",
-      "name": "Sub 24:00 Duo ToB",
+      "name": "Theatre (Duo) Speed-Runner II",
       "description": "Complete the Theatre of Blood with a team of 2 in less than 24 minutes.",
       "category": "SPEED",
       "content": "Theatre of Blood",
@@ -314,7 +314,7 @@
     },
     {
       "id": "tob_duo_sub_23",
-      "name": "Sub 23:00 Duo ToB",
+      "name": "Theatre (Duo) Speed-Runner III",
       "description": "Complete the Theatre of Blood with a team of 2 in less than 23 minutes.",
       "category": "SPEED",
       "content": "Theatre of Blood",
@@ -332,7 +332,7 @@
     },
     {
       "id": "tob_duo_sub_22",
-      "name": "Sub 22:00 Duo ToB",
+      "name": "Theatre (Duo) Speed-Runner IV",
       "description": "Complete the Theatre of Blood with a team of 2 in less than 22 minutes.",
       "category": "SPEED",
       "content": "Theatre of Blood",
@@ -350,7 +350,7 @@
     },
     {
       "id": "tob_duo_sub_21",
-      "name": "Sub 21:00 Duo ToB",
+      "name": "Theatre (Duo) Speed-Runner V",
       "description": "Complete the Theatre of Blood with a team of 2 in less than 21 minutes.",
       "category": "SPEED",
       "content": "Theatre of Blood",
@@ -368,7 +368,7 @@
     },
     {
       "id": "tob_duo_sub_20",
-      "name": "Sub 20:00 Duo ToB",
+      "name": "Theatre (Duo) Speed-Runner VI",
       "description": "Complete the Theatre of Blood with a team of 2 in less than 20 minutes.",
       "category": "SPEED",
       "content": "Theatre of Blood",
@@ -386,7 +386,7 @@
     },
     {
       "id": "hmt_solo",
-      "name": "Solo HMT",
+      "name": "Hard Mode Hermit",
       "description": "Complete the Theatre of Blood: Hard Mode solo.",
       "category": "CHALLENGE",
       "content": "Theatre of Blood: Hard Mode",
@@ -400,7 +400,7 @@
     },
     {
       "id": "toa_solo_575",
-      "name": "Solo 575 ToA",
+      "name": "Wardens' Bane",
       "description": "Complete the Tombs of Amascut solo at raid level 575 or above.",
       "category": "CHALLENGE",
       "content": "Tombs of Amascut",
@@ -418,7 +418,7 @@
     },
     {
       "id": "toa_solo_600",
-      "name": "Solo 600 ToA",
+      "name": "Wardens' Bane II",
       "description": "Complete the Tombs of Amascut solo at raid level 600 or above.",
       "category": "CHALLENGE",
       "content": "Tombs of Amascut",
@@ -436,7 +436,7 @@
     },
     {
       "id": "doom_delve_24",
-      "name": "Doom 1-24",
+      "name": "Deep Delver I",
       "description": "Complete delve levels 1 to 24 of the Doom of Mokhaiotl in a single delve.",
       "category": "CHALLENGE",
       "content": "Doom of Mokhaiotl",
@@ -449,7 +449,7 @@
     },
     {
       "id": "doom_delve_32",
-      "name": "Doom 1-32",
+      "name": "Deep Delver II",
       "description": "Complete delve levels 1 to 32 of the Doom of Mokhaiotl in a single delve.",
       "category": "CHALLENGE",
       "content": "Doom of Mokhaiotl",
@@ -462,7 +462,7 @@
     },
     {
       "id": "doom_delve_40",
-      "name": "Doom 1-40",
+      "name": "Deep Delver III",
       "description": "Complete delve levels 1 to 40 of the Doom of Mokhaiotl in a single delve.",
       "category": "CHALLENGE",
       "content": "Doom of Mokhaiotl",
@@ -475,7 +475,7 @@
     },
     {
       "id": "doom_delve_48",
-      "name": "Doom 1-48",
+      "name": "Deep Delver IV",
       "description": "Complete delve levels 1 to 48 of the Doom of Mokhaiotl in a single delve.",
       "category": "CHALLENGE",
       "content": "Doom of Mokhaiotl",
@@ -488,7 +488,7 @@
     },
     {
       "id": "doom_delve_56",
-      "name": "Doom 1-56",
+      "name": "Deep Delver V",
       "description": "Complete delve levels 1 to 56 of the Doom of Mokhaiotl in a single delve.",
       "category": "CHALLENGE",
       "content": "Doom of Mokhaiotl",
@@ -501,7 +501,7 @@
     },
     {
       "id": "doom_delve_64",
-      "name": "Doom 1-64",
+      "name": "Deep Delver VI",
       "description": "Complete delve levels 1 to 64 of the Doom of Mokhaiotl in a single delve.",
       "category": "CHALLENGE",
       "content": "Doom of Mokhaiotl",
