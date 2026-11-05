@@ -2,6 +2,11 @@ package com.combatmasteries.ui.window;
 
 import java.awt.Graphics2D;
 import java.awt.Shape;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import javax.annotation.Nullable;
+import javax.imageio.ImageIO;
 import net.runelite.api.gameval.SpriteID;
 
 /**
@@ -155,6 +160,37 @@ public final class WindowChrome
 	 */
 	static final int STONE_HOVERED = SpriteID.TRADEBACKING_DARK;
 	static final int BOX_HOVERED_FIRST = SpriteID.V2StoneButtonIn.A_TOP_LEFT;
+	/**
+	 * A small stone button with a metal rim, as plugins add to the game's title bars (and as the Combat
+	 * Achievements window's "Masteries" button): stone, then corners top left, top right, bottom left,
+	 * bottom right, then edges left, top, right, bottom; and the darker stone and lit rim while hovered.
+	 */
+	static final int[] BUTTON = {
+		SpriteID.TRADEBACKING,
+		SpriteID.V2StoneButtonOut.A_TOP_LEFT, SpriteID.V2StoneButtonOut.A_TOP_RIGHT,
+		SpriteID.V2StoneButtonOut.A_BOTTOM_LEFT, SpriteID.V2StoneButtonOut.A_BOTTOM_RIGHT,
+		SpriteID.V2StoneButtonOut.A_MAP_EDGE_LEFT, SpriteID.V2StoneButtonOut.A_MAP_EDGE_TOP,
+		SpriteID.V2StoneButtonOut.A_MAP_EDGE_RIGHT, SpriteID.V2StoneButtonOut.A_MAP_EDGE_BOTTOM,
+	};
+	static final int[] BUTTON_HOVERED = {
+		SpriteID.TRADEBACKING_DARK,
+		SpriteID.V2StoneButtonIn.A_TOP_LEFT, SpriteID.V2StoneButtonIn.A_TOP_RIGHT,
+		SpriteID.V2StoneButtonIn.A_BOTTOM_LEFT, SpriteID.V2StoneButtonIn.A_BOTTOM_RIGHT,
+		SpriteID.V2StoneButtonIn.A_LEFT, SpriteID.V2StoneButtonIn.A_TOP,
+		SpriteID.V2StoneButtonIn.A_RIGHT, SpriteID.V2StoneButtonIn.A_BOTTOM,
+	};
+	/**
+	 * The screenshot button: as tall as the close button's sprite (21, from y 7) and 4 left of it, the gap
+	 * the "Masteries" button leaves in the Combat Achievements title bar.
+	 */
+	static final int SCREENSHOT_W = 25;
+	static final int SCREENSHOT_H = 21;
+	static final int SCREENSHOT_Y = 7;
+	static final int SCREENSHOT_RIGHT = 32;
+	/**
+	 * The label colours of the "Masteries" button, used to tint the camera at rest and while hovered.
+	 */
+	private static final int BUTTON_TEXT = 0xd6d6d6;
 
 	private WindowChrome()
 	{
@@ -182,6 +218,83 @@ public final class WindowChrome
 		p.graphic(DIVIDER_HORIZONTAL, 5, 14, w - 10, 26, true);
 		p.graphic(CLOSE, w - 29, 6, 26, 23, false);
 		p.hotspot(Hotspot.Kind.CLOSE, null, w - 29, 6, 26, 23);
+	}
+
+	/**
+	 * The screenshot button in the title bar, just left of the close button: RuneLite's camera icon on a
+	 * small stone button that lights up while hovered.
+	 */
+	public static void screenshotButton(WidgetPainter p, int w, boolean hovered)
+	{
+		int x = w - SCREENSHOT_RIGHT - SCREENSHOT_W;
+		stoneButton(p, x, SCREENSHOT_Y, SCREENSHOT_W, SCREENSHOT_H, hovered);
+		BufferedImage icon = hovered ? Camera.HOVERED : Camera.IDLE;
+		if (icon != null)
+		{
+			p.image(icon, x + (SCREENSHOT_W - icon.getWidth()) / 2, SCREENSHOT_Y + (SCREENSHOT_H - icon.getHeight() + 1) / 2);
+		}
+		p.hotspot(Hotspot.Kind.SCREENSHOT, null, x, SCREENSHOT_Y, SCREENSHOT_W, SCREENSHOT_H);
+	}
+
+	/**
+	 * A small stone button with a metal rim; the stone stays inside the rim's rounded corners, as in the
+	 * game's own title bar buttons (script 134).
+	 */
+	static void stoneButton(WidgetPainter p, int x, int y, int w, int h, boolean hovered)
+	{
+		int[] s = hovered ? BUTTON_HOVERED : BUTTON;
+		p.graphic(s[0], x + 1, y + 1, w - 2, h - 2, true);
+		p.graphic(s[1], x, y, 9, 9, true);
+		p.graphic(s[2], x + w - 9, y, 9, 9, true);
+		p.graphic(s[3], x, y + h - 9, 9, 9, true);
+		p.graphic(s[4], x + w - 9, y + h - 9, 9, 9, true);
+		p.graphic(s[5], x, y + 9, 9, h - 18, true);
+		p.graphic(s[6], x + 9, y, w - 18, 9, true);
+		p.graphic(s[7], x + w - 9, y + 9, 9, h - 18, true);
+		p.graphic(s[8], x + 9, y + h - 9, w - 18, 9, true);
+	}
+
+	/**
+	 * RuneLite's screenshot camera (from its Screenshot plugin, BSD-2-Clause), white while hovered and
+	 * tinted like the button labels at rest. Loaded on first use.
+	 */
+	private static final class Camera
+	{
+		@Nullable
+		static final BufferedImage HOVERED = load();
+		@Nullable
+		static final BufferedImage IDLE = tint(HOVERED, BUTTON_TEXT);
+
+		@Nullable
+		private static BufferedImage load()
+		{
+			try (InputStream in = WindowChrome.class.getResourceAsStream("/com/combatmasteries/screenshot.png"))
+			{
+				return in == null ? null : ImageIO.read(in);
+			}
+			catch (IOException e)
+			{
+				return null;
+			}
+		}
+
+		@Nullable
+		private static BufferedImage tint(@Nullable BufferedImage img, int rgb)
+		{
+			if (img == null)
+			{
+				return null;
+			}
+			BufferedImage out = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			for (int y = 0; y < img.getHeight(); y++)
+			{
+				for (int x = 0; x < img.getWidth(); x++)
+				{
+					out.setRGB(x, y, img.getRGB(x, y) & 0xff000000 | rgb);
+				}
+			}
+			return out;
+		}
 	}
 
 	/**

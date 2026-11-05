@@ -1,5 +1,6 @@
 package com.combatmasteries.ui;
 
+import com.combatmasteries.ui.window.Hotspot;
 import com.combatmasteries.ui.window.SpriteManagerSource;
 import com.combatmasteries.ui.window.SpriteSource;
 import com.combatmasteries.ui.window.WindowChrome;
@@ -12,6 +13,8 @@ import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.image.BufferedImage;
+import java.util.concurrent.ScheduledExecutorService;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -27,6 +30,9 @@ import net.runelite.client.input.MouseWheelListener;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
+import net.runelite.client.ui.overlay.tooltip.Tooltip;
+import net.runelite.client.ui.overlay.tooltip.TooltipManager;
+import net.runelite.client.util.ImageCapture;
 
 /**
  * The Combat Masteries window in game: drawn over the game like the Combat Achievements window, and taking
@@ -53,12 +59,21 @@ public class MasteriesWindow extends Overlay implements MouseListener, MouseWhee
 	 * client stops drawing overlays) the window must not keep taking clicks where it is no longer seen.
 	 */
 	static final long STALE_MILLIS = 1000;
+	/**
+	 * Screenshots go to RuneLite's screenshot folder for the player, in this folder, named this plus the
+	 * date and time.
+	 */
+	static final String SCREENSHOT_FOLDER = "Combat Masteries";
+	static final String SCREENSHOT_NAME = "Combat Masteries";
 	private static final int[] CA_UNIVERSES = {
 		InterfaceID.CaOverview.UNIVERSE, InterfaceID.CaTasks.UNIVERSE, InterfaceID.CaBosses.UNIVERSE, InterfaceID.CaRewards.UNIVERSE,
 	};
 
 	private final Client client;
 	private final SpriteSource sprites;
+	private final TooltipManager tooltipManager;
+	private final ImageCapture imageCapture;
+	private final ScheduledExecutorService executor;
 	private final WindowController controller = new WindowController();
 
 	private volatile boolean open;
@@ -82,10 +97,14 @@ public class MasteriesWindow extends Overlay implements MouseListener, MouseWhee
 	private boolean clickOurs;
 
 	@Inject
-	MasteriesWindow(Client client, SpriteManager spriteManager, ItemManager itemManager)
+	MasteriesWindow(Client client, SpriteManager spriteManager, ItemManager itemManager, TooltipManager tooltipManager,
+		ImageCapture imageCapture, ScheduledExecutorService executor)
 	{
 		this.client = client;
 		this.sprites = new SpriteManagerSource(spriteManager, itemManager);
+		this.tooltipManager = tooltipManager;
+		this.imageCapture = imageCapture;
+		this.executor = executor;
 		setPosition(OverlayPosition.DYNAMIC);
 		setLayer(OverlayLayer.ABOVE_WIDGETS);
 		setPriority(PRIORITY_HIGHEST);
@@ -145,6 +164,18 @@ public class MasteriesWindow extends Overlay implements MouseListener, MouseWhee
 		}
 		bounds = area;
 		boundsDrawnAt = System.currentTimeMillis();
+
+		Hotspot hovered = controller.hovered();
+		if (hovered != null && hovered.getKind() == Hotspot.Kind.SCREENSHOT)
+		{
+			tooltipManager.add(new Tooltip("Screenshot"));
+		}
+		if (controller.takeScreenshotRequest())
+		{
+			// Drawn here on the client thread, where the sprites are; written to disk off it
+			BufferedImage image = controller.snapshot(sprites, shown, area.width, area.height);
+			executor.execute(() -> imageCapture.saveScreenshot(image, SCREENSHOT_NAME, SCREENSHOT_FOLDER, true, false));
+		}
 		return null;
 	}
 

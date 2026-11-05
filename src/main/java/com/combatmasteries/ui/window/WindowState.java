@@ -60,6 +60,11 @@ public class WindowState
 	private int filterScroll;
 
 	/**
+	 * True while the window is drawn for a screenshot, which leaves out the screenshot button.
+	 */
+	private boolean capturing;
+
+	/**
 	 * Where the mouse is, in window coordinates, for hover highlights; -1 when it is outside the window.
 	 */
 	private int mouseX = -1;

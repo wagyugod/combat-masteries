@@ -264,6 +264,63 @@ public class WindowControllerTest
 	}
 
 	@Test
+	public void screenshotButtonRequestsACapture()
+	{
+		controller.show(WindowView.OVERVIEW);
+		render();
+		Rectangle button = find(Hotspot.Kind.SCREENSHOT, null).getBounds();
+		Rectangle close = find(Hotspot.Kind.CLOSE, null).getBounds();
+		// In the title bar, just left of the close button
+		assertTrue(button.x + button.width < close.x);
+		assertTrue(close.x - (button.x + button.width) <= 6);
+		assertFalse(controller.takeScreenshotRequest());
+
+		controller.move((int) button.getCenterX(), (int) button.getCenterY());
+		assertEquals(Hotspot.Kind.SCREENSHOT, controller.hovered().getKind());
+		assertFalse(click(Hotspot.Kind.SCREENSHOT, null));
+		assertEquals(WindowView.OVERVIEW, state().getView());
+		assertTrue(controller.takeScreenshotRequest());
+		// One capture a click
+		assertFalse(controller.takeScreenshotRequest());
+	}
+
+	@Test
+	public void screenshotButtonIsOnlyOnTheOverview()
+	{
+		for (WindowView view : WindowView.values())
+		{
+			controller.show(view);
+			render();
+			assertEquals(view == WindowView.OVERVIEW, controller.getLayout().find(Hotspot.Kind.SCREENSHOT, null) != null);
+		}
+	}
+
+	@Test
+	public void snapshotLeavesOutTheButtonAndHover()
+	{
+		controller.show(WindowView.OVERVIEW);
+		render();
+		Rectangle button = find(Hotspot.Kind.SCREENSHOT, null).getBounds();
+		controller.move((int) button.getCenterX(), (int) button.getCenterY());
+		assertTrue(spritesDrawn().contains(WindowChrome.BUTTON_HOVERED[0]));
+
+		List<Integer> drawn = new ArrayList<>();
+		BufferedImage image = controller.snapshot((id, frame) ->
+		{
+			drawn.add(id);
+			return null;
+		}, model, W, H);
+		assertEquals(W, image.getWidth());
+		assertEquals(H, image.getHeight());
+		assertFalse(drawn.contains(WindowChrome.BUTTON[1]));
+		assertFalse(drawn.contains(WindowChrome.BUTTON_HOVERED[1]));
+		// The window itself, its hotspots and the mouse are as they were
+		assertEquals((int) button.getCenterX(), state().getMouseX());
+		assertFalse(state().isCapturing());
+		assertEquals(Hotspot.Kind.SCREENSHOT, controller.hovered().getKind());
+	}
+
+	@Test
 	public void wheelScrollsTheTabsListWithinRange()
 	{
 		controller.show(WindowView.TASKS);

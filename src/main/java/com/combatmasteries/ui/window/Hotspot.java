@@ -58,6 +58,10 @@ public class Hotspot
 		 */
 		SCROLLBAR,
 		/**
+		 * The Overview's screenshot button, left of the close button.
+		 */
+		SCREENSHOT,
+		/**
 		 * The Bosses search box: a click there sends typing to the search instead of the chatbox.
 		 */
 		SEARCH,

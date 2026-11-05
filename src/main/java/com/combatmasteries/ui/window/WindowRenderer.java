@@ -54,6 +54,12 @@ public final class WindowRenderer
 		WindowView view = state.getView();
 		p.scrollTarget(ScrollTarget.of(view));
 		WindowChrome.frame(p, w, h, view.title());
+		if (view == WindowView.OVERVIEW && !state.isCapturing())
+		{
+			int x = w - WindowChrome.SCREENSHOT_RIGHT - WindowChrome.SCREENSHOT_W;
+			WindowChrome.screenshotButton(p, w, !state.isMenuOpen()
+				&& state.isHovered(x, WindowChrome.SCREENSHOT_Y, WindowChrome.SCREENSHOT_W, WindowChrome.SCREENSHOT_H));
+		}
 		if (view != WindowView.BOSSES)
 		{
 			// The Bosses tab has its search box there instead

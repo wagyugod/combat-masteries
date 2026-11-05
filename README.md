@@ -154,3 +154,7 @@ Tasks live in `src/main/resources/com/combatmasteries/tasks.json`:
 ## Credits
 
 The kill message patterns are adapted from RuneLite's Chat Commands plugin (BSD-2-Clause).
+
+The window's screenshot button uses the camera icon of RuneLite's Screenshot plugin
+(`src/main/resources/com/combatmasteries/screenshot.png`, from RuneLite, Copyright (c) 2016-2017,
+Adam <Adam@sigterm.info>, BSD-2-Clause).

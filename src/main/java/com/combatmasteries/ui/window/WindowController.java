@@ -3,6 +3,7 @@ package com.combatmasteries.ui.window;
 import com.combatmasteries.tasks.MasteryTier;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.util.Objects;
 import javax.annotation.Nullable;
 
@@ -44,6 +45,10 @@ public class WindowController
 	private ScrollTarget held;
 	private int heldDirection;
 	private long lastStep;
+	/**
+	 * Set when the screenshot button is clicked, until {@link #takeScreenshotRequest} picks it up.
+	 */
+	private boolean screenshotRequested;
 
 	public synchronized WindowState getState()
 	{
@@ -181,10 +186,59 @@ public class WindowController
 			case SCROLLBAR:
 				pressScrollbar((WindowLayout.Scroll) hit.getValue(), y, now);
 				break;
+			case SCREENSHOT:
+				screenshotRequested = true;
+				break;
 			case SEARCH:
 				break;
 		}
 		return false;
+	}
+
+	/**
+	 * @return whether the screenshot button was clicked since the last call
+	 */
+	public synchronized boolean takeScreenshotRequest()
+	{
+		boolean requested = screenshotRequested;
+		screenshotRequested = false;
+		return requested;
+	}
+
+	/**
+	 * Draws the window as it is now for a screenshot: without hover highlights or the screenshot button,
+	 * and leaving what clicks hit untouched.
+	 */
+	public synchronized BufferedImage snapshot(SpriteSource sprites, WindowModel model, int w, int h)
+	{
+		BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = image.createGraphics();
+		int mouseX = state.getMouseX();
+		int mouseY = state.getMouseY();
+		try
+		{
+			state.setMouseX(-1);
+			state.setMouseY(-1);
+			state.setCapturing(true);
+			WindowRenderer.render(g, sprites, model, state, w, h);
+		}
+		finally
+		{
+			state.setCapturing(false);
+			state.setMouseX(mouseX);
+			state.setMouseY(mouseY);
+			g.dispose();
+		}
+		return image;
+	}
+
+	/**
+	 * @return what the mouse is over, or null
+	 */
+	@Nullable
+	public synchronized Hotspot hovered()
+	{
+		return state.getMouseX() < 0 ? null : layout.hit(state.getMouseX(), state.getMouseY());
 	}
 
 	private void pressScrollbar(WindowLayout.Scroll scroll, int y, long now)

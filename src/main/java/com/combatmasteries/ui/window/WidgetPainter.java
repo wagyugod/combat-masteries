@@ -52,6 +52,10 @@ public final class WidgetPainter
 		OFFSETS.put(920, new int[]{0, 6, 9, 9});
 		OFFSETS.put(927, new int[]{6, 0, 9, 9});
 		OFFSETS.put(928, new int[]{0, 6, 9, 9});
+		OFFSETS.put(933, new int[]{0, 0, 9, 9});
+		OFFSETS.put(934, new int[]{0, 0, 9, 9});
+		OFFSETS.put(935, new int[]{6, 0, 9, 9});
+		OFFSETS.put(936, new int[]{0, 6, 9, 9});
 		OFFSETS.put(2314, new int[]{0, 6, 18, 18});
 		OFFSETS.put(2315, new int[]{0, 6, 18, 18});
 	}
