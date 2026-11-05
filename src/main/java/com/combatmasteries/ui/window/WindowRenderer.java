@@ -22,7 +22,7 @@ public final class WindowRenderer
 		Graphics2D g2 = (Graphics2D) g.create();
 		try
 		{
-			draw(new WidgetPainter(g2, sprites), model, state, w, h);
+			draw(new WidgetPainter(g2, new SpriteOverrides(sprites)), model, state, w, h);
 		}
 		finally
 		{
@@ -42,7 +42,7 @@ public final class WindowRenderer
 		switch (view)
 		{
 			case OVERVIEW:
-				OverviewView.draw(p, model, w, h);
+				OverviewView.draw(p, model, state, w, h);
 				break;
 			case TASKS:
 				TasksView.draw(p, model, state, w, h);

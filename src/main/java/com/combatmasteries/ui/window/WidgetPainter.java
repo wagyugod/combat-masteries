@@ -3,7 +3,6 @@ package com.combatmasteries.ui.window;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.CompositeContext;
-import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
@@ -299,24 +298,20 @@ public final class WidgetPainter
 			baseline = y + h - font.getMaxDescent() - lh * (n - 1);
 		}
 
-		baseline += font.getBaselineShift();
-		g.setFont(font.font());
-		FontMetrics fm = g.getFontMetrics();
 		for (Line line : lines)
 		{
-			int lw = fm.stringWidth(line.plain());
+			int lw = stringWidth(line.plain(), font);
 			int lx = xAlign == LEFT ? x : xAlign == CENTRE ? x + (w - lw) / 2 : x + w - lw;
 			if (shadow)
 			{
 				g.setColor(Color.BLACK);
-				g.drawString(line.plain(), lx + 1, baseline + 1);
+				drawString(line.plain(), font, lx + 1, baseline + 1);
 			}
 			int cx = lx;
 			for (Run run : line.runs)
 			{
 				g.setColor(new Color(run.rgb));
-				g.drawString(run.text, cx, baseline);
-				cx += fm.stringWidth(run.text);
+				cx = drawString(run.text, font, cx, baseline);
 			}
 			baseline += lh;
 		}
@@ -346,7 +341,33 @@ public final class WidgetPainter
 		{
 			plain.append(line.plain());
 		}
-		return g.getFontMetrics(font.font()).stringWidth(plain.toString());
+		return stringWidth(plain.toString(), font);
+	}
+
+	/**
+	 * @return the width of plain (untagged) text in the given font
+	 */
+	private int stringWidth(String text, GameFont font)
+	{
+		BitmapFont bitmap = font.bitmap();
+		return bitmap != null ? bitmap.stringWidth(text) : g.getFontMetrics(font.font()).stringWidth(text);
+	}
+
+	/**
+	 * Draws plain text in the current colour with the pen at x on the game's baseline.
+	 *
+	 * @return the pen position after the text
+	 */
+	private int drawString(String text, GameFont font, int x, int baseline)
+	{
+		BitmapFont bitmap = font.bitmap();
+		if (bitmap != null)
+		{
+			return bitmap.drawString(g, text, x, baseline);
+		}
+		g.setFont(font.font());
+		g.drawString(text, x, baseline + font.getBaselineShift());
+		return x + g.getFontMetrics().stringWidth(text);
 	}
 
 	private static final class Run
@@ -381,7 +402,6 @@ public final class WidgetPainter
 	 */
 	private List<Line> layout(String text, GameFont font, int defaultRgb, int width)
 	{
-		FontMetrics fm = g.getFontMetrics(font.font());
 		// One entry per visible character with its colour, plus line breaks as -1
 		StringBuilder chars = new StringBuilder();
 		List<Integer> colours = new ArrayList<>();
@@ -435,7 +455,7 @@ public final class WidgetPainter
 		{
 			int nl = all.indexOf('\n', start);
 			int end = nl < 0 ? all.length() : nl;
-			wrap(all, start, end, width, fm, spans);
+			wrap(all, start, end, width, font, spans);
 			if (nl < 0)
 			{
 				break;
@@ -464,9 +484,9 @@ public final class WidgetPainter
 		return lines;
 	}
 
-	private static void wrap(String all, int start, int end, int width, FontMetrics fm, List<int[]> spans)
+	private void wrap(String all, int start, int end, int width, GameFont font, List<int[]> spans)
 	{
-		if (width <= 0 || fm.stringWidth(all.substring(start, end)) <= width)
+		if (width <= 0 || stringWidth(all.substring(start, end), font) <= width)
 		{
 			spans.add(new int[]{start, end});
 			return;
@@ -477,7 +497,7 @@ public final class WidgetPainter
 		{
 			if (all.charAt(i) == ' ')
 			{
-				if (fm.stringWidth(all.substring(lineStart, i)) > width && lastSpace > lineStart)
+				if (stringWidth(all.substring(lineStart, i), font) > width && lastSpace > lineStart)
 				{
 					spans.add(new int[]{lineStart, lastSpace});
 					lineStart = lastSpace + 1;
@@ -485,7 +505,7 @@ public final class WidgetPainter
 				lastSpace = i;
 			}
 		}
-		if (fm.stringWidth(all.substring(lineStart, end)) > width && lastSpace > lineStart)
+		if (stringWidth(all.substring(lineStart, end), font) > width && lastSpace > lineStart)
 		{
 			spans.add(new int[]{lineStart, lastSpace});
 			lineStart = lastSpace + 1;

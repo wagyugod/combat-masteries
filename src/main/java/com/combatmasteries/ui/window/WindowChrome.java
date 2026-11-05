@@ -1,5 +1,8 @@
 package com.combatmasteries.ui.window;
 
+import java.awt.Graphics2D;
+import java.awt.Shape;
+
 /**
  * The parts of the Combat Achievements window every tab shares, drawn as the game's interface scripts
  * build them: the steel frame with title, menu and close buttons (scripts 228 and 4769), the points bar
@@ -27,6 +30,11 @@ public final class WindowChrome
 	 * (the reference screenshots) draws a light outer and a dark inner line.
 	 */
 	static final int BAR_OUTER_LINE = 0x746652;
+	/**
+	 * A faint brown line just inside the frame's left and bottom edges, as the current game shows.
+	 */
+	private static final int INNER_SHADE = 0x4c3514;
+	private static final int INNER_SHADE_TRANS = 230;
 
 	/**
 	 * The points bar's gradients, top to bottom, as the current game draws them (the reference screenshots).
@@ -72,6 +80,44 @@ public final class WindowChrome
 		0x2c2921, 0x2c2921, 0x2c2921, 0x2c2921, 0x2c2a22, 0x2c2a22, 0x2c2a22, 0x2c2a22, 0x2b2921,
 	};
 
+	/**
+	 * The Rewards tab's points bar (the one with tier markers) keeps the dark frame of script 4782 and has no
+	 * shadow around it: a near-black outer line with a dark brown line inside it, reddish down the left end.
+	 * The colours are the reference screenshot's.
+	 */
+	private static final int REWARDS_BAR_OUTER_LINE = 0x0c0c0b;
+	private static final int REWARDS_BAR_TOP_FILL = 0x2f2b28;
+	private static final int REWARDS_BAR_TOP_FILL_FIRST = 0x2f2e28;
+	private static final int REWARDS_BAR_TOP_TRACK = 0x333026;
+	private static final int REWARDS_BAR_TOP_JOIN = 0x332d27;
+	private static final int REWARDS_BAR_BOTTOM_FILL = 0x3a2b28;
+	private static final int REWARDS_BAR_BOTTOM_FILL_FIRST = 0x372e28;
+	private static final int REWARDS_BAR_BOTTOM_TRACK = 0x353026;
+	private static final int REWARDS_BAR_BOTTOM_JOIN_FILL = 0x382d27;
+	private static final int REWARDS_BAR_BOTTOM_JOIN_TRACK = 0x372d27;
+	/**
+	 * The faint light line just outside the Rewards bar's frame, lighter still above the tier markers.
+	 */
+	private static final int REWARDS_BAR_GLOW = 0x4a4135;
+	private static final int REWARDS_BAR_GLOW_TICK = 0x50473b;
+	private static final int[] REWARDS_BAR_LEFT = {
+		0x3b312a, 0x372c27, 0x3a2827, 0x392526, 0x392325, 0x392023, 0x381f23, 0x381c22, 0x381b21, 0x371921,
+		0x371720, 0x37151f, 0x36131e, 0x36111d, 0x36111d, 0x36111d, 0x36131e, 0x37151f, 0x371720, 0x371921,
+		0x381b21, 0x381c22, 0x381f23, 0x392023, 0x392325, 0x392526, 0x3a2827, 0x372c27, 0x3b312a,
+	};
+	private static final int[] REWARDS_BAR_RIGHT = {
+		0x333026, 0x352f25, 0x342f25, 0x342e24, 0x332e24, 0x312d22, 0x312d22, 0x2f2b20, 0x2f2b20, 0x2e291f,
+		0x2e291f, 0x2c271d, 0x2c271d, 0x2a261b, 0x2b261c, 0x2a261b, 0x2c271d, 0x2c271d, 0x2e291f, 0x2e291f,
+		0x2f2b20, 0x2f2b20, 0x312d22, 0x312d22, 0x332e24, 0x342e24, 0x342f25, 0x352f25, 0x353026,
+	};
+	/**
+	 * Rows of a tier marker that, where the marker runs into the bar's right edge, darken the frame's last
+	 * column: its two ends, but not the stem between them.
+	 */
+	private static final int TICK_STEM_FIRST_ROW = 6;
+	private static final int TICK_STEM_LAST_ROW = 23;
+	private static final int TICK_HEIGHT = 31;
+
 	// Sprites
 	static final int STONE = 297;
 	static final int CORNER_TOP_LEFT = 310;
@@ -87,11 +133,13 @@ public final class WindowChrome
 	static final int CLOSE = 535;
 	static final int MENU = 2289;
 	static final int BAR_TICK = 2388;
+	private static final int BAR_TICK_WIDTH = 10;
 	/**
 	 * The classic arrows. The game's scripts ask for 773 and 788, which the reference client (RuneLite's 2005
 	 * interface style) swaps for these; the dropdowns use the same down arrow.
 	 */
 	static final int SCROLL_UP = 801;
+	static final int SCROLLBAR_WIDTH = 16;
 	static final int SCROLL_DOWN = 802;
 	private static final int SCROLL_TRACK_COLOUR = 0x272520;
 	private static final int SCROLL_THUMB_COLOUR = 0x4d4437;
@@ -113,6 +161,9 @@ public final class WindowChrome
 	public static void frame(WidgetPainter p, int w, int h, String title)
 	{
 		p.graphic(STONE, 1, 1, w - 2, h - 2, true);
+		// The faint shade the game shows along the stone's inner left and bottom edges
+		p.fill(6, 30, 1, h - 37, INNER_SHADE, INNER_SHADE_TRANS);
+		p.fill(6, h - 7, w - 12, 1, INNER_SHADE, INNER_SHADE_TRANS);
 		p.text(title, GameFont.BOLD, ORANGE, true, 6, 6, w - 12, 24, WidgetPainter.CENTRE, WidgetPainter.MIDDLE, 0);
 		p.sprite(CORNER_TOP_LEFT, 0, 0);
 		p.sprite(CORNER_TOP_RIGHT, w - 25, 0);
@@ -146,7 +197,8 @@ public final class WindowChrome
 	 * The points bar under the title.
 	 *
 	 * @param fill  0 to 1
-	 * @param ticks tier thresholds as a share of the bar (0 to 1) to mark, as on the Rewards tab; may be null
+	 * @param ticks tier thresholds as a share of the bar (0 to 1) to mark, as on the Rewards tab, whose bar
+	 *              also has its own darker frame; null for the other tabs' bar
 	 */
 	public static void pointsBar(WidgetPainter p, int windowWidth, String text, double fill, double[] ticks)
 	{
@@ -155,8 +207,16 @@ public final class WindowChrome
 		int y = 39;
 		int inner = w - 4;
 		int filled = (int) Math.min(inner, Math.round(inner * Math.max(0, fill)));
-		barShadow(p, x, y, w, 31);
-		barInnerLine(p, x + 1, y + 1, w - 2, 29, filled);
+		boolean rewards = ticks != null;
+		if (rewards)
+		{
+			rewardsBarInnerLine(p, x + 1, y + 1, w - 2, 29, filled);
+		}
+		else
+		{
+			barShadow(p, x, y, w, 31);
+			barInnerLine(p, x + 1, y + 1, w - 2, 29, filled);
+		}
 		for (int i = 0; i < BAR_HEIGHT; i++)
 		{
 			int row = y + 2 + i;
@@ -171,28 +231,98 @@ public final class WindowChrome
 				p.hline(x + 1 + inner, row, 1, BAR_TRACK_LAST_COLUMN[i]);
 			}
 		}
-		if (ticks != null)
+		if (rewards)
 		{
+			p.outline(x - 1, y - 1, w + 2, 33, REWARDS_BAR_GLOW);
+			p.outline(x, y, w, 31, REWARDS_BAR_OUTER_LINE);
 			for (double tick : ticks)
 			{
-				int pos = (int) (tick * inner);
-				if (pos <= 2)
-				{
-					pos = 0;
-				}
-				else if (pos >= inner)
-				{
-					pos = inner + 3;
-				}
-				else
-				{
-					pos += 2;
-				}
-				p.sprite(BAR_TICK, x + pos - 4, y);
+				barTick(p, x, y, w, inner, tick);
 			}
 		}
 		p.text(text, GameFont.REGULAR, WHITE, true, x, y, w, 33, WidgetPainter.CENTRE, WidgetPainter.MIDDLE, 0);
-		p.outline(x, y, w, 31, BAR_OUTER_LINE);
+		if (!rewards)
+		{
+			p.outline(x, y, w, 31, BAR_OUTER_LINE);
+		}
+	}
+
+	/**
+	 * One tier marker (script 4782): placed on the threshold, or at either end when it is within 2px of it,
+	 * over the bar's top and bottom lines. The marker on the bar's last pixel is cut off by the frame's right
+	 * column, which the game shows dark beside the marker's ends.
+	 */
+	private static void barTick(WidgetPainter p, int x, int y, int w, int inner, double tick)
+	{
+		int pos = (int) (tick * inner);
+		if (pos <= 2)
+		{
+			pos = 0;
+		}
+		else if (pos >= inner)
+		{
+			pos = inner + 3;
+		}
+		else
+		{
+			pos += 2;
+		}
+		int left = x + pos - 4;
+		int right = x + w - 1;
+		Graphics2D g = p.graphics();
+		Shape clip = g.getClip();
+		// The marker stays between the frame's top and bottom lines and left of its right column
+		g.clipRect(x, y + 1, w - 1, TICK_HEIGHT - 2);
+		p.sprite(BAR_TICK, left, y);
+		g.setClip(clip);
+		g.clipRect(x, y - 1, w - 1, TICK_HEIGHT + 2);
+		// The game shows the marker's caps on the frame lines as two dark runs either side of the middle,
+		// a little wider than the marker, with the glow above lighter over it
+		p.hline(left - 1, y, 5, 0x000000);
+		p.hline(left + 7, y, 5, 0x000000);
+		p.hline(left - 1, y + TICK_HEIGHT - 1, 4, 0x000000);
+		p.hline(left + 8, y + TICK_HEIGHT - 1, 4, 0x000000);
+		p.hline(left, y - 1, BAR_TICK_WIDTH + 1, REWARDS_BAR_GLOW_TICK);
+		g.setClip(clip);
+		if (left + BAR_TICK_WIDTH > right)
+		{
+			for (int row = 1; row < TICK_HEIGHT - 1; row++)
+			{
+				if (row < TICK_STEM_FIRST_ROW || row > TICK_STEM_LAST_ROW)
+				{
+					p.hline(right, y + row, 1, 0x000000);
+				}
+			}
+		}
+	}
+
+	/**
+	 * The Rewards bar's line inside its frame: brown along the fill, greyer along the track, with a short
+	 * blend where they meet and reddish end columns.
+	 */
+	private static void rewardsBarInnerLine(WidgetPainter p, int x, int y, int w, int h, int filled)
+	{
+		int bottom = y + h - 1;
+		p.hline(x, y, w, REWARDS_BAR_TOP_TRACK);
+		p.hline(x, bottom, w, REWARDS_BAR_BOTTOM_TRACK);
+		if (filled > 0)
+		{
+			p.hline(x + 1, y, filled, REWARDS_BAR_TOP_FILL);
+			p.hline(x + 1, bottom, filled, REWARDS_BAR_BOTTOM_FILL);
+			p.hline(x + 1, y, 1, REWARDS_BAR_TOP_FILL_FIRST);
+			p.hline(x + 1, bottom, 1, REWARDS_BAR_BOTTOM_FILL_FIRST);
+			if (filled < w - 2)
+			{
+				p.hline(x + filled, y, 2, REWARDS_BAR_TOP_JOIN);
+				p.hline(x + filled, bottom, 1, REWARDS_BAR_BOTTOM_JOIN_FILL);
+				p.hline(x + filled + 1, bottom, 1, REWARDS_BAR_BOTTOM_JOIN_TRACK);
+			}
+		}
+		for (int i = 0; i < h; i++)
+		{
+			p.hline(x, y + i, 1, REWARDS_BAR_LEFT[i]);
+			p.hline(x + w - 1, y + i, 1, REWARDS_BAR_RIGHT[i]);
+		}
 	}
 
 	/**
@@ -258,18 +388,40 @@ public final class WindowChrome
 	 */
 	public static void segmentedBar(WidgetPainter p, int done, int total, int x, int y, int w, int textOffset)
 	{
+		segmentedBar(p, done, total, x, y, w, textOffset, GREEN);
+	}
+
+	/**
+	 * The "done/total" count over a bar of four segments, drawing a complete count in {@code doneTextColour}
+	 * (the bar itself stays {@link #GREEN}). An empty total shows "0/0" in grey over an all-dark bar.
+	 */
+	public static void segmentedBar(WidgetPainter p, int done, int total, int x, int y, int w, int textOffset,
+		int doneTextColour)
+	{
 		int segments = 4;
 		int segment = w / segments;
-		int colour = done == total ? GREEN : done > 0 ? YELLOW : BAR_EMPTY;
-		int remaining = 1 + done * (w - 1) / Math.max(1, total);
+		boolean complete = total > 0 && done >= total;
+		int colour = complete ? GREEN : done > 0 ? YELLOW : BAR_EMPTY;
+		int remaining = total <= 0 ? 0 : 1 + Math.min(done, total) * (w - 1) / total;
 
-		p.text(done + "/" + total, GameFont.REGULAR, colour, true, x, y + textOffset, w, 12,
+		p.text(done + "/" + total, GameFont.REGULAR, complete ? doneTextColour : colour, true, x, y + textOffset, w, 12,
 			WidgetPainter.CENTRE, WidgetPainter.TOP, 0);
 		int barY = y + 17;
 		p.fill(x, barY, w, 7, 0x000000, 150);
 		for (int i = 0; i < segments; i++)
 		{
 			p.outline(x + i * segment, barY, segment + 1, 7, 0x000000);
+		}
+		int filled = remaining - 1;
+		if (filled > 0)
+		{
+			// The fill's glow on the stone: a faint tinted row above the filled part, and down the right
+			// side once the bar is full
+			p.fill(x + 1, barY - 1, filled, 1, glow(colour), BAR_GLOW_TRANS);
+			if (complete)
+			{
+				p.fill(x + segments * segment + 1, barY + 1, 1, 5, glow(colour), BAR_GLOW_TRANS);
+			}
 		}
 		for (int i = 0; i < segments && remaining > 0; i++)
 		{
@@ -284,8 +436,59 @@ public final class WindowChrome
 				width = remaining - 1;
 				remaining = 0;
 			}
-			p.fill(x + i * segment + 1, y + 18, width, 5, colour, 0);
+			segmentFill(p, x + i * segment + 1, barY + 1, width, colour);
 		}
+	}
+
+	/**
+	 * How strongly a bar's glow tints the stone around it.
+	 */
+	private static final int BAR_GLOW_TRANS = 230;
+
+	/**
+	 * The colour that, blended at {@link #BAR_GLOW_TRANS} over the stone, adds a little of the bar colour to it.
+	 */
+	private static int glow(int rgb)
+	{
+		int r = Math.min(255, 0x48 + ((rgb >> 16) & 0xff) * 6 / 10);
+		int g = Math.min(255, 0x3e + ((rgb >> 8) & 0xff) * 6 / 10);
+		int b = Math.min(255, 0x33 + (rgb & 0xff) * 6 / 10);
+		return r << 16 | g << 8 | b;
+	}
+
+	/**
+	 * One segment's fill, five rows tall: the body colour with a lighter top and bottom row and lighter end
+	 * columns, as the current game shades it.
+	 */
+	private static void segmentFill(WidgetPainter p, int x, int y, int w, int rgb)
+	{
+		if (w <= 0)
+		{
+			return;
+		}
+		p.fill(x, y + 1, w, 3, rgb, 0);
+		p.hline(x, y, w, lighten(rgb, 0, 4, 0));
+		p.hline(x, y + 4, w, lighten(rgb, 3, 4, 3));
+		for (int cx : w > 1 ? new int[]{x, x + w - 1} : new int[]{x})
+		{
+			p.fill(cx, y + 1, 1, 3, lighten(rgb, 0, 4, 0), 0);
+			p.hline(cx, y, 1, lighten(rgb, 0, 6, 0));
+			p.hline(cx, y + 4, 1, lighten(rgb, 4, 6, 4));
+		}
+	}
+
+	/**
+	 * Adds to each channel that is not zero, so a saturated colour such as yellow keeps its exact value.
+	 */
+	private static int lighten(int rgb, int dr, int dg, int db)
+	{
+		int r = (rgb >> 16) & 0xff;
+		int g = (rgb >> 8) & 0xff;
+		int b = rgb & 0xff;
+		r = r == 0 ? 0 : Math.min(255, r + dr);
+		g = g == 0 ? 0 : Math.min(255, g + dg);
+		b = b == 0 ? 0 : Math.min(255, b + db);
+		return r << 16 | g << 8 | b;
 	}
 
 	/**

@@ -27,6 +27,13 @@ final class BossesView
 	private static final int SEARCH_RIGHT = 1125;
 
 	/**
+	 * The green of a completed card's name and count, and the orange of its "Level:" label; a shade off the
+	 * shared colours, as the reference Bosses tab shows them.
+	 */
+	private static final int CARD_GREEN = 0x05c408;
+	private static final int LEVEL_ORANGE = 0xff9d34;
+
+	/**
 	 * The names the Combat Achievements Bosses tab uses for each content. Long names break
 	 * after the colon onto a second line, as the game does ("Chambers of Xeric:" /
 	 * "Challenge Mode"); one-line names sit centred in the same two-line space.
@@ -136,14 +143,13 @@ final class BossesView
 		WindowChrome.stoneBox(p, x, y, CARD_W, CARD_H);
 		p.outline(x, y, CARD_W, CARD_H, 0x000000, 50);
 		String name = CARD_NAMES.getOrDefault(content.getName(), content.getName());
-		p.text(name, GameFont.BOLD, done ? WindowChrome.GREEN : WindowChrome.LIGHT_ORANGE, true,
-			x + 3, y + 3, CARD_W - 6, 30, WidgetPainter.CENTRE, WidgetPainter.MIDDLE, 13);
+		// A one-line name has its cap-top 15px below the card's top; two lines centre on the same spot
+		p.text(name, GameFont.BOLD, done ? CARD_GREEN : WindowChrome.LIGHT_ORANGE, true,
+			x + 3, y + 6, CARD_W - 6, 30, WidgetPainter.CENTRE, WidgetPainter.MIDDLE, 13);
 		String level = CARD_LEVELS.getOrDefault(content.getName(), "-");
-		p.text("<col=ff9933>Level:</col><col=ffffff> " + level + "</col>", GameFont.SMALL, WindowChrome.WHITE, true,
+		p.text("<col=" + Integer.toHexString(LEVEL_ORANGE) + ">Level:</col><col=ffffff> " + level + "</col>", GameFont.SMALL, WindowChrome.WHITE, true,
 			x, y + 32, CARD_W, 24, WidgetPainter.CENTRE, WidgetPainter.MIDDLE, 0);
-		if (content.getTasks() > 0)
-		{
-			WindowChrome.segmentedBar(p, content.getCompleted(), content.getTasks(), x + 8, y + 53, CARD_W - 16, 0);
-		}
+		// Every card shows its count and bar, even a content with no tasks yet ("0/0", all dark)
+		WindowChrome.segmentedBar(p, content.getCompleted(), content.getTasks(), x + 8, y + 53, CARD_W - 16, 0, CARD_GREEN);
 	}
 }

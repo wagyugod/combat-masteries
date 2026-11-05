@@ -38,6 +38,7 @@ public class WindowState
 	private String search = "";
 	private MasteryTier rewardsTier = MasteryTier.ASCENDED;
 
+	private int overviewScroll;
 	private int tasksScroll;
 	private int bossesScroll;
 	private int rewardsScroll;

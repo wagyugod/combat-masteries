@@ -1,6 +1,7 @@
 package com.combatmasteries.ui.window;
 
 import java.awt.Font;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.runelite.client.ui.FontManager;
@@ -25,7 +26,7 @@ public enum GameFont
 	 */
 	REGULAR(12, 12, 4, 2),
 	/**
-	 * b12_full (496).
+	 * b12_full (496). Drawn from the game's own glyphs, see {@link #bitmap()}.
 	 */
 	BOLD(12, 12, 4, 2);
 
@@ -38,6 +39,16 @@ public enum GameFont
 	 */
 	private final int baselineShift;
 
+	/**
+	 * The game's glyphs for this font, used in place of RuneLite's TrueType copy where that copy draws
+	 * different shapes or advances. Null for fonts whose TrueType copy matches the game.
+	 */
+	@Nullable
+	BitmapFont bitmap()
+	{
+		return this == BOLD ? Bitmaps.BOLD : null;
+	}
+
 	public Font font()
 	{
 		switch (this)
@@ -49,5 +60,13 @@ public enum GameFont
 			default:
 				return FontManager.getRunescapeFont();
 		}
+	}
+
+	/**
+	 * Loads the glyph resources on first use.
+	 */
+	private static final class Bitmaps
+	{
+		static final BitmapFont BOLD = BitmapFont.load("/com/combatmasteries/fonts/b12_full.txt");
 	}
 }
