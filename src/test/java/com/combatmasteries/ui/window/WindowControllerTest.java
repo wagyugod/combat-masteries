@@ -298,6 +298,10 @@ public class WindowControllerTest
 
 		controller.show(WindowView.BOSSES);
 		render();
+		// The chatbox keeps typing until the search box is clicked
+		assertFalse(controller.isSearching());
+		assertFalse(controller.type('T'));
+		click(Hotspot.Kind.SEARCH, null);
 		assertTrue(controller.type('T'));
 		assertTrue(controller.type('o'));
 		assertTrue(controller.type('m'));
@@ -311,6 +315,13 @@ public class WindowControllerTest
 			controller.type('x');
 		}
 		assertEquals(WindowController.MAX_SEARCH, state().getSearch().length());
+
+		// A click elsewhere, or Escape, gives typing back to the chatbox
+		controller.press(1, 1, 0);
+		assertFalse(controller.isSearching());
+		click(Hotspot.Kind.SEARCH, null);
+		assertFalse(controller.escape());
+		assertFalse(controller.isSearching());
 	}
 
 	@Test
@@ -336,6 +347,7 @@ public class WindowControllerTest
 		click(Hotspot.Kind.FILTER, TaskFilter.TYPE);
 		controller.move(10, 10);
 		controller.show(WindowView.BOSSES);
+		assertFalse(controller.isSearching());
 		assertEquals(WindowView.BOSSES, state().getView());
 		assertNull(state().getOpenFilter());
 		assertEquals(-1, state().getMouseX());

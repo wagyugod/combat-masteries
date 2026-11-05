@@ -37,6 +37,10 @@ public class WindowState
 	private String expandedTask;
 
 	private String search = "";
+	/**
+	 * True after the Bosses search box was clicked, until a click elsewhere, Escape or a tab change.
+	 */
+	private boolean searchFocused;
 	private MasteryTier rewardsTier = MasteryTier.ASCENDED;
 
 	private int overviewScroll;

@@ -63,6 +63,7 @@ public class WindowController
 		state.setView(view);
 		state.setMenuOpen(false);
 		state.setOpenFilter(null);
+		state.setSearchFocused(false);
 		state.setMouseX(-1);
 		state.setMouseY(-1);
 		release();
@@ -123,6 +124,8 @@ public class WindowController
 	{
 		move(x, y);
 		Hotspot hit = layout.hit(x, y);
+		// Any click other than on the search box gives typing back to the chatbox
+		state.setSearchFocused(hit != null && hit.getKind() == Hotspot.Kind.SEARCH);
 		if (hit == null)
 		{
 			return false;
@@ -174,6 +177,8 @@ public class WindowController
 				break;
 			case SCROLLBAR:
 				pressScrollbar((WindowLayout.Scroll) hit.getValue(), y, now);
+				break;
+			case SEARCH:
 				break;
 		}
 		return false;
@@ -300,11 +305,12 @@ public class WindowController
 	}
 
 	/**
-	 * Whether typed characters go to the Bosses search: while the Bosses tab is shown.
+	 * Whether typed characters go to the Bosses search: only after its box was clicked, so the chatbox
+	 * keeps working otherwise.
 	 */
 	public synchronized boolean isSearching()
 	{
-		return state.getView() == WindowView.BOSSES;
+		return state.getView() == WindowView.BOSSES && state.isSearchFocused();
 	}
 
 	/**
@@ -353,10 +359,11 @@ public class WindowController
 	 */
 	public synchronized boolean escape()
 	{
-		if (state.isMenuOpen() || state.getOpenFilter() != null)
+		if (state.isMenuOpen() || state.getOpenFilter() != null || state.isSearchFocused())
 		{
 			state.setMenuOpen(false);
 			state.setOpenFilter(null);
+			state.setSearchFocused(false);
 			return false;
 		}
 		return true;

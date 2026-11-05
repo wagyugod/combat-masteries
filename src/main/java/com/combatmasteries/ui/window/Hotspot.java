@@ -52,6 +52,10 @@ public class Hotspot
 		 * A scrollbar; the value is its {@link WindowLayout.Scroll}.
 		 */
 		SCROLLBAR,
+		/**
+		 * The Bosses search box: a click there sends typing to the search instead of the chatbox.
+		 */
+		SEARCH,
 	}
 
 	Kind kind;

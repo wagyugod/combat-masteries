@@ -86,6 +86,7 @@ final class BossesView
 		p.graphic(SEARCH_MIDDLE, sx + 4, sy, 365, 30, false);
 		p.graphic(SEARCH_LEFT, sx, sy, 4, 30, false);
 		p.graphic(SEARCH_RIGHT, sx + 369, sy, 4, 30, false);
+		p.hotspot(Hotspot.Kind.SEARCH, null, sx, sy, 373, 30);
 		p.text(state.getSearch() + "*", GameFont.REGULAR, WindowChrome.ORANGE, 90, 35 + 9, w - 111, 22, WidgetPainter.LEFT);
 
 		List<WindowModel.Content> contents = sortedByCardName(state.search(model.getContents()));
