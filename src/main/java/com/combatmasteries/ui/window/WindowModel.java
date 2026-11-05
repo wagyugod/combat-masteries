@@ -34,9 +34,7 @@ public class WindowModel
 		"Tombs of Amascut",
 		"Doom of Mokhaiotl",
 		"Awakened Bosses",
-		"Yama Contracts",
-		// No tasks yet: listed so players can see it is coming
-		"The Fractured Archive"));
+		"Yama Contracts"));
 
 	/**
 	 * Looks up a personal best in seconds for a boss (as named in its kill message) and team size.
