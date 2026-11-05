@@ -48,6 +48,7 @@ final class BossesView
 		CARD_NAMES.put("Chambers of Xeric: CM", "Chambers of Xeric:<br>Challenge Mode");
 		CARD_NAMES.put("Tombs of Amascut", "Tombs of Amascut:<br>Expert Mode");
 		CARD_NAMES.put("Yama Contracts", "Yama");
+		CARD_NAMES.put("The Fractured Archive", "The Fractured<br>Archive");
 	}
 
 	/**
@@ -67,6 +68,7 @@ final class BossesView
 		CARD_LEVELS.put("Doom of Mokhaiotl", "908");
 		CARD_LEVELS.put("Awakened Bosses", "1157 / 1136");
 		CARD_LEVELS.put("Yama Contracts", "1238");
+		CARD_LEVELS.put("The Fractured Archive", "1197");
 	}
 
 	private BossesView()
@@ -120,7 +122,8 @@ final class BossesView
 	}
 
 	/**
-	 * Cards are listed alphabetically by the name shown on them, ignoring a leading "The".
+	 * Cards are listed alphabetically by the name shown on them, ignoring a leading "The"
+	 * (so The Fractured Archive sorts under F).
 	 */
 	static List<WindowModel.Content> sortedByCardName(List<WindowModel.Content> contents)
 	{

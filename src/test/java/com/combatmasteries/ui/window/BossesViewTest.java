@@ -28,6 +28,7 @@ public class BossesViewTest
 			"Chambers of Xeric: CM",
 			"Doom of Mokhaiotl",
 			"Colosseum",
+			"The Fractured Archive",
 			"Theatre of Blood",
 			"Theatre of Blood: Hard Mode",
 			"Tombs of Amascut",

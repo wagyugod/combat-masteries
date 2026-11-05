@@ -30,6 +30,8 @@ public class WindowStateTest
 		List<String> content = WindowState.filterOptions(TaskFilter.CONTENT, model);
 		assertEquals("All", content.get(0));
 		assertTrue(content.contains("Inferno"));
+		// Content without tasks has nothing to filter to
+		assertFalse(content.contains("The Fractured Archive"));
 	}
 
 	@Test
