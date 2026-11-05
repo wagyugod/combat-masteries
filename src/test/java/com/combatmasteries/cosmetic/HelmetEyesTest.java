@@ -241,10 +241,10 @@ public class HelmetEyesTest
 	}
 
 	@Test
-	public void onlyAscendedLightsTheMetal()
+	public void everyTierLightsTheMetal()
 	{
 		assertTrue(GlowStyle.ASCENDED.lightsMetal());
-		assertFalse(GlowStyle.EXALTED.lightsMetal());
-		assertFalse(GlowStyle.IMMORTAL.lightsMetal());
+		assertTrue(GlowStyle.EXALTED.lightsMetal());
+		assertTrue(GlowStyle.IMMORTAL.lightsMetal());
 	}
 }

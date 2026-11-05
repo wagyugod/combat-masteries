@@ -251,9 +251,9 @@ public class WindowModel
 		rewards.put(MasteryTier.ASCENDED, Collections.singletonList(new RewardGroup(MasteryTier.ASCENDED, Collections.singletonList(
 			"<col=ffffff>Tzkal Slayer Helmet:</col> light spills onto the metal around the eyes. Eyes glow red to orange"))));
 		rewards.put(MasteryTier.EXALTED, Collections.singletonList(new RewardGroup(MasteryTier.EXALTED, Collections.singletonList(
-			"<col=ffffff>Tzkal Slayer Helmet:</col> eyes glow ice blue to azure"))));
+			"<col=ffffff>Tzkal Slayer Helmet:</col> light spills onto the metal around the eyes. Eyes glow ice blue to azure"))));
 		rewards.put(MasteryTier.IMMORTAL, Collections.singletonList(new RewardGroup(MasteryTier.IMMORTAL, Collections.singletonList(
-			"<col=ffffff>Tzkal Slayer Helmet:</col> eyes glow Radiant oathplate white"))));
+			"<col=ffffff>Tzkal Slayer Helmet:</col> light spills onto the metal around the eyes. Eyes glow Radiant oathplate white"))));
 		return Collections.unmodifiableMap(rewards);
 	}
 }
