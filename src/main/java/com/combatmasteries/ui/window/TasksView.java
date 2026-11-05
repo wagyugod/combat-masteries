@@ -72,6 +72,7 @@ final class TasksView
 		int rowH = expanded ? ROW_H + 10 * descLines + 25 : ROW_H;
 
 		p.fill(x, y, LIST_W, rowH, 0xffffff, index % 2 == 1 ? 230 : 245);
+		p.hotspot(Hotspot.Kind.TASK, task.getId(), x, y, LIST_W, rowH);
 		p.graphic(expanded ? COLLAPSE : EXPAND, x + 5, y + (ROW_H - 18) / 2, 18, 18, false);
 		BufferedImage icon = ContentIcons.get(task.getContent());
 		p.image(icon, x + 28, y + (ROW_H - ContentIcons.SIZE) / 2);

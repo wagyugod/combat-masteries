@@ -13,8 +13,6 @@ import java.util.List;
 final class RewardsView
 {
 	private static final int TOP = 81;
-	private static final int BUTTONS_X = 4;
-	private static final int BUTTONS_W = 125;
 	private static final int PANEL_X = 130;
 	private static final int PANEL_W = 340 - 18;
 	private static final int ICON_W = 36;
@@ -40,11 +38,47 @@ final class RewardsView
 	private static final int ROW_TRANS_LIGHT = 230;
 
 	/**
-	 * Tier button pieces: corners top left, top right, bottom left, bottom right, edges top, bottom, left,
-	 * right, then the middle.
+	 * The tier buttons, drawn the way the current game draws them (the cache's button sprites are flat): a
+	 * dark border with rounded corners, a light highlight inside it and a one pixel bevel inside that. The
+	 * selected button is 4px wider and darker, with a deeper bevel and a strip of the unselected shade on
+	 * its right. The game also darkens the strip behind each button very slightly and lights a faint line
+	 * just outside it; the selected button's right edge glows brighter.
 	 */
-	private static final int[] BUTTON = {1012, 1013, 1014, 2834, 2835, 2836, 2837, 2838, 2839};
-	private static final int[] BUTTON_SELECTED = {1004, 1013, 1006, 2834, 1008, 1009, 1010, 2838, 1011};
+	private static final int BUTTON_X = 8;
+	private static final int BUTTON_W = 117;
+	private static final int BUTTON_SELECTED_W = 121;
+	private static final int BUTTON_H = 32;
+	private static final int BUTTON_TEXT_W = 101;
+	private static final int BUTTON_BORDER = 0x2c2922;
+	private static final int BUTTON_BORDER_CORNER = 0x2d2a22;
+	private static final int BUTTON_LIGHT = 0x746652;
+	private static final int BUTTON_LIGHT_CORNER = 0x736552;
+	/**
+	 * The anti-aliased pixels just outside each rounded corner: the border colour, mostly transparent.
+	 */
+	private static final int BUTTON_CORNER_TRANS = 220;
+	/**
+	 * The fill, then the bevel lines inside the highlight: top, left, bottom and right.
+	 */
+	private static final int[] BUTTON_SHADES = {0x554c41, 0x544c41, 0x4f473e, 0x4f473e, 0x544c41};
+	private static final int[] BUTTON_SELECTED_SHADES = {0x483e33, 0x473d32, 0x40362d, 0x40362d, 0x4f473e};
+	private static final int SELECTED_STRIP = 0x554c41;
+	private static final int SELECTED_STRIP_END = 0x50493f;
+	private static final int SELECTED_BOTTOM_END = 0x3e352c;
+	/**
+	 * Strength (out of 256) of the light line around a button, at its ends and along its length, and of
+	 * the selected button's brighter right edge from its top down: first row, next two, the fourth, the
+	 * length, and the last two.
+	 */
+	private static final int GLOW_END = 20;
+	private static final int GLOW_SIDE = 32;
+	private static final int GLOW_TOP = 34;
+	private static final int[] SELECTED_GLOW = {60, 72, 85, 93, 82};
+	private static final int BUTTON_SHADOW_TRANS = 254;
+	/**
+	 * Strength of the faint light line just outside the reward list's frame, on its left and below it.
+	 */
+	private static final int FRAME_GLOW = 13;
 
 	private RewardsView()
 	{
@@ -53,17 +87,27 @@ final class RewardsView
 	static void draw(WidgetPainter p, WindowModel model, WindowState state, int w, int h)
 	{
 		int height = h - 91;
-		int y = TOP;
-		for (WindowModel.Tier tier : model.getTiers())
-		{
-			y += drawButton(p, tier, tier.getTier() == state.getRewardsTier(), y);
-		}
 
 		// Reward list with a scrollbar. The frame wraps the list (it is the scrolled layer, sized to the
-		// content), so it ends just below the last group and scrolls with it.
+		// content) but, as in the game, a short list still sits in a box that ends 4px above the bottom of
+		// the scrollbar.
 		List<WindowModel.RewardGroup> groups = model.getRewards().getOrDefault(state.getRewardsTier(), Collections.emptyList());
 		int top = TOP - state.getRewardsScroll();
 		int contentH = drawGroups(p, groups, PANEL_X + 2, top + 2, PANEL_W - 4, false);
+		int frameH = Math.max(contentH, height - 4);
+		frameGlow(p, top, frameH, height);
+
+		List<WindowModel.Tier> tiers = model.getTiers();
+		for (int i = 0; i < tiers.size(); i++)
+		{
+			buttonGlow(p, TOP + i * BUTTON_H, tiers.get(i).getTier() == state.getRewardsTier());
+		}
+		for (int i = 0; i < tiers.size(); i++)
+		{
+			WindowModel.Tier tier = tiers.get(i);
+			drawButton(p, tier, tier.getTier() == state.getRewardsTier(), TOP + i * BUTTON_H, i > 0, i < tiers.size() - 1);
+		}
+
 		if (top == TOP)
 		{
 			p.hline(PANEL_X, TOP - 1, PANEL_W - 1, TABLE_GLOW);
@@ -71,39 +115,138 @@ final class RewardsView
 		Graphics2D g = p.graphics();
 		Shape clip = g.getClip();
 		g.clipRect(PANEL_X, TOP, PANEL_W, height);
-		frame(p, PANEL_X, top, PANEL_W, contentH);
+		frame(p, PANEL_X, top, PANEL_W, frameH);
 		drawGroups(p, groups, PANEL_X + 2, top + 2, PANEL_W - 4, true);
 		g.setClip(clip);
 		WindowChrome.scrollbar(p, PANEL_X + PANEL_W, TOP, height, contentH, state.getRewardsScroll());
 	}
 
 	/**
-	 * @return the height taken, gap included
+	 * The faint light line just outside the list frame's left side and below it, kept to the viewport.
 	 */
-	private static int drawButton(WidgetPainter p, WindowModel.Tier tier, boolean selected, int y)
+	private static void frameGlow(WidgetPainter p, int top, int frameH, int height)
 	{
-		int[] s = selected ? BUTTON_SELECTED : BUTTON;
-		int inner = 24;
-		int left = BUTTONS_X;
-		int w = BUTTONS_W;
-		int rightInset = selected ? 0 : 4;
-		int edgeShift = selected ? 2 : 0;
-		int edgeW = w - (12 + rightInset);
-		int edgeX = left + (w - edgeW) / 2 + edgeShift;
+		int from = top == TOP ? TOP - 1 : TOP;
+		int below = top + frameH;
+		int to = Math.min(below, TOP + height - 1);
+		light(p, PANEL_X - 1, from, 1, to - from + 1, FRAME_GLOW);
+		if (below < TOP + height)
+		{
+			light(p, PANEL_X, below, PANEL_W - 1, 1, FRAME_GLOW);
+		}
+	}
 
-		p.graphic(s[0], left + 4, y, 4, 4, false);
-		p.graphic(s[1], left + w - 4 - rightInset, y, 4, 4, false);
-		p.graphic(s[2], left + 4, y + 4 + inner, 4, 4, false);
-		p.graphic(s[3], left + w - 4 - rightInset, y + 4 + inner, 4, 4, false);
-		p.graphic(s[4], edgeX, y, edgeW, 4, false);
-		p.graphic(s[5], edgeX, y + 4 + inner, edgeW, 4, false);
-		p.graphic(s[6], left + 4, y + 4, 4, inner, false);
-		p.graphic(s[7], left + w - 4 - rightInset, y + 4, 4, inner, false);
-		p.graphic(s[8], edgeX, y + 4, edgeW, inner, false);
-		p.image(TierIcons.small(tier.getTier()), left + 8, y + 4);
+	/**
+	 * The shade behind a tier button and the light line around it, drawn before any button so that a
+	 * neighbouring button covers the part of the line that runs under it.
+	 */
+	private static void buttonGlow(WidgetPainter p, int y, boolean selected)
+	{
+		int w = selected ? BUTTON_SELECTED_W : BUTTON_W;
+		int h = BUTTON_H;
+		int left = BUTTON_X - 1;
+		int right = BUTTON_X + w;
+		p.fill(left, y, BUTTON_SELECTED_W + 1, h, 0x000000, BUTTON_SHADOW_TRANS);
+
+		light(p, BUTTON_X + 1, y - 1, 2, 1, GLOW_END);
+		light(p, BUTTON_X + 3, y - 1, w - 6, 1, GLOW_TOP);
+		light(p, right - 3, y - 1, 2, 1, GLOW_END);
+		sideGlow(p, left, y, h);
+		if (!selected)
+		{
+			sideGlow(p, right, y, h);
+			return;
+		}
+		light(p, right, y, 1, 1, SELECTED_GLOW[0]);
+		light(p, right, y + 1, 1, 2, SELECTED_GLOW[1]);
+		light(p, right, y + 3, 1, 1, SELECTED_GLOW[2]);
+		light(p, right, y + 4, 1, h - 7, SELECTED_GLOW[3]);
+		light(p, right, y + h - 3, 1, 2, SELECTED_GLOW[4]);
+	}
+
+	private static void sideGlow(WidgetPainter p, int x, int y, int h)
+	{
+		light(p, x, y + 1, 1, 2, GLOW_END);
+		light(p, x, y + 3, 1, h - 6, GLOW_SIDE);
+		light(p, x, y + h - 3, 1, 2, GLOW_END);
+	}
+
+	/**
+	 * Lights a rectangle with the buttons' highlight colour at the given strength out of 256.
+	 */
+	private static void light(WidgetPainter p, int x, int y, int w, int h, int strength)
+	{
+		p.fill(x, y, w, h, BUTTON_LIGHT, 256 - strength);
+	}
+
+	/**
+	 * @param joinedTop    whether another button sits right above, which the border row shares a shade with
+	 * @param joinedBottom whether another button sits right below
+	 */
+	private static void drawButton(WidgetPainter p, WindowModel.Tier tier, boolean selected, int y, boolean joinedTop,
+		boolean joinedBottom)
+	{
+		int x = BUTTON_X;
+		int w = selected ? BUTTON_SELECTED_W : BUTTON_W;
+		int h = BUTTON_H;
+		int r = x + w - 1;
+		int b = y + h - 1;
+		int[] c = selected ? BUTTON_SELECTED_SHADES : BUTTON_SHADES;
+
+		// Fill and the bevel inside the highlight
+		p.fill(x + 3, y + 3, w - 6, h - 6, c[0], 0);
+		p.hline(x + 3, y + 2, w - 6, c[1]);
+		p.fill(x + 2, y + 3, 1, h - 6, c[2], 0);
+		p.hline(x + 3, b - 2, w - 6, c[3]);
+		p.fill(r - 2, y + 3, 1, h - 7, c[4], 0);
+		p.fill(r - 2, b - 3, 1, 1, c[3], 0);
+		if (selected)
+		{
+			p.fill(r - 3, y + 3, 1, h - 6, SELECTED_STRIP, 0);
+			p.fill(r - 3, y + 2, 1, 1, SELECTED_STRIP_END, 0);
+			p.fill(r - 3, b - 2, 1, 1, SELECTED_STRIP_END, 0);
+			p.fill(r - 4, b - 2, 1, 1, SELECTED_BOTTOM_END, 0);
+		}
+
+		// Highlight
+		p.hline(x + 3, y + 1, w - 6, BUTTON_LIGHT);
+		p.hline(x + 3, b - 1, w - 6, BUTTON_LIGHT);
+		p.fill(x + 1, y + 3, 1, h - 6, BUTTON_LIGHT, 0);
+		p.fill(r - 1, y + 3, 1, h - 6, BUTTON_LIGHT, 0);
+
+		// Border
+		p.hline(x + 2, y, w - 4, joinedTop ? BUTTON_BORDER_CORNER : BUTTON_BORDER);
+		p.hline(x + 2, b, w - 4, joinedBottom ? BUTTON_BORDER_CORNER : BUTTON_BORDER);
+		p.fill(x, y + 3, 1, h - 6, BUTTON_BORDER, 0);
+		p.fill(r, y + 3, 1, h - 6, BUTTON_BORDER, 0);
+
+		// The four rounded corners, mirrored from the top left one
+		for (int corner = 0; corner < 4; corner++)
+		{
+			boolean flipX = corner % 2 == 1;
+			boolean flipY = corner >= 2;
+			int cx = flipX ? r : x;
+			int cy = flipY ? b : y;
+			int dx = flipX ? -1 : 1;
+			int dy = flipY ? -1 : 1;
+			px(p, cx + 2 * dx, cy, BUTTON_BORDER_CORNER);
+			px(p, cx + dx, cy + dy, BUTTON_BORDER_CORNER);
+			px(p, cx, cy + 2 * dy, BUTTON_BORDER_CORNER);
+			px(p, cx + 2 * dx, cy + dy, BUTTON_LIGHT_CORNER);
+			px(p, cx + dx, cy + 2 * dy, BUTTON_LIGHT_CORNER);
+			px(p, cx + 2 * dx, cy + 2 * dy, BUTTON_LIGHT_CORNER);
+			p.fill(cx + dx, cy, 1, 1, BUTTON_BORDER, BUTTON_CORNER_TRANS);
+			p.fill(cx, cy + dy, 1, 1, BUTTON_BORDER, BUTTON_CORNER_TRANS);
+		}
+
+		p.image(TierIcons.small(tier.getTier()), x + 4, y + 4);
 		p.text(tier.getName(), GameFont.REGULAR, tier.isUnlocked() ? WindowChrome.BRIGHT_GREEN : WindowChrome.ORANGE, true,
-			left + 24, y + 4, w - 24, inner, WidgetPainter.CENTRE, WidgetPainter.MIDDLE, 0);
-		return inner + 8;
+			x + 20, y + 4, BUTTON_TEXT_W, h - 8, WidgetPainter.CENTRE, WidgetPainter.MIDDLE, 0);
+	}
+
+	private static void px(WidgetPainter p, int x, int y, int rgb)
+	{
+		p.fill(x, y, 1, 1, rgb, 0);
 	}
 
 	/**

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Composite;
 import java.awt.CompositeContext;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.image.BufferedImage;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 /**
  * Draws the building blocks of game interfaces the way the client does: sprites (tiled, stretched or at
@@ -57,10 +59,25 @@ public final class WidgetPainter
 	private final Graphics2D g;
 	private final SpriteSource sprites;
 
+	private final WindowLayout layout;
+	/**
+	 * The list that the next {@link #recordScrollbar} belongs to.
+	 */
+	private ScrollTarget scrollTarget = ScrollTarget.OVERVIEW;
+
 	public WidgetPainter(Graphics2D g, SpriteSource sprites)
+	{
+		this(g, sprites, new WindowLayout());
+	}
+
+	/**
+	 * @param layout where to record the clickable parts as they are drawn
+	 */
+	public WidgetPainter(Graphics2D g, SpriteSource sprites, WindowLayout layout)
 	{
 		this.g = g;
 		this.sprites = sprites;
+		this.layout = layout;
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
@@ -70,6 +87,50 @@ public final class WidgetPainter
 	public Graphics2D graphics()
 	{
 		return g;
+	}
+
+	// ---- layout ----
+
+	public WindowLayout layout()
+	{
+		return layout;
+	}
+
+	/**
+	 * Records a clickable part, cut to what the current clip shows of it.
+	 */
+	public void hotspot(Hotspot.Kind kind, @Nullable Object value, int x, int y, int w, int h)
+	{
+		Rectangle bounds = new Rectangle(x, y, w, h);
+		Rectangle clip = g.getClipBounds();
+		layout.add(kind, value, clip == null ? bounds : bounds.intersection(clip));
+	}
+
+	/**
+	 * Sets which list the scrollbars drawn from now on scroll.
+	 */
+	public void scrollTarget(ScrollTarget target)
+	{
+		scrollTarget = target;
+	}
+
+	/**
+	 * Records a scrollbar drawn at (x, y), {@code h} tall, over a list of {@code content} pixels.
+	 */
+	void recordScrollbar(int x, int y, int h, int content)
+	{
+		WindowLayout.Scroll scroll = new WindowLayout.Scroll(scrollTarget, new Rectangle(x, y, ScrollMath.ARROW, h), h, content,
+			WindowController.WHEEL_STEP);
+		layout.scroll(scroll);
+		hotspot(Hotspot.Kind.SCROLLBAR, scroll, x, y, ScrollMath.ARROW, h);
+	}
+
+	/**
+	 * Records a list that scrolls without a scrollbar, by {@code step} pixels a mouse wheel notch.
+	 */
+	void recordScroll(int viewport, int content, int step)
+	{
+		layout.scroll(new WindowLayout.Scroll(scrollTarget, null, viewport, content, step));
 	}
 
 	// ---- sprites ----

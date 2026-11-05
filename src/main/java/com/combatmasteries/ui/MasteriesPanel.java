@@ -96,7 +96,10 @@ public class MasteriesPanel extends PluginPanel
 	private TaskList taskList;
 	private MasteryProgress progress;
 
-	public MasteriesPanel()
+	/**
+	 * @param openWindow opens the Combat Masteries window in game; called on the Swing thread
+	 */
+	public MasteriesPanel(Runnable openWindow)
 	{
 		setBorder(new EmptyBorder(6, 6, 6, 6));
 		setBackground(STONE_DARK);
@@ -112,6 +115,13 @@ public class MasteriesPanel extends PluginPanel
 		JShadowedLabel title = shadowed("Combat Masteries", ORANGE, true);
 		title.setHorizontalAlignment(JLabel.CENTER);
 		header.add(title, BorderLayout.NORTH);
+
+		JButton openButton = tabButton("Open window");
+		styleTab(openButton, false);
+		openButton.setForeground(ORANGE);
+		openButton.setToolTipText("Open the Combat Masteries window in game (log in first)");
+		openButton.addActionListener(e -> openWindow.run());
+		header.add(openButton, BorderLayout.CENTER);
 
 		JPanel tabs = new JPanel(new GridLayout(1, 2, 4, 0));
 		tabs.setOpaque(false);

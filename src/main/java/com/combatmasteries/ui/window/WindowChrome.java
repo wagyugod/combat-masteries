@@ -175,6 +175,7 @@ public final class WindowChrome
 		p.graphic(EDGE_BOTTOM, 25, h - 21, w - 50, 36, true);
 		p.graphic(DIVIDER_HORIZONTAL, 5, 14, w - 10, 26, true);
 		p.graphic(CLOSE, w - 29, 6, 26, 23, false);
+		p.hotspot(Hotspot.Kind.CLOSE, null, w - 29, 6, 26, 23);
 	}
 
 	/**
@@ -183,6 +184,7 @@ public final class WindowChrome
 	public static void menuButton(WidgetPainter p)
 	{
 		p.sprite(MENU, 7, 7);
+		p.hotspot(Hotspot.Kind.MENU, null, 7, 7, 21, 21);
 	}
 
 	/**
@@ -498,12 +500,10 @@ public final class WindowChrome
 	 */
 	public static void scrollbar(WidgetPainter p, int x, int y, int h, int contentHeight, int scroll)
 	{
-		int track = h - 32;
+		int track = ScrollMath.track(h);
 		p.fill(x, y + 16, 16, track, SCROLL_TRACK_COLOUR, 0);
-		int content = Math.max(contentHeight, h);
-		int thumb = Math.max(8, track * h / content);
-		int maxScroll = content - h;
-		int top = y + 16 + (maxScroll <= 0 ? 0 : (track - thumb) * scroll / maxScroll);
+		int thumb = ScrollMath.thumbHeight(h, contentHeight);
+		int top = y + 16 + ScrollMath.thumbTop(h, contentHeight, scroll);
 		p.fill(x, top, 16, thumb, SCROLL_THUMB_COLOUR, 0);
 		p.fill(x, top, 2, thumb, SCROLL_LIGHT, 0);
 		p.fill(x, top, 16, 2, SCROLL_LIGHT, 0);
@@ -513,6 +513,7 @@ public final class WindowChrome
 		p.fill(x + 1, top + thumb - 2, 15, 1, SCROLL_DARK, 0);
 		p.sprite(SCROLL_UP, x, y);
 		p.sprite(SCROLL_DOWN, x, y + h - 16);
+		p.recordScrollbar(x, y, h, contentHeight);
 	}
 
 	/**
@@ -527,5 +528,12 @@ public final class WindowChrome
 		p.sprite(SCROLL_DOWN, x + w - 18, y + 21);
 		p.text(value, GameFont.SMALL, ORANGE, true, x + 2, y + 21, w - 20, 16, WidgetPainter.CENTRE, WidgetPainter.MIDDLE, 0);
 		p.text(label + ":", GameFont.REGULAR, ORANGE, true, x + 2, y, w - 3, 18, WidgetPainter.LEFT, WidgetPainter.MIDDLE, 0);
+		for (TaskFilter filter : TaskFilter.values())
+		{
+			if (filter.getLabel().equals(label))
+			{
+				p.hotspot(Hotspot.Kind.FILTER, filter, x, y + 19, w, 20);
+			}
+		}
 	}
 }

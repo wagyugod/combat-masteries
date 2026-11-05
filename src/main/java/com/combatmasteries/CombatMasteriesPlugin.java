@@ -18,8 +18,13 @@ import com.combatmasteries.tracking.KillEvent;
 import com.combatmasteries.tracking.KillMessageParser;
 import com.combatmasteries.tracking.Supplies;
 import com.combatmasteries.tracking.TripTracker;
+import com.combatmasteries.ui.CombatAchievementsButton;
 import com.combatmasteries.ui.CompletionPopup;
 import com.combatmasteries.ui.MasteriesPanel;
+import com.combatmasteries.ui.MasteriesSprite;
+import com.combatmasteries.ui.MasteriesWindow;
+import com.combatmasteries.ui.window.WindowModel;
+import com.combatmasteries.ui.window.WindowView;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -58,6 +63,7 @@ import net.runelite.api.events.GraphicChanged;
 import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.events.NpcSpawned;
+import net.runelite.api.events.ScriptPostFired;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.api.events.WidgetLoaded;
 import net.runelite.api.gameval.InterfaceID;
@@ -78,6 +84,9 @@ import net.runelite.client.config.RuneScapeProfileType;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.events.RuneScapeProfileChanged;
+import net.runelite.client.game.SpriteManager;
+import net.runelite.client.input.KeyManager;
+import net.runelite.client.input.MouseManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.ClientToolbar;
@@ -168,6 +177,21 @@ public class CombatMasteriesPlugin extends Plugin
 	private CompletionPopup popup;
 
 	@Inject
+	private MasteriesWindow window;
+
+	@Inject
+	private CombatAchievementsButton caButton;
+
+	@Inject
+	private MouseManager mouseManager;
+
+	@Inject
+	private KeyManager keyManager;
+
+	@Inject
+	private SpriteManager spriteManager;
+
+	@Inject
 	@Named("developerMode")
 	boolean developerMode;
 
@@ -238,7 +262,7 @@ public class CombatMasteriesPlugin extends Plugin
 			boss.getRegions().forEach(region -> bossByRegion.put(region, boss.getName()));
 		}
 
-		panel = new MasteriesPanel();
+		panel = new MasteriesPanel(() -> clientThread.invoke(() -> openWindow(WindowView.OVERVIEW)));
 		BufferedImage icon = ImageUtil.loadImageResource(CombatMasteriesPlugin.class, "icon.png");
 		navButton = NavigationButton.builder()
 			.tooltip("Combat Masteries")
@@ -247,6 +271,13 @@ public class CombatMasteriesPlugin extends Plugin
 			.panel(panel)
 			.build();
 		clientToolbar.addNavigation(navButton);
+
+		overlayManager.add(window);
+		mouseManager.registerMouseListener(window);
+		mouseManager.registerMouseWheelListener(window);
+		keyManager.registerKeyListener(window);
+		spriteManager.addSpriteOverrides(MasteriesSprite.values());
+		clientThread.invokeLater(this::updateCaButton);
 
 		refreshPanel();
 		clientThread.invokeLater(() ->
@@ -262,7 +293,17 @@ public class CombatMasteriesPlugin extends Plugin
 	protected void shutDown()
 	{
 		clientToolbar.removeNavigation(navButton);
-		clientThread.invoke(() -> helmetGlow.setStyle(null));
+		window.close();
+		overlayManager.remove(window);
+		mouseManager.unregisterMouseListener(window);
+		mouseManager.unregisterMouseWheelListener(window);
+		keyManager.unregisterKeyListener(window);
+		clientThread.invoke(() ->
+		{
+			helmetGlow.setStyle(null);
+			caButton.remove();
+		});
+		spriteManager.removeSpriteOverrides(MasteriesSprite.values());
 		killAssembler.reset();
 		attempts.abort();
 		trip.restock("plugin stopped");
@@ -306,6 +347,7 @@ public class CombatMasteriesPlugin extends Plugin
 		if (state == GameState.LOGIN_SCREEN || state == GameState.HOPPING)
 		{
 			// Logging out or hopping mid-run abandons it
+			window.close();
 			attempts.abort();
 			killAssembler.reset();
 			completedRegionBoss = null;
@@ -365,6 +407,7 @@ public class CombatMasteriesPlugin extends Plugin
 	public void onGameTick(GameTick event)
 	{
 		popup.onTick();
+		updateCaButton();
 		if (progress == null)
 		{
 			return;
@@ -378,6 +421,20 @@ public class CombatMasteriesPlugin extends Plugin
 		}
 
 		updateRegionAttempt(tick);
+	}
+
+	@Subscribe
+	public void onScriptPostFired(ScriptPostFired event)
+	{
+		for (int script : CombatAchievementsButton.BUILD_SCRIPTS)
+		{
+			if (event.getScriptId() == script)
+			{
+				// A Combat Achievements tab was (re)built along with its title bar
+				updateCaButton();
+				return;
+			}
+		}
 	}
 
 	@Subscribe
@@ -406,6 +463,14 @@ public class CombatMasteriesPlugin extends Plugin
 		if (event.getGroupId() == InterfaceID.BANKMAIN || event.getGroupId() == InterfaceID.SHARED_BANK)
 		{
 			restockTrip("You opened a bank.");
+		}
+		for (int group : CombatAchievementsButton.GROUPS)
+		{
+			if (event.getGroupId() == group)
+			{
+				// After the tab's load scripts have built its title bar
+				clientThread.invokeLater(this::updateCaButton);
+			}
 		}
 	}
 
@@ -953,6 +1018,49 @@ public class CombatMasteriesPlugin extends Plugin
 		TaskList tasks = taskList;
 		MasteryProgress snapshot = progress;
 		SwingUtilities.invokeLater(() -> p.update(tasks, snapshot));
+		clientThread.invoke(this::refreshWindow);
+	}
+
+	private void updateCaButton()
+	{
+		caButton.update(this::openWindow);
+	}
+
+	/**
+	 * Opens the Combat Masteries window on a tab, if logged in to a world that tracks progress. Call on the
+	 * client thread.
+	 */
+	private void openWindow(WindowView view)
+	{
+		if (progress == null || taskList == null)
+		{
+			return;
+		}
+		window.open(view, buildWindowModel());
+	}
+
+	/**
+	 * Shows the latest progress in the window if it is open, or closes it once logged out.
+	 */
+	private void refreshWindow()
+	{
+		if (!window.isOpen())
+		{
+			return;
+		}
+		if (progress == null || taskList == null)
+		{
+			window.close();
+			return;
+		}
+		window.setModel(buildWindowModel());
+	}
+
+	private WindowModel buildWindowModel()
+	{
+		Player local = client.getLocalPlayer();
+		String name = local != null && local.getName() != null ? local.getName() : "";
+		return WindowModel.build(taskList, progress, name, this::personalBest);
 	}
 
 	/**

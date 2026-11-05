@@ -1,6 +1,7 @@
 package com.combatmasteries.ui.window;
 
 import java.awt.Graphics2D;
+import java.util.List;
 
 /**
  * Draws the whole Combat Masteries window, a copy of the Combat Achievements window, into a graphics
@@ -9,6 +10,15 @@ import java.awt.Graphics2D;
  */
 public final class WindowRenderer
 {
+	/**
+	 * The Rewards tab's tier buttons, as {@link RewardsView} draws them: a column of 32px tall buttons from
+	 * (8, 81), the selected one 121 wide.
+	 */
+	static final int TIER_BUTTON_X = 8;
+	static final int TIER_BUTTON_Y = 81;
+	static final int TIER_BUTTON_W = 121;
+	static final int TIER_BUTTON_H = 32;
+
 	private WindowRenderer()
 	{
 	}
@@ -19,10 +29,19 @@ public final class WindowRenderer
 	 */
 	public static void render(Graphics2D g, SpriteSource sprites, WindowModel model, WindowState state, int w, int h)
 	{
+		render(g, sprites, model, state, w, h, new WindowLayout());
+	}
+
+	/**
+	 * @param layout filled in with where the clickable parts and scrolling lists were drawn
+	 */
+	public static void render(Graphics2D g, SpriteSource sprites, WindowModel model, WindowState state, int w, int h,
+		WindowLayout layout)
+	{
 		Graphics2D g2 = (Graphics2D) g.create();
 		try
 		{
-			draw(new WidgetPainter(g2, new SpriteOverrides(sprites)), model, state, w, h);
+			draw(new WidgetPainter(g2, new SpriteOverrides(sprites), layout), model, state, w, h);
 		}
 		finally
 		{
@@ -33,6 +52,7 @@ public final class WindowRenderer
 	private static void draw(WidgetPainter p, WindowModel model, WindowState state, int w, int h)
 	{
 		WindowView view = state.getView();
+		p.scrollTarget(ScrollTarget.of(view));
 		WindowChrome.frame(p, w, h, view.title());
 		if (view != WindowView.BOSSES)
 		{
@@ -52,9 +72,28 @@ public final class WindowRenderer
 				break;
 			case REWARDS:
 				RewardsView.draw(p, model, state, w, h);
+				tierButtons(p, model.getTiers());
 				break;
 		}
 		WindowChrome.menuButton(p);
+		WindowMenus.menuButton(p, state);
+		if (state.isMenuOpen())
+		{
+			WindowMenus.menu(p, state, w, h);
+		}
+		else if (view == WindowView.TASKS && state.getOpenFilter() != null)
+		{
+			WindowMenus.filterList(p, model, state, w, h);
+		}
+	}
+
+	private static void tierButtons(WidgetPainter p, List<WindowModel.Tier> tiers)
+	{
+		for (int i = 0; i < tiers.size(); i++)
+		{
+			p.hotspot(Hotspot.Kind.TIER, tiers.get(i).getTier(), TIER_BUTTON_X, TIER_BUTTON_Y + i * TIER_BUTTON_H,
+				TIER_BUTTON_W, TIER_BUTTON_H);
+		}
 	}
 
 	/**

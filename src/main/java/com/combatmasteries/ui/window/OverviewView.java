@@ -121,6 +121,7 @@ final class OverviewView
 		int rowW = w - 4;
 		int visible = (listH + ROW_H - 1) / ROW_H;
 		int offset = Math.max(0, Math.min(scroll, Math.max(0, rows.size() - visible) * ROW_H));
+		p.recordScroll(visible * ROW_H, rows.size() * ROW_H, ROW_H);
 
 		Graphics2D g = p.graphics();
 		Shape clip = g.getClip();

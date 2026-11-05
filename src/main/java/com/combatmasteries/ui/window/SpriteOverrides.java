@@ -11,8 +11,8 @@ import javax.imageio.ImageIO;
 
 /**
  * Wraps a {@link SpriteSource} and hands out the plugin's own copies of a few interface sprites instead:
- * the steel window frame, its dividers and buttons, and the stone box bevels. The current game draws
- * these in slightly different shades than the sprites in the cache the renderer was built against, so
+ * the steel window frame, its dividers and buttons, the stone box bevels and the scroll arrows. The current
+ * game draws these in slightly different shades than the sprites in the cache the renderer was built against, so
  * the copies (same size and shape, under {@code /com/combatmasteries/sprites}) carry the shades the
  * game shows in the Combat Achievements window.
  */
@@ -25,6 +25,7 @@ final class SpriteOverrides implements SpriteSource
 		WindowChrome.CLOSE, WindowChrome.MENU,
 		WindowChrome.BOX_FIRST, WindowChrome.BOX_FIRST + 1, WindowChrome.BOX_FIRST + 2, WindowChrome.BOX_FIRST + 3,
 		WindowChrome.BOX_FIRST + 4, WindowChrome.BOX_FIRST + 5, WindowChrome.BOX_FIRST + 6, WindowChrome.BOX_FIRST + 7,
+		WindowChrome.SCROLL_UP, WindowChrome.SCROLL_DOWN,
 	};
 
 	private static final Map<Integer, BufferedImage> IMAGES = load();
