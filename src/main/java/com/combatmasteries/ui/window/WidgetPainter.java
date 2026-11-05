@@ -136,6 +136,15 @@ public final class WidgetPainter
 	// ---- sprites ----
 
 	/**
+	 * @return the item's inventory sprite, or null if it is not loaded (yet)
+	 */
+	@Nullable
+	public BufferedImage item(int itemId)
+	{
+		return sprites.item(itemId);
+	}
+
+	/**
 	 * A graphic widget: the sprite tiled over the box (starting at its top left, clipped at the far edges),
 	 * or stretched to fill it.
 	 */

@@ -19,6 +19,7 @@ import javax.swing.SwingUtilities;
 import net.runelite.api.Client;
 import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.widgets.Widget;
+import net.runelite.client.game.ItemManager;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.input.KeyListener;
 import net.runelite.client.input.MouseListener;
@@ -81,10 +82,10 @@ public class MasteriesWindow extends Overlay implements MouseListener, MouseWhee
 	private boolean clickOurs;
 
 	@Inject
-	MasteriesWindow(Client client, SpriteManager spriteManager)
+	MasteriesWindow(Client client, SpriteManager spriteManager, ItemManager itemManager)
 	{
 		this.client = client;
-		this.sprites = new SpriteManagerSource(spriteManager);
+		this.sprites = new SpriteManagerSource(spriteManager, itemManager);
 		setPosition(OverlayPosition.DYNAMIC);
 		setLayer(OverlayLayer.ABOVE_WIDGETS);
 		setPriority(PRIORITY_HIGHEST);

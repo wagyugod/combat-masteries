@@ -3,10 +3,12 @@ package com.combatmasteries.ui.window;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import com.combatmasteries.tasks.MasteryTask;
 import com.combatmasteries.tasks.TaskList;
 import com.google.gson.Gson;
 import java.awt.image.BufferedImage;
+import net.runelite.api.gameval.ItemID;
 import org.junit.Test;
 
 public class ContentIconsTest
@@ -31,6 +33,19 @@ public class ContentIconsTest
 			assertEquals(task.getContent(), ContentIcons.SIZE, icon.getWidth());
 			assertEquals(task.getContent(), ContentIcons.SIZE, icon.getHeight());
 		}
+	}
+
+	@Test
+	public void everyContentHasAnItem()
+	{
+		TaskList taskList = TaskList.load(new Gson(), TaskList.class.getResourceAsStream("/com/combatmasteries/tasks.json"));
+		for (MasteryTask task : taskList.getTasks())
+		{
+			assertTrue(task.getContent(), ContentIcons.itemId(task.getContent()) > 0);
+		}
+		assertEquals(ItemID.TORVA_HELM_SANGUINE, ContentIcons.itemId("Awakened Bosses"));
+		assertEquals(-1, ContentIcons.itemId("Barbarian Assault"));
+		assertEquals(-1, ContentIcons.itemId(null));
 	}
 
 	@Test

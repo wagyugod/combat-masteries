@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 import javax.annotation.Nullable;
 
 /**
- * Where the window renderer gets the game's interface sprites from. In the client this is RuneLite's
+ * Where the window renderer gets the game's interface and item sprites from. In the client this is RuneLite's
  * {@code SpriteManager}; offline it is read straight from a cache dump.
  * <p>
  * Images are trimmed to their pixels, without the sprite's offsets, which is what
@@ -17,4 +17,14 @@ public interface SpriteSource
 	 */
 	@Nullable
 	BufferedImage sprite(int id, int frame);
+
+	/**
+	 * @return the item's inventory sprite (36x32, outlined and shadowed, as {@code ItemManager} draws it), or
+	 * null if it is not loaded (yet) or there is none; the renderer then draws the plugin's own icon
+	 */
+	@Nullable
+	default BufferedImage item(int itemId)
+	{
+		return null;
+	}
 }

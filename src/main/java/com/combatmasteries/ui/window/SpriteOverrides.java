@@ -45,6 +45,13 @@ final class SpriteOverrides implements SpriteSource
 		return img != null ? img : sprites.sprite(id, frame);
 	}
 
+	@Nullable
+	@Override
+	public BufferedImage item(int itemId)
+	{
+		return sprites.item(itemId);
+	}
+
 	private static Map<Integer, BufferedImage> load()
 	{
 		Map<Integer, BufferedImage> images = new HashMap<>();
