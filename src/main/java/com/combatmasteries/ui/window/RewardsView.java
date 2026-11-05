@@ -40,13 +40,16 @@ final class RewardsView
 			y += drawButton(p, tier, tier.getTier() == state.getRewardsTier(), y);
 		}
 
-		// Reward list, in a framed panel with a scrollbar
+		// Reward list with a scrollbar. The frame wraps the list (it is the scrolled layer, sized to the
+		// content), so it ends just below the last group and scrolls with it.
+		List<WindowModel.RewardGroup> groups = model.getRewards().getOrDefault(state.getRewardsTier(), Collections.emptyList());
+		int top = TOP - state.getRewardsScroll();
+		int contentH = drawGroups(p, groups, PANEL_X + 2, top + 2, PANEL_W - 4, false);
 		Graphics2D g = p.graphics();
 		Shape clip = g.getClip();
 		g.clipRect(PANEL_X, TOP, PANEL_W, height);
-		cell(p, PANEL_X, TOP, PANEL_W, height);
-		List<WindowModel.RewardGroup> groups = model.getRewards().getOrDefault(state.getRewardsTier(), Collections.emptyList());
-		int contentH = drawGroups(p, groups, TOP - state.getRewardsScroll());
+		cell(p, PANEL_X, top, PANEL_W, contentH);
+		drawGroups(p, groups, PANEL_X + 2, top + 2, PANEL_W - 4, true);
 		g.setClip(clip);
 		WindowChrome.scrollbar(p, PANEL_X + PANEL_W, TOP, height, contentH, state.getRewardsScroll());
 	}
@@ -81,12 +84,15 @@ final class RewardsView
 	}
 
 	/**
-	 * @return the height of the list
+	 * Lays out (and if {@code draw}, draws) the groups, script 4813's way: rows of text beside a cell with
+	 * the icon, neighbouring groups sharing a border line.
+	 *
+	 * @return the height of the list including its margins, which is the height of the frame around it
 	 */
-	private static int drawGroups(WidgetPainter p, List<WindowModel.RewardGroup> groups, int top)
+	private static int drawGroups(WidgetPainter p, List<WindowModel.RewardGroup> groups, int left, int top, int width, boolean draw)
 	{
-		int textX = PANEL_X + ICON_W + 7;
-		int textW = PANEL_W - (ICON_W + 7) - 4;
+		int textX = left + ICON_W + 7;
+		int textW = width - (ICON_W + 7) - 4;
 		int y = top + 2;
 		for (WindowModel.RewardGroup group : groups)
 		{
@@ -95,16 +101,24 @@ final class RewardsView
 			{
 				String line = group.getLines().get(i);
 				int rowH = 13 * p.lineCount(line, GameFont.REGULAR, textW - 10) + 8;
-				p.fill(textX, y + groupH, textW, rowH, 0xffffff, i % 2 == 0 ? 245 : 230);
-				p.text(line, GameFont.REGULAR, WindowChrome.ORANGE, true, textX + 5, y + groupH, textW - 10, rowH,
-					WidgetPainter.LEFT, WidgetPainter.MIDDLE, 15);
+				if (draw)
+				{
+					p.fill(textX, y + groupH, textW, rowH, 0xffffff, i % 2 == 0 ? 245 : 230);
+					p.text(line, GameFont.REGULAR, WindowChrome.ORANGE, true, textX + 5, y + groupH, textW - 10, rowH,
+						WidgetPainter.LEFT, WidgetPainter.MIDDLE, 15);
+				}
 				groupH += rowH;
 			}
+			if (!draw)
+			{
+				y += groupH - 1;
+				continue;
+			}
 			cell(p, textX, y, textW, groupH);
-			int iconX = PANEL_X + 2;
+			int iconX = left + 2;
 			p.fill(iconX, y, ICON_W + 6, groupH, 0xffffff, 230);
 			MasteryTier tier = group.getTier();
-			p.image(TierIcons.large(tier), PANEL_X + 5 + (ICON_W - TierIcons.LARGE) / 2, y + (groupH - ICON_H) / 2);
+			p.image(TierIcons.large(tier), left + 5 + (ICON_W - TierIcons.LARGE) / 2, y + (groupH - ICON_H) / 2);
 			cell(p, iconX, y, ICON_W + 6, groupH);
 			y += groupH - 1;
 		}

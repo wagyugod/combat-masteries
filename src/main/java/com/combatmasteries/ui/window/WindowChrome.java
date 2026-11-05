@@ -22,6 +22,12 @@ public final class WindowChrome
 	public static final int BAR_EMPTY = 0x9e9e9e;
 	public static final int LINE_DARK = 0x0e0e0c;
 	public static final int LINE_LIGHT = 0x474745;
+	/**
+	 * The points bar's frame. Script 4782 in the cache dump uses the line colours above, but the current game
+	 * (the reference screenshots) draws a light outer and a dark inner line.
+	 */
+	static final int BAR_OUTER_LINE = 0x746652;
+	static final int BAR_INNER_LINE = 0x242821;
 
 	// Sprites
 	static final int STONE = 297;
@@ -40,12 +46,16 @@ public final class WindowChrome
 	static final int BAR_FILL = 3391;
 	static final int BAR_BACK = 3392;
 	static final int BAR_TICK = 2388;
-	static final int SCROLL_TRACK = 792;
-	static final int SCROLL_THUMB = 790;
-	static final int SCROLL_THUMB_TOP = 789;
-	static final int SCROLL_THUMB_BOTTOM = 791;
-	static final int SCROLL_UP = 773;
-	static final int SCROLL_DOWN = 788;
+	/**
+	 * The classic arrows. The game's scripts ask for 773 and 788, which the reference client (RuneLite's 2005
+	 * interface style) swaps for these; the dropdowns use the same down arrow.
+	 */
+	static final int SCROLL_UP = 801;
+	static final int SCROLL_DOWN = 802;
+	private static final int SCROLL_TRACK_COLOUR = 0x272520;
+	private static final int SCROLL_THUMB_COLOUR = 0x4d4437;
+	private static final int SCROLL_LIGHT = 0x756756;
+	private static final int SCROLL_DARK = 0x342f28;
 	/**
 	 * Stone box corners top left, top right, bottom left, bottom right, then edges left, top, right, bottom.
 	 */
@@ -104,7 +114,7 @@ public final class WindowChrome
 		int y = 39;
 		int inner = w - 4;
 		int filled = (int) Math.min(inner, Math.round(inner * Math.max(0, fill)));
-		p.outline(x + 1, y + 1, w - 2, 29, LINE_LIGHT);
+		p.outline(x + 1, y + 1, w - 2, 29, BAR_INNER_LINE);
 		p.graphic(BAR_BACK, x + 2, y + 2, inner, 27, true);
 		p.graphic(BAR_FILL, x + 2, y + 2, filled, 27, true);
 		if (ticks != null)
@@ -128,7 +138,7 @@ public final class WindowChrome
 			}
 		}
 		p.text(text, GameFont.REGULAR, WHITE, true, x, y, w, 33, WidgetPainter.CENTRE, WidgetPainter.MIDDLE, 0);
-		p.outline(x, y, w, 31, LINE_DARK);
+		p.outline(x, y, w, 31, BAR_OUTER_LINE);
 	}
 
 	/**
@@ -185,19 +195,25 @@ public final class WindowChrome
 	}
 
 	/**
-	 * A scrollbar: arrows, stretched track and a thumb sized to the visible share.
+	 * A scrollbar in the classic style the reference screenshots show (RuneLite's 2005 interface style): the
+	 * old arrow sprites, a flat dark track and a bevelled thumb sized to the visible share, drawn as the
+	 * pre-2007 client drew it.
 	 */
 	public static void scrollbar(WidgetPainter p, int x, int y, int h, int contentHeight, int scroll)
 	{
-		p.graphic(SCROLL_TRACK, x, y + 16, 16, h - 32, false);
 		int track = h - 32;
+		p.fill(x, y + 16, 16, track, SCROLL_TRACK_COLOUR, 0);
 		int content = Math.max(contentHeight, h);
-		int thumb = Math.max(10, track * h / content);
+		int thumb = Math.max(8, track * h / content);
 		int maxScroll = content - h;
-		int thumbY = y + 16 + (maxScroll <= 0 ? 0 : (track - thumb) * scroll / maxScroll);
-		p.graphic(SCROLL_THUMB, x, thumbY, 16, thumb, false);
-		p.graphic(SCROLL_THUMB_TOP, x, thumbY, 16, 5, false);
-		p.graphic(SCROLL_THUMB_BOTTOM, x, thumbY + thumb - 5, 16, 5, false);
+		int top = y + 16 + (maxScroll <= 0 ? 0 : (track - thumb) * scroll / maxScroll);
+		p.fill(x, top, 16, thumb, SCROLL_THUMB_COLOUR, 0);
+		p.fill(x, top, 2, thumb, SCROLL_LIGHT, 0);
+		p.fill(x, top, 16, 2, SCROLL_LIGHT, 0);
+		p.fill(x + 15, top, 1, thumb, SCROLL_DARK, 0);
+		p.fill(x + 14, top + 1, 1, thumb - 1, SCROLL_DARK, 0);
+		p.fill(x, top + thumb - 1, 16, 1, SCROLL_DARK, 0);
+		p.fill(x + 1, top + thumb - 2, 15, 1, SCROLL_DARK, 0);
 		p.sprite(SCROLL_UP, x, y);
 		p.sprite(SCROLL_DOWN, x, y + h - 16);
 	}

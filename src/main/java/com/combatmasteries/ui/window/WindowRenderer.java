@@ -19,7 +19,19 @@ public final class WindowRenderer
 	 */
 	public static void render(Graphics2D g, SpriteSource sprites, WindowModel model, WindowState state, int w, int h)
 	{
-		WidgetPainter p = new WidgetPainter(g, sprites);
+		Graphics2D g2 = (Graphics2D) g.create();
+		try
+		{
+			draw(new WidgetPainter(g2, sprites), model, state, w, h);
+		}
+		finally
+		{
+			g2.dispose();
+		}
+	}
+
+	private static void draw(WidgetPainter p, WindowModel model, WindowState state, int w, int h)
+	{
 		WindowView view = state.getView();
 		WindowChrome.frame(p, w, h, view.title());
 		if (view != WindowView.BOSSES)

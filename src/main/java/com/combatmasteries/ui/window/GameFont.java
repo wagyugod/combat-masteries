@@ -19,7 +19,7 @@ public enum GameFont
 	/**
 	 * p11_full (494).
 	 */
-	SMALL(10, 10, 2, 2),
+	SMALL(10, 10, 2, 1),
 	/**
 	 * p12_full (495).
 	 */
