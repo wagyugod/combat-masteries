@@ -24,15 +24,20 @@ final class BossesView
 	private static final int SEARCH_RIGHT = 1125;
 
 	/**
-	 * Shorter names for the cards whose full name does not fit on one line, as no Combat Achievements boss
-	 * name wraps.
+	 * The names the Combat Achievements Bosses tab uses for each content. Long names break
+	 * after the colon onto a second line, as the game does ("Chambers of Xeric:" /
+	 * "Challenge Mode"); one-line names sit centred in the same two-line space.
 	 */
-	private static final Map<String, String> SHORT_NAMES = new HashMap<>();
+	private static final Map<String, String> CARD_NAMES = new HashMap<>();
 
 	static
 	{
-		SHORT_NAMES.put("Theatre of Blood: Hard Mode", "ToB: Hard Mode");
-		SHORT_NAMES.put("Chambers of Xeric: CM", "CoX: Challenge Mode");
+		CARD_NAMES.put("Inferno", "TzKal-Zuk");
+		CARD_NAMES.put("Colosseum", "Fortis Colosseum");
+		CARD_NAMES.put("Theatre of Blood: Hard Mode", "Theatre of Blood:<br>Hard Mode");
+		CARD_NAMES.put("Chambers of Xeric: CM", "Chambers of Xeric:<br>Challenge Mode");
+		CARD_NAMES.put("Tombs of Amascut", "Tombs of Amascut:<br>Expert Mode");
+		CARD_NAMES.put("Yama Contracts", "Yama");
 	}
 
 	private BossesView()
@@ -89,13 +94,9 @@ final class BossesView
 		boolean done = content.getTasks() > 0 && content.getCompleted() == content.getTasks();
 		WindowChrome.stoneBox(p, x, y, CARD_W, CARD_H);
 		p.outline(x, y, CARD_W, CARD_H, 0x000000, 50);
-		String name = content.getName();
-		if (p.width(name, GameFont.BOLD) > CARD_W - 6)
-		{
-			name = SHORT_NAMES.getOrDefault(name, name);
-		}
+		String name = CARD_NAMES.getOrDefault(content.getName(), content.getName());
 		p.text(name, GameFont.BOLD, done ? WindowChrome.GREEN : WindowChrome.LIGHT_ORANGE, true,
-			x + 3, y + 9, CARD_W - 6, 24, WidgetPainter.CENTRE, WidgetPainter.MIDDLE, 0);
+			x + 3, y + 3, CARD_W - 6, 30, WidgetPainter.CENTRE, WidgetPainter.MIDDLE, 13);
 		p.text("<col=ff9933>Tasks:</col><col=ffffff> " + content.getTasks() + "</col>", GameFont.SMALL, WindowChrome.WHITE, true,
 			x, y + 32, CARD_W, 24, WidgetPainter.CENTRE, WidgetPainter.MIDDLE, 0);
 		if (content.getTasks() > 0)

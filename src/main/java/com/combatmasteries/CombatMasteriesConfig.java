@@ -13,7 +13,7 @@ public interface CombatMasteriesConfig extends Config
 
 	@ConfigSection(
 		name = "Helmet cosmetic",
-		description = "Glowing eyes on the Tzkal slayer helmet for each unlocked tier",
+		description = "Glowing eyes on the Tzkal Slayer Helmet for each unlocked tier",
 		position = 10
 	)
 	String cosmeticSection = "cosmetic";
@@ -67,7 +67,7 @@ public interface CombatMasteriesConfig extends Config
 	@ConfigItem(
 		keyName = "helmetGlow",
 		name = "Glowing eyes",
-		description = "Recolour the Tzkal slayer helmet's eyes for your highest unlocked tier. Only you can see this",
+		description = "Recolour the Tzkal Slayer Helmet's eyes for your highest unlocked tier. Only you can see this",
 		position = 1,
 		section = cosmeticSection
 	)

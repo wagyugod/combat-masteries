@@ -8,16 +8,16 @@ challenge tasks from endgame content, mostly solo, and deliberately aspirational
   ever added (new content, or new time tasks as gear improves), never removed.
 - **Tiers** unlock at a fixed share of all points, so thresholds rise as tasks are added:
 
-  | Tier | Needs | Tzkal slayer helmet eyes |
+  | Tier | Needs | Tzkal Slayer Helmet eyes |
   |---|---|---|
   | Ascended Grandmaster | 25% of points | Red drifting to orange |
   | Exalted Grandmaster | 50% of points | Ice blue drifting to azure |
   | Immortal Grandmaster | 90% of points (like the gilded collection log staff) | Radiant oathplate's white drifting to a cool white |
 
-- **Reward**: the eyes of your Tzkal slayer helmet glow in your tier's colour. This is
+- **Reward**: the eyes of your Tzkal Slayer Helmet glow in your tier's colour. This is
   client-side only, so only you see it, and it only shows while you wear the helmet.
 
-![Tzkal slayer helmet eye glow for each tier](docs/helmet-glow.gif)
+![Tzkal Slayer Helmet eye glow for each tier](docs/helmet-glow.gif)
 
 *Earlier offline render of the helmet's real model (42733). The glow now has no screen halo:
 the brightness travels slowly across the slit over 12 seconds, and a little of the colour
@@ -71,7 +71,7 @@ work too, with `_` for spaces. Examples:
 
 ### What to check
 
-1. **Helmet**: wear a Tzkal slayer helmet and try `::cmtier ascended`, `exalted` and
+1. **Helmet**: wear a Tzkal Slayer Helmet and try `::cmtier ascended`, `exalted` and
    `immortal`. Check with the GPU plugin on and off, and with 117 HD if you use it.
    `::cmtier off` should restore the stock eyes.
 2. **Side panel**: the sidebar's helmet icon lists the tasks with Speed/Challenge and content filters.

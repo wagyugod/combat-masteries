@@ -172,7 +172,7 @@ public class MasteriesPanel extends PluginPanel
 		overview.add(tierRows);
 
 		JPanel reward = stonePanel(new BorderLayout());
-		JLabel rewardText = new JLabel("<html><body style='width:160px'>Each tier makes the eyes of your Tzkal slayer helmet glow."
+		JLabel rewardText = new JLabel("<html><body style='width:160px'>Each tier makes the eyes of your Tzkal Slayer Helmet glow."
 			+ " Only you can see it, and it shows while you wear the helmet.</body></html>");
 		rewardText.setFont(FontManager.getRunescapeSmallFont());
 		rewardText.setForeground(MUTED);

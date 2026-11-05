@@ -89,7 +89,7 @@ import net.runelite.client.util.Text;
 @Slf4j
 @PluginDescriptor(
 	name = "Combat Masteries",
-	description = "Endgame PvM speed and challenge tasks beyond Grandmaster, with a glowing-eye Tzkal slayer helmet reward",
+	description = "Endgame PvM speed and challenge tasks beyond Grandmaster, with a glowing-eye Tzkal Slayer Helmet reward",
 	tags = {"combat", "achievements", "tasks", "pvm", "grandmaster", "zuk", "helmet", "speedrun"}
 )
 public class CombatMasteriesPlugin extends Plugin
@@ -874,7 +874,7 @@ public class CombatMasteriesPlugin extends Plugin
 	{
 		if (config.chatMessages())
 		{
-			queueGameMessage("Congratulations, you've unlocked " + TASK_COLOUR + tier.getDisplayName() + "</col>! Your Tzkal slayer helmet's eyes now glow.");
+			queueGameMessage("Congratulations, you've unlocked " + TASK_COLOUR + tier.getDisplayName() + "</col>! Your Tzkal Slayer Helmet's eyes now glow.");
 		}
 		if (config.completionPopup())
 		{
