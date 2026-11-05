@@ -27,7 +27,50 @@ public final class WindowChrome
 	 * (the reference screenshots) draws a light outer and a dark inner line.
 	 */
 	static final int BAR_OUTER_LINE = 0x746652;
-	static final int BAR_INNER_LINE = 0x242821;
+
+	/**
+	 * The points bar's gradients, top to bottom, as the current game draws them (the reference screenshots).
+	 * They are close to sprites 3391 (fill) and 3392 (track) but not the same: each pair of rows differs a
+	 * little, and the first filled and last empty columns are lighter.
+	 */
+	private static final int BAR_HEIGHT = 27;
+	private static final int[] BAR_FILL_ROWS = {
+		0x0e4d21, 0x125e29, 0x13622c, 0x167532, 0x187d37, 0x1c8e3e, 0x1b8b3d, 0x1e9d44, 0x1fa346, 0x20a948,
+		0x22b84f, 0x24c153, 0x26cb57, 0x28d05a, 0x26cb57, 0x24c153, 0x22b84f, 0x20a948, 0x1fa346, 0x1e9d44,
+		0x1a883c, 0x1b8b3d, 0x187d37, 0x167532, 0x13622c, 0x125e29, 0x0e4d21,
+	};
+	private static final int[] BAR_FILL_FIRST_COLUMN = {
+		0x0e5121, 0x0f6729, 0x116f2e, 0x138335, 0x168b3b, 0x189b43, 0x1b9c42, 0x1bab49, 0x1eb74d, 0x1fc150,
+		0x20cb57, 0x22d15a, 0x24d35b, 0x27d35b, 0x24d35b, 0x22cc58, 0x20c353, 0x1eb84f, 0x1cac49, 0x1ba446,
+		0x189b42, 0x178d3e, 0x138b3b, 0x127f35, 0x0f6f2e, 0x0f6429, 0x0e5121,
+	};
+	private static final int[] BAR_TRACK_ROWS = {
+		0x2d2c2e, 0x343434, 0x333333, 0x3d3d3d, 0x3b3b3b, 0x454545, 0x434343, 0x4d4d4d, 0x4b4b4b, 0x575757,
+		0x555555, 0x616161, 0x5f5f5f, 0x636363, 0x5e5e5e, 0x5f5f5f, 0x535353, 0x555555, 0x494949, 0x4b4b4b,
+		0x414141, 0x434343, 0x393939, 0x3b3b3b, 0x313131, 0x333333, 0x2d2c2e,
+	};
+	private static final int[] BAR_TRACK_LAST_COLUMN = {
+		0x2d2d2f, 0x353537, 0x333435, 0x3e3f41, 0x3d3d3f, 0x48494a, 0x464749, 0x515254, 0x505052, 0x5e5e5f,
+		0x5c5c5e, 0x646464, 0x636464, 0x646464, 0x636464, 0x606060, 0x5c5c5e, 0x565656, 0x505052, 0x4c4c4c,
+		0x464749, 0x434444, 0x3d3d3f, 0x3b3b3c, 0x333435, 0x333333, 0x2d2d2f,
+	};
+	/**
+	 * The dark line inside the bar's frame: along the fill, along the track, and its two end columns top to
+	 * bottom (the frame's 29 inner rows).
+	 */
+	private static final int BAR_INNER_LINE_FILL = 0x272920;
+	private static final int BAR_INNER_LINE_FILL_FIRST = 0x242a20;
+	private static final int BAR_INNER_LINE_TRACK = 0x2c2a22;
+	private static final int[] BAR_INNER_LINE_LEFT = {
+		0x1d2920, 0x232920, 0x262920, 0x262922, 0x252822, 0x252822, 0x252822, 0x242821, 0x242821, 0x232721,
+		0x232721, 0x232721, 0x222721, 0x242721, 0x242721, 0x222721, 0x222721, 0x232721, 0x232721, 0x232721,
+		0x242821, 0x242821, 0x252822, 0x252822, 0x252822, 0x262920, 0x262920, 0x232920, 0x1d2920,
+	};
+	private static final int[] BAR_INNER_LINE_RIGHT = {
+		0x2b2921, 0x2c2a22, 0x2c2a22, 0x2c2a22, 0x2c2a22, 0x2c2921, 0x2c2921, 0x2c2921, 0x2c2921, 0x2c2921,
+		0x2c2921, 0x2c2921, 0x2c2921, 0x2c2921, 0x2c2921, 0x2c2921, 0x2c2921, 0x2c2921, 0x2c2921, 0x2c2921,
+		0x2c2921, 0x2c2921, 0x2c2921, 0x2c2921, 0x2c2a22, 0x2c2a22, 0x2c2a22, 0x2c2a22, 0x2b2921,
+	};
 
 	// Sprites
 	static final int STONE = 297;
@@ -43,8 +86,6 @@ public final class WindowChrome
 	static final int DIVIDER_VERTICAL = 2561;
 	static final int CLOSE = 535;
 	static final int MENU = 2289;
-	static final int BAR_FILL = 3391;
-	static final int BAR_BACK = 3392;
 	static final int BAR_TICK = 2388;
 	/**
 	 * The classic arrows. The game's scripts ask for 773 and 788, which the reference client (RuneLite's 2005
@@ -114,9 +155,22 @@ public final class WindowChrome
 		int y = 39;
 		int inner = w - 4;
 		int filled = (int) Math.min(inner, Math.round(inner * Math.max(0, fill)));
-		p.outline(x + 1, y + 1, w - 2, 29, BAR_INNER_LINE);
-		p.graphic(BAR_BACK, x + 2, y + 2, inner, 27, true);
-		p.graphic(BAR_FILL, x + 2, y + 2, filled, 27, true);
+		barShadow(p, x, y, w, 31);
+		barInnerLine(p, x + 1, y + 1, w - 2, 29, filled);
+		for (int i = 0; i < BAR_HEIGHT; i++)
+		{
+			int row = y + 2 + i;
+			p.hline(x + 2, row, filled, BAR_FILL_ROWS[i]);
+			p.hline(x + 2 + filled, row, inner - filled, BAR_TRACK_ROWS[i]);
+			if (filled > 0)
+			{
+				p.hline(x + 2, row, 1, BAR_FILL_FIRST_COLUMN[i]);
+			}
+			if (filled < inner)
+			{
+				p.hline(x + 1 + inner, row, 1, BAR_TRACK_LAST_COLUMN[i]);
+			}
+		}
 		if (ticks != null)
 		{
 			for (double tick : ticks)
@@ -139,6 +193,46 @@ public final class WindowChrome
 		}
 		p.text(text, GameFont.REGULAR, WHITE, true, x, y, w, 33, WidgetPainter.CENTRE, WidgetPainter.MIDDLE, 0);
 		p.outline(x, y, w, 31, BAR_OUTER_LINE);
+	}
+
+	/**
+	 * The dark line just inside the bar's frame: a shade greener where it runs along the filled part, with
+	 * its own left and right columns.
+	 */
+	private static void barInnerLine(WidgetPainter p, int x, int y, int w, int h, int filled)
+	{
+		for (int edge : new int[]{y, y + h - 1})
+		{
+			p.hline(x, edge, filled + 1, BAR_INNER_LINE_FILL);
+			p.hline(x + 1 + filled, edge, w - 1 - filled, BAR_INNER_LINE_TRACK);
+			if (filled > 0)
+			{
+				p.hline(x + 1, edge, 1, BAR_INNER_LINE_FILL_FIRST);
+			}
+		}
+		for (int i = 0; i < h; i++)
+		{
+			p.hline(x, y + i, 1, BAR_INNER_LINE_LEFT[i]);
+			p.hline(x + w - 1, y + i, 1, BAR_INNER_LINE_RIGHT[i]);
+		}
+	}
+
+	/**
+	 * The soft shadow around the bar's frame: dark above and at the sides, fading at the top corners and
+	 * barely there underneath.
+	 */
+	private static void barShadow(WidgetPainter p, int x, int y, int w, int h)
+	{
+		p.fill(x + 1, y - 1, w - 2, 1, 0x000000, 230);
+		p.fill(x - 1, y + 1, 1, h - 2, 0x000000, 230);
+		p.fill(x + w, y + 1, 1, h - 2, 0x000000, 230);
+		p.fill(x - 1, y - 1, 2, 1, 0x000000, 243);
+		p.fill(x + w - 1, y - 1, 2, 1, 0x000000, 243);
+		p.fill(x - 1, y, 1, 1, 0x000000, 243);
+		p.fill(x + w, y, 1, 1, 0x000000, 243);
+		p.fill(x - 1, y + h - 1, 1, 1, 0x000000, 243);
+		p.fill(x + w, y + h - 1, 1, 1, 0x000000, 243);
+		p.fill(x + 1, y + h, w, 1, 0x000000, 254);
 	}
 
 	/**

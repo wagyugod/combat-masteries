@@ -1,13 +1,16 @@
 package com.combatmasteries.ui.window;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
+import java.awt.CompositeContext;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -158,6 +161,14 @@ public final class WidgetPainter
 	}
 
 	/**
+	 * A one pixel tall run of solid colour; used for gradients given row by row.
+	 */
+	public void hline(int x, int y, int w, int rgb)
+	{
+		fill(x, y, w, 1, rgb, 0);
+	}
+
+	/**
 	 * An unfilled rectangle widget: a 1px line just inside the box.
 	 */
 	public void outline(int x, int y, int w, int h, int rgb, int trans)
@@ -183,10 +194,73 @@ public final class WidgetPainter
 		Composite before = g.getComposite();
 		if (trans > 0)
 		{
-			g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (255 - trans) / 255f));
+			g.setComposite(new ClientBlend(256 - trans));
 		}
 		draw.run();
 		g.setComposite(before);
+	}
+
+	/**
+	 * Blends the way the client's rasteriser fills a translucent rectangle: with {@code a = 256 - trans},
+	 * each channel is {@code (src * a >> 8) + (dst * (256 - a) >> 8)}, the two halves rounded down
+	 * separately. Java2D's own alpha blending rounds, which leaves translucent rows a shade brighter than
+	 * the game's.
+	 */
+	private static final class ClientBlend implements Composite
+	{
+		private final int alpha;
+
+		ClientBlend(int alpha)
+		{
+			this.alpha = alpha;
+		}
+
+		@Override
+		public CompositeContext createContext(ColorModel srcModel, ColorModel dstModel, RenderingHints hints)
+		{
+			return new CompositeContext()
+			{
+				@Override
+				public void compose(Raster src, Raster dstIn, WritableRaster dstOut)
+				{
+					int w = Math.min(src.getWidth(), dstIn.getWidth());
+					int h = Math.min(src.getHeight(), dstIn.getHeight());
+					Object srcPixel = null;
+					Object dstPixel = null;
+					for (int y = 0; y < h; y++)
+					{
+						for (int x = 0; x < w; x++)
+						{
+							srcPixel = src.getDataElements(src.getMinX() + x, src.getMinY() + y, srcPixel);
+							dstPixel = dstIn.getDataElements(dstIn.getMinX() + x, dstIn.getMinY() + y, dstPixel);
+							int s = srcModel.getRGB(srcPixel);
+							int d = dstModel.getRGB(dstPixel);
+							if ((s >>> 24) != 0)
+							{
+								d = blend(s, d, alpha);
+							}
+							dstPixel = dstModel.getDataElements(d, dstPixel);
+							dstOut.setDataElements(dstOut.getMinX() + x, dstOut.getMinY() + y, dstPixel);
+						}
+					}
+				}
+
+				@Override
+				public void dispose()
+				{
+				}
+			};
+		}
+
+		static int blend(int src, int dst, int a)
+		{
+			int inv = 256 - a;
+			int rb = ((src & 0xff00ff) * a >> 8 & 0xff00ff) + ((dst & 0xff00ff) * inv >> 8 & 0xff00ff);
+			int gr = ((src & 0xff00) * a >> 8 & 0xff00) + ((dst & 0xff00) * inv >> 8 & 0xff00);
+			int dstAlpha = dst >>> 24;
+			int outAlpha = dstAlpha + ((255 - dstAlpha) * a >> 8);
+			return outAlpha << 24 | rb | gr;
+		}
 	}
 
 	// ---- text ----

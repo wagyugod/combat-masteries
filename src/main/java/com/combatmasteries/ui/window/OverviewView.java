@@ -13,6 +13,15 @@ final class OverviewView
 	private static final int RIGHT_W = 277;
 	private static final int HEADER_Y = 75;
 	private static final int CONTENT_Y = 98;
+	/**
+	 * Personal best values. Script 4809 asks for 0xdfdfdf; the current game shows them a touch lighter.
+	 */
+	private static final int VALUE_COLOUR = 0xe4e4e4;
+	/**
+	 * The light edge outside the tier boxes, and its fainter ends.
+	 */
+	private static final int HIGHLIGHT = 0x96806b;
+	private static final int HIGHLIGHT_FADED = 0x7b705b;
 
 	private OverviewView()
 	{
@@ -48,6 +57,7 @@ final class OverviewView
 			int by = top + y;
 			WindowChrome.stoneBox(p, x, by, boxW, boxH);
 			p.outline(x, by, boxW, boxH, 0x000000, 200);
+			boxHighlight(p, x, by, boxW, boxH);
 			p.text(tier.getName(), GameFont.REGULAR, WindowChrome.LIGHT_ORANGE, true, x, by + 5, boxW, 12,
 				WidgetPainter.CENTRE, WidgetPainter.MIDDLE, 0);
 			p.image(TierIcons.small(tier.getTier()), x + boxW / 2 - TierIcons.SMALL / 2, by + 19);
@@ -57,21 +67,45 @@ final class OverviewView
 	}
 
 	/**
-	 * Rows as script 4809 draws the Combat Profile: alternating light bands, label left, value right.
+	 * The light edge the current game shows just outside a tier box: along the top, fading at its ends,
+	 * and down the right side by the top and bottom corners.
+	 */
+	private static void boxHighlight(WidgetPainter p, int x, int y, int w, int h)
+	{
+		p.fill(x + 3, y - 1, w - 6, 1, HIGHLIGHT, 208);
+		p.fill(x + 1, y - 1, 2, 1, HIGHLIGHT_FADED, 208);
+		p.fill(x + w - 3, y - 1, 2, 1, HIGHLIGHT_FADED, 208);
+		p.fill(x + w - 1, y - 1, 1, 1, HIGHLIGHT, 248);
+		p.fill(x + w, y, 1, 1, HIGHLIGHT, 248);
+		p.fill(x + w, y + 1, 1, 2, HIGHLIGHT_FADED, 208);
+		p.fill(x + w, y + 3, 1, 1, HIGHLIGHT, 208);
+		p.fill(x + w, y + h - 11, 1, 4, HIGHLIGHT, 208);
+	}
+
+	/**
+	 * Rows as script 4809 draws the Combat Profile: alternating light bands, label left, value right. The
+	 * script frames them with a dark line; the current game instead shows a faint light edge, drawn over
+	 * the rows.
 	 */
 	private static void drawPersonalBests(WidgetPainter p, List<WindowModel.PersonalBest> rows, int left, int top, int w, int h)
 	{
-		p.outline(left, top, w - 2, h - 4, 0x000000, 150);
 		int rowW = w - 4;
 		int rowH = h / Math.max(7, rows.size());
+		// Rows run down to the frame's bottom edge; the last takes whatever the division leaves over
+		int bottom = top + h - 4;
 		int y = top + 1;
 		for (int i = 0; i < rows.size(); i++)
 		{
 			WindowModel.PersonalBest row = rows.get(i);
+			if (i == rows.size() - 1 && rows.size() > 7)
+			{
+				rowH = bottom - y;
+			}
 			p.fill(left + 1, y, rowW, rowH, 0xffffff, i % 2 == 0 ? 230 : 245);
 			p.text(row.getLabel(), GameFont.REGULAR, WindowChrome.LIGHT_ORANGE, left + 1 + 5, y, rowW, rowH, WidgetPainter.LEFT);
-			p.text(row.getValue(), GameFont.REGULAR, WindowChrome.GREY_TEXT, left + 1, y, rowW - 5, rowH, WidgetPainter.RIGHT);
+			p.text(row.getValue(), GameFont.REGULAR, VALUE_COLOUR, left + 1, y, rowW - 5, rowH, WidgetPainter.RIGHT);
 			y += rowH;
 		}
+		p.outline(left, top, w - 2, h - 4, 0xffffff, 245);
 	}
 }
