@@ -941,7 +941,7 @@
     {
       "id": "doom_delve_24",
       "name": "Deep Delver I",
-      "description": "Complete delve levels 1 to 24 of the Doom of Mokhaiotl in a single delve.",
+      "description": "Defeat the Doom of Mokhaiotl at delve level 24.",
       "category": "CHALLENGE",
       "content": "Doom of Mokhaiotl",
       "conditions": [
@@ -954,7 +954,7 @@
     {
       "id": "doom_delve_32",
       "name": "Deep Delver II",
-      "description": "Complete delve levels 1 to 32 of the Doom of Mokhaiotl in a single delve.",
+      "description": "Defeat the Doom of Mokhaiotl at delve level 32.",
       "category": "CHALLENGE",
       "content": "Doom of Mokhaiotl",
       "conditions": [
@@ -967,7 +967,7 @@
     {
       "id": "doom_delve_40",
       "name": "Deep Delver III",
-      "description": "Complete delve levels 1 to 40 of the Doom of Mokhaiotl in a single delve.",
+      "description": "Defeat the Doom of Mokhaiotl at delve level 40.",
       "category": "CHALLENGE",
       "content": "Doom of Mokhaiotl",
       "conditions": [
@@ -980,7 +980,7 @@
     {
       "id": "doom_delve_48",
       "name": "Deep Delver IV",
-      "description": "Complete delve levels 1 to 48 of the Doom of Mokhaiotl in a single delve.",
+      "description": "Defeat the Doom of Mokhaiotl at delve level 48.",
       "category": "CHALLENGE",
       "content": "Doom of Mokhaiotl",
       "conditions": [
@@ -993,7 +993,7 @@
     {
       "id": "doom_delve_56",
       "name": "Deep Delver V",
-      "description": "Complete delve levels 1 to 56 of the Doom of Mokhaiotl in a single delve.",
+      "description": "Defeat the Doom of Mokhaiotl at delve level 56.",
       "category": "CHALLENGE",
       "content": "Doom of Mokhaiotl",
       "conditions": [
@@ -1006,7 +1006,7 @@
     {
       "id": "doom_delve_64",
       "name": "Deep Delver VI",
-      "description": "Complete delve levels 1 to 64 of the Doom of Mokhaiotl in a single delve.",
+      "description": "Defeat the Doom of Mokhaiotl at delve level 64.",
       "category": "CHALLENGE",
       "content": "Doom of Mokhaiotl",
       "conditions": [
