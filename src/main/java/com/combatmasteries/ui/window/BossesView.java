@@ -2,8 +2,11 @@ package com.combatmasteries.ui.window;
 
 import java.awt.Graphics2D;
 import java.awt.Shape;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -78,7 +81,7 @@ final class BossesView
 		p.graphic(SEARCH_RIGHT, sx + 369, sy, 4, 30, false);
 		p.text(state.getSearch() + "*", GameFont.REGULAR, WindowChrome.ORANGE, 90, 35 + 9, w - 111, 22, WidgetPainter.LEFT);
 
-		List<WindowModel.Content> contents = state.search(model.getContents());
+		List<WindowModel.Content> contents = sortedByCardName(state.search(model.getContents()));
 		int listW = w - 10;
 		int listH = h - 88;
 		int areaX = LIST_X;
@@ -108,6 +111,23 @@ final class BossesView
 		}
 
 		WindowChrome.scrollbar(p, LIST_X + listW - 16 - 1, LIST_Y, listH, contentH, state.getBossesScroll());
+	}
+
+	/**
+	 * Cards are listed alphabetically by the name shown on them, ignoring a leading "The"
+	 * (so The Fractured Archive sorts under F).
+	 */
+	static List<WindowModel.Content> sortedByCardName(List<WindowModel.Content> contents)
+	{
+		List<WindowModel.Content> sorted = new ArrayList<>(contents);
+		sorted.sort(Comparator.comparing(c -> sortKey(c.getName())));
+		return sorted;
+	}
+
+	static String sortKey(String content)
+	{
+		String name = CARD_NAMES.getOrDefault(content, content).replace("<br>", " ").toLowerCase(Locale.ROOT);
+		return name.startsWith("the ") ? name.substring(4) : name;
 	}
 
 	private static void drawCard(WidgetPainter p, WindowModel.Content content, int x, int y)
