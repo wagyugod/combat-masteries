@@ -11,13 +11,12 @@ import javax.imageio.ImageIO;
 /**
  * The 24x24 content icons drawn in place of the Combat Achievements tier swords (task rows, rewards).
  * <p>
- * Each icon is the content's signature item drawn as pixel art in the style of the CA tier sword sprites (3399-3404),
- * with shapes and colours taken from the item's cache model: composed along the bottom-left to top-right diagonal,
- * 3-4 flat tones per material lit from the top left, a 1px 0x000001 outline and a 1px 0x181818 drop shadow to the
- * bottom right, in a 24x24 frame. The items: Infernal cape, Blessed Dizana's quiver, Scythe of Vitur, Sanguine Scythe of Vitur, Twisted
- * bow, Tumeken's shadow, Avernic treads (max), Sanguine torva full helm, Radiant oathplate helm. One file per content under
- * {@code /com/combatmasteries/icons/}, named
- * after the content with every run of non-alphanumerics turned into an underscore
+ * Each icon is the content's signature item rendered offline from its cache model through the client's item-sprite
+ * code (1px 0x000001 outline, 0x181818 drop shadow) at 24x24, the size of the CA tier sword sprites (3399-3404): long
+ * items laid along the bottom-left to top-right diagonal like the swords, the cape and helms in their inventory pose
+ * and the boots side on. The items: Infernal cape, Blessed Dizana's quiver, Scythe of Vitur, Sanguine Scythe of Vitur, Twisted
+ * bow, Tumeken's shadow, Avernic treads (max), Sanguine torva full helm, Radiant oathplate helm. One file per content
+ * under {@code /com/combatmasteries/icons/}, named after the content with every run of non-alphanumerics turned into an underscore
  * ("Chambers of Xeric: CM" is {@code chambers_of_xeric_cm.png}).
  */
 public final class ContentIcons

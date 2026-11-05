@@ -63,8 +63,8 @@ final class OverviewView
 
 	/**
 	 * Script 4806 lays the difficulty boxes out two to a row, each 90 wide and 5 apart, and a third of the
-	 * column tall. The mastery tiers fill that grid in the same order (Ascended and Exalted on the first
-	 * row, Immortal on the second), leaving the remaining cells empty.
+	 * column tall. The mastery tiers keep that box size and grid: full rows from the top (Ascended and
+	 * Exalted), and a last row with a single box (Immortal) centred under the pair.
 	 */
 	private static void drawTiers(WidgetPainter p, List<WindowModel.Tier> tiers, int left, int top, int height)
 	{
@@ -73,7 +73,11 @@ final class OverviewView
 		for (int i = 0; i < tiers.size(); i++)
 		{
 			WindowModel.Tier tier = tiers.get(i);
-			int x = left + 4 + (i % TIER_COLUMNS) * (boxW + TIER_GAP);
+			int rowStart = i - i % TIER_COLUMNS;
+			int inRow = Math.min(TIER_COLUMNS, tiers.size() - rowStart);
+			// A short last row is centred under the full ones
+			int rowX = left + 4 + (TIER_COLUMNS - inRow) * (boxW + TIER_GAP) / 2;
+			int x = rowX + (i % TIER_COLUMNS) * (boxW + TIER_GAP);
 			int by = top + (i / TIER_COLUMNS) * (boxH + 4);
 			WindowChrome.stoneBox(p, x, by, boxW, boxH);
 			boxHighlight(p, x, by, boxW, boxH);

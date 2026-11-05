@@ -286,7 +286,7 @@ final class RewardsView
 			textCell(p, textX, y, textW, rowHeights);
 			p.fill(iconX, y, ICON_W + 6, groupH, 0xffffff, ROW_TRANS_LIGHT);
 			MasteryTier tier = group.getTier();
-			p.image(TierIcons.large(tier), left + 5 + (ICON_W - TierIcons.LARGE) / 2, y + (groupH - ICON_H) / 2);
+			p.image(TierIcons.large(tier), left + 5 + (ICON_W - TierIcons.LARGE_WIDTH) / 2, y + (groupH - ICON_H) / 2);
 			cell(p, iconX, y, ICON_W + 6, groupH, CELL_LIGHT, CELL_LIGHT, CELL_LIGHT, CELL_LIGHT);
 			y += groupH - 1;
 		}
