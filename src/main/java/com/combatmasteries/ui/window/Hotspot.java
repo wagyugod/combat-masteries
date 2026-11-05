@@ -49,6 +49,11 @@ public class Hotspot
 		 */
 		TIER,
 		/**
+		 * An Overview tier box; the value is its {@link com.combatmasteries.tasks.MasteryTier}. Like the
+		 * Combat Achievements tier boxes, a click opens the Tasks tab.
+		 */
+		TIER_BOX,
+		/**
 		 * A scrollbar; the value is its {@link WindowLayout.Scroll}.
 		 */
 		SCROLLBAR,

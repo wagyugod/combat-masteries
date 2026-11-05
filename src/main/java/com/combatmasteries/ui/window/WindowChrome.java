@@ -2,6 +2,7 @@ package com.combatmasteries.ui.window;
 
 import java.awt.Graphics2D;
 import java.awt.Shape;
+import net.runelite.api.gameval.SpriteID;
 
 /**
  * The parts of the Combat Achievements window every tab shares, drawn as the game's interface scripts
@@ -149,6 +150,11 @@ public final class WindowChrome
 	 * Stone box corners top left, top right, bottom left, bottom right, then edges left, top, right, bottom.
 	 */
 	static final int BOX_FIRST = 913;
+	/**
+	 * A hovered stone box (script 2978): darker stone and lit bevels, in the same order.
+	 */
+	static final int STONE_HOVERED = SpriteID.TRADEBACKING_DARK;
+	static final int BOX_HOVERED_FIRST = SpriteID.V2StoneButtonIn.A_TOP_LEFT;
 
 	private WindowChrome()
 	{
@@ -372,15 +378,25 @@ public final class WindowChrome
 	 */
 	public static void stoneBox(WidgetPainter p, int x, int y, int w, int h)
 	{
-		p.graphic(STONE, x, y, w, h, true);
-		p.graphic(BOX_FIRST, x, y, 9, 9, true);
-		p.graphic(BOX_FIRST + 1, x + w - 9, y, 9, 9, true);
-		p.graphic(BOX_FIRST + 2, x, y + h - 9, 9, 9, true);
-		p.graphic(BOX_FIRST + 3, x + w - 9, y + h - 9, 9, 9, true);
-		p.graphic(BOX_FIRST + 4, x, y + 9, 9, h - 18, true);
-		p.graphic(BOX_FIRST + 5, x + 9, y, w - 18, 9, true);
-		p.graphic(BOX_FIRST + 6, x + w - 9, y + 9, 9, h - 18, true);
-		p.graphic(BOX_FIRST + 7, x + 9, y + h - 9, w - 18, 9, true);
+		stoneBox(p, x, y, w, h, false);
+	}
+
+	/**
+	 * A raised stone box, lit up while {@code hovered} the way the game's clickable stone boxes are
+	 * (scripts 5845 and 2978).
+	 */
+	public static void stoneBox(WidgetPainter p, int x, int y, int w, int h, boolean hovered)
+	{
+		int box = hovered ? BOX_HOVERED_FIRST : BOX_FIRST;
+		p.graphic(hovered ? STONE_HOVERED : STONE, x, y, w, h, true);
+		p.graphic(box, x, y, 9, 9, true);
+		p.graphic(box + 1, x + w - 9, y, 9, 9, true);
+		p.graphic(box + 2, x, y + h - 9, 9, 9, true);
+		p.graphic(box + 3, x + w - 9, y + h - 9, 9, 9, true);
+		p.graphic(box + 4, x, y + 9, 9, h - 18, true);
+		p.graphic(box + 5, x + 9, y, w - 18, 9, true);
+		p.graphic(box + 6, x + w - 9, y + 9, 9, h - 18, true);
+		p.graphic(box + 7, x + 9, y + h - 9, w - 18, 9, true);
 	}
 
 	/**

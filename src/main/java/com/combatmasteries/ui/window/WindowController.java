@@ -8,9 +8,9 @@ import javax.annotation.Nullable;
 
 /**
  * Draws the window and turns mouse and keyboard input into changes to its {@link WindowState}, the way the
- * Combat Achievements window responds: the menu button opens a tab menu, filter boxes open option lists,
- * task rows expand, tier buttons pick a tier, and lists scroll with the wheel, the arrows (held), the
- * track and the thumb.
+ * Combat Achievements window responds: the menu button opens a tab menu, the Overview's tier boxes open
+ * the Tasks tab, filter boxes open option lists, task rows expand, tier buttons pick a tier, and lists
+ * scroll with the wheel, the arrows (held), the track and the thumb.
  * <p>
  * Coordinates are window pixels. Clicks are hit-tested against what the last {@link #render} drew. Input
  * arrives on the AWT thread while the client thread draws, so every method is synchronized.
@@ -174,6 +174,9 @@ public class WindowController
 					state.setRewardsTier(tier);
 					state.setRewardsScroll(0);
 				}
+				break;
+			case TIER_BOX:
+				state.showAllTasks();
 				break;
 			case SCROLLBAR:
 				pressScrollbar((WindowLayout.Scroll) hit.getValue(), y, now);

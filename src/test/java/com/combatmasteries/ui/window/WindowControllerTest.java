@@ -13,6 +13,9 @@ import com.google.gson.Gson;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,6 +42,23 @@ public class WindowControllerTest
 		Graphics2D g = image.createGraphics();
 		controller.render(g, (id, frame) -> null, model, W, H, now);
 		g.dispose();
+	}
+
+	/**
+	 * Draws a frame and returns the ids of the sprites it drew, once for each time it drew them.
+	 */
+	private List<Integer> spritesDrawn()
+	{
+		List<Integer> drawn = new ArrayList<>();
+		BufferedImage image = new BufferedImage(W, H, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = image.createGraphics();
+		controller.render(g, (id, frame) ->
+		{
+			drawn.add(id);
+			return null;
+		}, model, W, H, now);
+		g.dispose();
+		return drawn;
 	}
 
 	private Hotspot find(Hotspot.Kind kind, Object value)
@@ -182,6 +202,65 @@ public class WindowControllerTest
 		assertEquals(MasteryTier.IMMORTAL, state().getRewardsTier());
 		click(Hotspot.Kind.TIER, MasteryTier.EXALTED);
 		assertEquals(MasteryTier.EXALTED, state().getRewardsTier());
+	}
+
+	@Test
+	public void overviewTierBoxesOpenEveryTask()
+	{
+		assertEquals(MasteryTier.values().length, model.getTiers().size());
+		for (WindowModel.Tier tier : model.getTiers())
+		{
+			// Leave the Tasks tab filtered and scrolled down
+			controller.show(WindowView.TASKS);
+			state().setTypeFilter(TaskCategory.CHALLENGE);
+			state().setContentFilter("Inferno");
+			state().setCompletedFilter(false);
+			state().setTasksScroll(100);
+
+			controller.show(WindowView.OVERVIEW);
+			render();
+			assertFalse(click(Hotspot.Kind.TIER_BOX, tier.getTier()));
+			assertEquals(WindowView.TASKS, state().getView());
+			assertNull(state().getTypeFilter());
+			assertNull(state().getContentFilter());
+			assertNull(state().getCompletedFilter());
+			assertEquals(0, state().getTasksScroll());
+			assertEquals(model.getTasks().size(), state().filter(model.getTasks()).size());
+		}
+	}
+
+	@Test
+	public void tierBoxLightsUpWhileHovered()
+	{
+		controller.show(WindowView.OVERVIEW);
+		render();
+		Rectangle box = find(Hotspot.Kind.TIER_BOX, MasteryTier.EXALTED).getBounds();
+		assertFalse(spritesDrawn().contains(WindowChrome.STONE_HOVERED));
+
+		controller.move((int) box.getCenterX(), (int) box.getCenterY());
+		List<Integer> hovered = spritesDrawn();
+		// Only the box under the mouse
+		assertEquals(1, Collections.frequency(hovered, WindowChrome.STONE_HOVERED));
+		assertEquals(1, Collections.frequency(hovered, WindowChrome.BOX_HOVERED_FIRST));
+
+		controller.exit();
+		assertFalse(spritesDrawn().contains(WindowChrome.STONE_HOVERED));
+	}
+
+	@Test
+	public void openMenuTakesClicksOverTheTierBoxes()
+	{
+		controller.show(WindowView.OVERVIEW);
+		render();
+		Rectangle box = find(Hotspot.Kind.TIER_BOX, MasteryTier.IMMORTAL).getBounds();
+		click(Hotspot.Kind.MENU, null);
+		assertTrue(state().isMenuOpen());
+
+		controller.move((int) box.getCenterX(), (int) box.getCenterY());
+		assertFalse(spritesDrawn().contains(WindowChrome.STONE_HOVERED));
+		controller.press((int) box.getCenterX(), (int) box.getCenterY(), now);
+		assertFalse(state().isMenuOpen());
+		assertEquals(WindowView.OVERVIEW, state().getView());
 	}
 
 	@Test

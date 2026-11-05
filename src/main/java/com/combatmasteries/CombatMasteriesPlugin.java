@@ -21,7 +21,6 @@ import com.combatmasteries.tracking.TripTracker;
 import com.combatmasteries.ui.CombatAchievementsButton;
 import com.combatmasteries.ui.CompletionPopup;
 import com.combatmasteries.ui.MasteriesPanel;
-import com.combatmasteries.ui.MasteriesSprite;
 import com.combatmasteries.ui.MasteriesWindow;
 import com.combatmasteries.ui.window.WindowModel;
 import com.combatmasteries.ui.window.WindowView;
@@ -84,7 +83,6 @@ import net.runelite.client.config.RuneScapeProfileType;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.events.RuneScapeProfileChanged;
-import net.runelite.client.game.SpriteManager;
 import net.runelite.client.input.KeyManager;
 import net.runelite.client.input.MouseManager;
 import net.runelite.client.plugins.Plugin;
@@ -189,9 +187,6 @@ public class CombatMasteriesPlugin extends Plugin
 	private KeyManager keyManager;
 
 	@Inject
-	private SpriteManager spriteManager;
-
-	@Inject
 	@Named("developerMode")
 	boolean developerMode;
 
@@ -276,7 +271,6 @@ public class CombatMasteriesPlugin extends Plugin
 		mouseManager.registerMouseListener(window);
 		mouseManager.registerMouseWheelListener(window);
 		keyManager.registerKeyListener(window);
-		spriteManager.addSpriteOverrides(MasteriesSprite.values());
 		clientThread.invokeLater(this::updateCaButton);
 
 		refreshPanel();
@@ -303,7 +297,6 @@ public class CombatMasteriesPlugin extends Plugin
 			helmetGlow.setStyle(null);
 			caButton.remove();
 		});
-		spriteManager.removeSpriteOverrides(MasteriesSprite.values());
 		killAssembler.reset();
 		attempts.abort();
 		trip.restock("plugin stopped");

@@ -202,6 +202,19 @@ public class WindowState
 	}
 
 	/**
+	 * Switches to the Tasks tab showing every task: all filters back to All, the list at its top.
+	 */
+	public void showAllTasks()
+	{
+		view = WindowView.TASKS;
+		typeFilter = null;
+		contentFilter = null;
+		completedFilter = null;
+		openFilter = null;
+		tasksScroll = 0;
+	}
+
+	/**
 	 * @return the tasks that pass the Tasks tab's filters, in task list order
 	 */
 	public List<WindowModel.Task> filter(List<WindowModel.Task> tasks)

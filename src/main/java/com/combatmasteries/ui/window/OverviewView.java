@@ -57,16 +57,17 @@ final class OverviewView
 		p.text("Personal Bests - " + model.getPlayerName(), GameFont.BOLD, WindowChrome.ORANGE, true, rightX, HEADER_Y + 1,
 			RIGHT_W, 22, WidgetPainter.CENTRE, WidgetPainter.MIDDLE, 0);
 
-		drawTiers(p, model.getTiers(), LEFT_X, CONTENT_Y, contentH);
+		drawTiers(p, model.getTiers(), state, LEFT_X, CONTENT_Y, contentH);
 		drawPersonalBests(p, model.getPersonalBests(), state.getOverviewScroll(), rightX, CONTENT_Y, RIGHT_W, contentH);
 	}
 
 	/**
 	 * Script 4806 lays the difficulty boxes out two to a row, each 90 wide and 5 apart, and a third of the
 	 * column tall. The mastery tiers keep that box size and grid: full rows from the top (Ascended and
-	 * Exalted), and a last row with a single box (Immortal) centred under the pair.
+	 * Exalted), and a last row with a single box (Immortal) centred under the pair. Each box lights up
+	 * while hovered and opens the Tasks tab when clicked, as the Combat Achievements boxes do.
 	 */
-	private static void drawTiers(WidgetPainter p, List<WindowModel.Tier> tiers, int left, int top, int height)
+	private static void drawTiers(WidgetPainter p, List<WindowModel.Tier> tiers, WindowState state, int left, int top, int height)
 	{
 		int boxW = TIER_BOX_W;
 		int boxH = height / 3 - 3;
@@ -79,8 +80,11 @@ final class OverviewView
 			int rowX = left + 4 + (TIER_COLUMNS - inRow) * (boxW + TIER_GAP) / 2;
 			int x = rowX + (i % TIER_COLUMNS) * (boxW + TIER_GAP);
 			int by = top + (i / TIER_COLUMNS) * (boxH + 4);
-			WindowChrome.stoneBox(p, x, by, boxW, boxH);
+			// Not under the open menu, whose overlay takes the click
+			boolean hovered = !state.isMenuOpen() && state.isHovered(x, by, boxW, boxH);
+			WindowChrome.stoneBox(p, x, by, boxW, boxH, hovered);
 			boxHighlight(p, x, by, boxW, boxH);
+			p.hotspot(Hotspot.Kind.TIER_BOX, tier.getTier(), x, by, boxW, boxH);
 			p.text(tier.getName(), GameFont.REGULAR, WindowChrome.LIGHT_ORANGE, true, x, by + 5, boxW, 12,
 				WidgetPainter.CENTRE, WidgetPainter.MIDDLE, 0);
 			p.image(TierIcons.small(tier.getTier()), x + boxW / 2 - TierIcons.SMALL / 2, by + 19);
