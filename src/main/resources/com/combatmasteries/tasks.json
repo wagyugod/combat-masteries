@@ -1,0 +1,1061 @@
+{
+  "_note": "Never change a task id once released: progress is saved against it. Tasks are only ever added, never removed.",
+  "bosses": [
+    {
+      "name": "TzKal-Zuk",
+      "regions": [
+        9043
+      ]
+    },
+    {
+      "name": "Tombs of Amascut",
+      "totalTime": true
+    },
+    {
+      "name": "Tombs of Amascut: Expert Mode",
+      "totalTime": true
+    }
+  ],
+  "tasks": [
+    {
+      "id": "inferno_no_pillar",
+      "name": "No Pillars, No Problem",
+      "description": "Complete the Inferno with all three pillars destroyed before wave 4 begins.",
+      "category": "CHALLENGE",
+      "content": "Inferno",
+      "boss": "TzKal-Zuk",
+      "conditions": [
+        {
+          "type": "INFERNO_NO_PILLARS"
+        }
+      ]
+    },
+    {
+      "id": "inferno_sub_50",
+      "name": "Inferno Speed-Runner II",
+      "description": "Complete the Inferno in less than 50 minutes.",
+      "category": "SPEED",
+      "content": "Inferno",
+      "boss": "TzKal-Zuk",
+      "conditions": [
+        {
+          "type": "UNDER_TIME",
+          "seconds": 3000
+        }
+      ]
+    },
+    {
+      "id": "inferno_sub_48",
+      "name": "Inferno Speed-Runner III",
+      "description": "Complete the Inferno in less than 48 minutes.",
+      "category": "SPEED",
+      "content": "Inferno",
+      "boss": "TzKal-Zuk",
+      "conditions": [
+        {
+          "type": "UNDER_TIME",
+          "seconds": 2880
+        }
+      ]
+    },
+    {
+      "id": "inferno_sub_46",
+      "name": "Inferno Speed-Runner IV",
+      "description": "Complete the Inferno in less than 46 minutes.",
+      "category": "SPEED",
+      "content": "Inferno",
+      "boss": "TzKal-Zuk",
+      "conditions": [
+        {
+          "type": "UNDER_TIME",
+          "seconds": 2760
+        }
+      ]
+    },
+    {
+      "id": "inferno_sub_45",
+      "name": "Inferno Speed-Runner V",
+      "description": "Complete the Inferno in less than 45 minutes.",
+      "category": "SPEED",
+      "content": "Inferno",
+      "boss": "TzKal-Zuk",
+      "conditions": [
+        {
+          "type": "UNDER_TIME",
+          "seconds": 2700
+        }
+      ]
+    },
+    {
+      "id": "inferno_sub_44",
+      "name": "Inferno Speed-Runner VI",
+      "description": "Complete the Inferno in less than 44 minutes.",
+      "category": "SPEED",
+      "content": "Inferno",
+      "boss": "TzKal-Zuk",
+      "conditions": [
+        {
+          "type": "UNDER_TIME",
+          "seconds": 2640
+        }
+      ]
+    },
+    {
+      "id": "inferno_sub_43",
+      "name": "Inferno Speed-Runner VII",
+      "description": "Complete the Inferno in less than 43 minutes.",
+      "category": "SPEED",
+      "content": "Inferno",
+      "boss": "TzKal-Zuk",
+      "conditions": [
+        {
+          "type": "UNDER_TIME",
+          "seconds": 2580
+        }
+      ]
+    },
+    {
+      "id": "inferno_sub_42",
+      "name": "Inferno Speed-Runner VIII",
+      "description": "Complete the Inferno in less than 42 minutes.",
+      "category": "SPEED",
+      "content": "Inferno",
+      "boss": "TzKal-Zuk",
+      "conditions": [
+        {
+          "type": "UNDER_TIME",
+          "seconds": 2520
+        }
+      ]
+    },
+    {
+      "id": "inferno_sub_41",
+      "name": "Inferno Speed-Runner IX",
+      "description": "Complete the Inferno in less than 41 minutes.",
+      "category": "SPEED",
+      "content": "Inferno",
+      "boss": "TzKal-Zuk",
+      "conditions": [
+        {
+          "type": "UNDER_TIME",
+          "seconds": 2460
+        }
+      ]
+    },
+    {
+      "id": "inferno_sub_40",
+      "name": "Inferno Speed-Runner X",
+      "description": "Complete the Inferno in less than 40 minutes.",
+      "category": "SPEED",
+      "content": "Inferno",
+      "boss": "TzKal-Zuk",
+      "conditions": [
+        {
+          "type": "UNDER_TIME",
+          "seconds": 2400
+        }
+      ]
+    },
+    {
+      "id": "colosseum_sub_22",
+      "name": "Colosseum Speed-Runner II",
+      "description": "Complete the Fortis Colosseum in less than 22 minutes.",
+      "category": "SPEED",
+      "content": "Colosseum",
+      "boss": "Sol Heredit",
+      "conditions": [
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1320
+        }
+      ]
+    },
+    {
+      "id": "colosseum_sub_20",
+      "name": "Colosseum Speed-Runner III",
+      "description": "Complete the Fortis Colosseum in less than 20 minutes.",
+      "category": "SPEED",
+      "content": "Colosseum",
+      "boss": "Sol Heredit",
+      "conditions": [
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1200
+        }
+      ]
+    },
+    {
+      "id": "colosseum_sub_18",
+      "name": "Colosseum Speed-Runner IV",
+      "description": "Complete the Fortis Colosseum in less than 18 minutes.",
+      "category": "SPEED",
+      "content": "Colosseum",
+      "boss": "Sol Heredit",
+      "conditions": [
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1080
+        }
+      ]
+    },
+    {
+      "id": "colosseum_sub_16",
+      "name": "Colosseum Speed-Runner V",
+      "description": "Complete the Fortis Colosseum in less than 16 minutes.",
+      "category": "SPEED",
+      "content": "Colosseum",
+      "boss": "Sol Heredit",
+      "conditions": [
+        {
+          "type": "UNDER_TIME",
+          "seconds": 960
+        }
+      ]
+    },
+    {
+      "id": "colosseum_sub_14",
+      "name": "Colosseum Speed-Runner VI",
+      "description": "Complete the Fortis Colosseum in less than 14 minutes.",
+      "category": "SPEED",
+      "content": "Colosseum",
+      "boss": "Sol Heredit",
+      "conditions": [
+        {
+          "type": "UNDER_TIME",
+          "seconds": 840
+        }
+      ]
+    },
+    {
+      "id": "tob_solo",
+      "name": "Theatre of One",
+      "description": "Complete the Theatre of Blood solo.",
+      "category": "CHALLENGE",
+      "content": "Theatre of Blood",
+      "boss": "Theatre of Blood",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "tob_solo_sub_60",
+      "name": "Theatre of Blood (Solo) Speed-Runner I",
+      "description": "Complete the Theatre of Blood solo in less than 60 minutes.",
+      "category": "SPEED",
+      "content": "Theatre of Blood",
+      "boss": "Theatre of Blood",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 1
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 3600
+        }
+      ]
+    },
+    {
+      "id": "tob_solo_sub_50",
+      "name": "Theatre of Blood (Solo) Speed-Runner II",
+      "description": "Complete the Theatre of Blood solo in less than 50 minutes.",
+      "category": "SPEED",
+      "content": "Theatre of Blood",
+      "boss": "Theatre of Blood",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 1
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 3000
+        }
+      ]
+    },
+    {
+      "id": "tob_solo_sub_45",
+      "name": "Theatre of Blood (Solo) Speed-Runner III",
+      "description": "Complete the Theatre of Blood solo in less than 45 minutes.",
+      "category": "SPEED",
+      "content": "Theatre of Blood",
+      "boss": "Theatre of Blood",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 1
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 2700
+        }
+      ]
+    },
+    {
+      "id": "tob_duo_sub_24",
+      "name": "Theatre of Blood (Duo) Speed-Runner I",
+      "description": "Complete the Theatre of Blood with a team of 2 in less than 24 minutes.",
+      "category": "SPEED",
+      "content": "Theatre of Blood",
+      "boss": "Theatre of Blood",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 2
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1440
+        }
+      ]
+    },
+    {
+      "id": "tob_duo_sub_22",
+      "name": "Theatre of Blood (Duo) Speed-Runner II",
+      "description": "Complete the Theatre of Blood with a team of 2 in less than 22 minutes.",
+      "category": "SPEED",
+      "content": "Theatre of Blood",
+      "boss": "Theatre of Blood",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 2
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1320
+        }
+      ]
+    },
+    {
+      "id": "tob_duo_sub_21",
+      "name": "Theatre of Blood (Duo) Speed-Runner III",
+      "description": "Complete the Theatre of Blood with a team of 2 in less than 21 minutes.",
+      "category": "SPEED",
+      "content": "Theatre of Blood",
+      "boss": "Theatre of Blood",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 2
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1260
+        }
+      ]
+    },
+    {
+      "id": "tob_duo_sub_20",
+      "name": "Theatre of Blood (Duo) Speed-Runner IV",
+      "description": "Complete the Theatre of Blood with a team of 2 in less than 20 minutes.",
+      "category": "SPEED",
+      "content": "Theatre of Blood",
+      "boss": "Theatre of Blood",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 2
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1200
+        }
+      ]
+    },
+    {
+      "id": "tob_duo_sub_19",
+      "name": "Theatre of Blood (Duo) Speed-Runner V",
+      "description": "Complete the Theatre of Blood with a team of 2 in less than 19 minutes.",
+      "category": "SPEED",
+      "content": "Theatre of Blood",
+      "boss": "Theatre of Blood",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 2
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1140
+        }
+      ]
+    },
+    {
+      "id": "tob_trio_sub_16",
+      "name": "Theatre of Blood (Trio) Speed-Runner I",
+      "description": "Complete the Theatre of Blood with a team of 3 in less than 16 minutes.",
+      "category": "SPEED",
+      "content": "Theatre of Blood",
+      "boss": "Theatre of Blood",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 3
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 960
+        }
+      ]
+    },
+    {
+      "id": "tob_trio_sub_15",
+      "name": "Theatre of Blood (Trio) Speed-Runner II",
+      "description": "Complete the Theatre of Blood with a team of 3 in less than 15 minutes.",
+      "category": "SPEED",
+      "content": "Theatre of Blood",
+      "boss": "Theatre of Blood",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 3
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 900
+        }
+      ]
+    },
+    {
+      "id": "tob_trio_sub_14_30",
+      "name": "Theatre of Blood (Trio) Speed-Runner III",
+      "description": "Complete the Theatre of Blood with a team of 3 in less than 14:30.",
+      "category": "SPEED",
+      "content": "Theatre of Blood",
+      "boss": "Theatre of Blood",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 3
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 870
+        }
+      ]
+    },
+    {
+      "id": "tob_trio_sub_14",
+      "name": "Theatre of Blood (Trio) Speed-Runner IV",
+      "description": "Complete the Theatre of Blood with a team of 3 in less than 14 minutes.",
+      "category": "SPEED",
+      "content": "Theatre of Blood",
+      "boss": "Theatre of Blood",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 3
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 840
+        }
+      ]
+    },
+    {
+      "id": "tob_trio_sub_13_30",
+      "name": "Theatre of Blood (Trio) Speed-Runner V",
+      "description": "Complete the Theatre of Blood with a team of 3 in less than 13:30.",
+      "category": "SPEED",
+      "content": "Theatre of Blood",
+      "boss": "Theatre of Blood",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 3
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 810
+        }
+      ]
+    },
+    {
+      "id": "tob_5s_sub_13_30",
+      "name": "Theatre of Blood (5-Scale) Speed-Runner I",
+      "description": "Complete the Theatre of Blood with a team of 5 in less than 13:30.",
+      "category": "SPEED",
+      "content": "Theatre of Blood",
+      "boss": "Theatre of Blood",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 5
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 810
+        }
+      ]
+    },
+    {
+      "id": "tob_5s_sub_13",
+      "name": "Theatre of Blood (5-Scale) Speed-Runner II",
+      "description": "Complete the Theatre of Blood with a team of 5 in less than 13 minutes.",
+      "category": "SPEED",
+      "content": "Theatre of Blood",
+      "boss": "Theatre of Blood",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 5
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 780
+        }
+      ]
+    },
+    {
+      "id": "tob_5s_sub_12_30",
+      "name": "Theatre of Blood (5-Scale) Speed-Runner III",
+      "description": "Complete the Theatre of Blood with a team of 5 in less than 12:30.",
+      "category": "SPEED",
+      "content": "Theatre of Blood",
+      "boss": "Theatre of Blood",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 5
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 750
+        }
+      ]
+    },
+    {
+      "id": "tob_5s_sub_12",
+      "name": "Theatre of Blood (5-Scale) Speed-Runner IV",
+      "description": "Complete the Theatre of Blood with a team of 5 in less than 12 minutes.",
+      "category": "SPEED",
+      "content": "Theatre of Blood",
+      "boss": "Theatre of Blood",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 5
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 720
+        }
+      ]
+    },
+    {
+      "id": "hmt_solo",
+      "name": "HM Theatre of One",
+      "description": "Complete the Theatre of Blood: Hard Mode solo.",
+      "category": "CHALLENGE",
+      "content": "Theatre of Blood: Hard Mode",
+      "boss": "Theatre of Blood: Hard Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "cm_solo_sub_30",
+      "name": "Chambers of Xeric: CM (Solo) Speed-Runner II",
+      "description": "Complete the Chambers of Xeric: Challenge Mode solo in less than 30 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 1
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1800
+        }
+      ]
+    },
+    {
+      "id": "cm_solo_sub_28",
+      "name": "Chambers of Xeric: CM (Solo) Speed-Runner III",
+      "description": "Complete the Chambers of Xeric: Challenge Mode solo in less than 28 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 1
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1680
+        }
+      ]
+    },
+    {
+      "id": "cm_solo_sub_26",
+      "name": "Chambers of Xeric: CM (Solo) Speed-Runner IV",
+      "description": "Complete the Chambers of Xeric: Challenge Mode solo in less than 26 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 1
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1560
+        }
+      ]
+    },
+    {
+      "id": "cm_solo_sub_25",
+      "name": "Chambers of Xeric: CM (Solo) Speed-Runner V",
+      "description": "Complete the Chambers of Xeric: Challenge Mode solo in less than 25 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 1
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1500
+        }
+      ]
+    },
+    {
+      "id": "cm_solo_sub_24",
+      "name": "Chambers of Xeric: CM (Solo) Speed-Runner VI",
+      "description": "Complete the Chambers of Xeric: Challenge Mode solo in less than 24 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 1
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1440
+        }
+      ]
+    },
+    {
+      "id": "cm_trio_sub_24",
+      "name": "Chambers of Xeric: CM (Trio) Speed-Runner II",
+      "description": "Complete the Chambers of Xeric: Challenge Mode with a team of 3 in less than 24 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 3
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1440
+        }
+      ]
+    },
+    {
+      "id": "cm_trio_sub_22",
+      "name": "Chambers of Xeric: CM (Trio) Speed-Runner III",
+      "description": "Complete the Chambers of Xeric: Challenge Mode with a team of 3 in less than 22 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 3
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1320
+        }
+      ]
+    },
+    {
+      "id": "cm_trio_sub_20",
+      "name": "Chambers of Xeric: CM (Trio) Speed-Runner IV",
+      "description": "Complete the Chambers of Xeric: Challenge Mode with a team of 3 in less than 20 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 3
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1200
+        }
+      ]
+    },
+    {
+      "id": "cm_trio_sub_19",
+      "name": "Chambers of Xeric: CM (Trio) Speed-Runner V",
+      "description": "Complete the Chambers of Xeric: Challenge Mode with a team of 3 in less than 19 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 3
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1140
+        }
+      ]
+    },
+    {
+      "id": "cm_trio_sub_18",
+      "name": "Chambers of Xeric: CM (Trio) Speed-Runner VI",
+      "description": "Complete the Chambers of Xeric: Challenge Mode with a team of 3 in less than 18 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 3
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1080
+        }
+      ]
+    },
+    {
+      "id": "cm_5s_sub_22",
+      "name": "Chambers of Xeric: CM (5-Scale) Speed-Runner II",
+      "description": "Complete the Chambers of Xeric: Challenge Mode with a team of 5 in less than 22 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 5
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1320
+        }
+      ]
+    },
+    {
+      "id": "cm_5s_sub_20",
+      "name": "Chambers of Xeric: CM (5-Scale) Speed-Runner III",
+      "description": "Complete the Chambers of Xeric: Challenge Mode with a team of 5 in less than 20 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 5
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1200
+        }
+      ]
+    },
+    {
+      "id": "cm_5s_sub_19",
+      "name": "Chambers of Xeric: CM (5-Scale) Speed-Runner IV",
+      "description": "Complete the Chambers of Xeric: Challenge Mode with a team of 5 in less than 19 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 5
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1140
+        }
+      ]
+    },
+    {
+      "id": "cm_5s_sub_18",
+      "name": "Chambers of Xeric: CM (5-Scale) Speed-Runner V",
+      "description": "Complete the Chambers of Xeric: Challenge Mode with a team of 5 in less than 18 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 5
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1080
+        }
+      ]
+    },
+    {
+      "id": "cm_5s_sub_17",
+      "name": "Chambers of Xeric: CM (5-Scale) Speed-Runner VI",
+      "description": "Complete the Chambers of Xeric: Challenge Mode with a team of 5 in less than 17 minutes.",
+      "category": "SPEED",
+      "content": "Chambers of Xeric: CM",
+      "boss": "Chambers of Xeric Challenge Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 5
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1020
+        }
+      ]
+    },
+    {
+      "id": "toa_solo_600",
+      "name": "This Is Insanity",
+      "description": "Complete a solo Tombs of Amascut with every invocation activated. Note: You do not need to meet the invocation time limits to complete this achievement.",
+      "category": "CHALLENGE",
+      "content": "Tombs of Amascut",
+      "boss": "Tombs of Amascut: Expert Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 1
+        },
+        {
+          "type": "MIN_RAID_LEVEL",
+          "value": 600
+        }
+      ]
+    },
+    {
+      "id": "toa_solo_sub_22",
+      "name": "Tombs Speed-Runner IV",
+      "description": "Complete the Tombs of Amascut: Expert Mode solo in less than 22 minutes.",
+      "category": "SPEED",
+      "content": "Tombs of Amascut",
+      "boss": "Tombs of Amascut: Expert Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 1
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1320
+        }
+      ]
+    },
+    {
+      "id": "toa_solo_sub_20",
+      "name": "Tombs Speed-Runner V",
+      "description": "Complete the Tombs of Amascut: Expert Mode solo in less than 20 minutes.",
+      "category": "SPEED",
+      "content": "Tombs of Amascut",
+      "boss": "Tombs of Amascut: Expert Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 1
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1200
+        }
+      ]
+    },
+    {
+      "id": "toa_solo_sub_19",
+      "name": "Tombs Speed-Runner VI",
+      "description": "Complete the Tombs of Amascut: Expert Mode solo in less than 19 minutes.",
+      "category": "SPEED",
+      "content": "Tombs of Amascut",
+      "boss": "Tombs of Amascut: Expert Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 1
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1140
+        }
+      ]
+    },
+    {
+      "id": "toa_solo_sub_18",
+      "name": "Tombs Speed-Runner VII",
+      "description": "Complete the Tombs of Amascut: Expert Mode solo in less than 18 minutes.",
+      "category": "SPEED",
+      "content": "Tombs of Amascut",
+      "boss": "Tombs of Amascut: Expert Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 1
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1080
+        }
+      ]
+    },
+    {
+      "id": "toa_solo_sub_17",
+      "name": "Tombs Speed-Runner VIII",
+      "description": "Complete the Tombs of Amascut: Expert Mode solo in less than 17 minutes.",
+      "category": "SPEED",
+      "content": "Tombs of Amascut",
+      "boss": "Tombs of Amascut: Expert Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 1
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1020
+        }
+      ]
+    },
+    {
+      "id": "doom_delve_24",
+      "name": "Deep Delver I",
+      "description": "Defeat the Doom of Mokhaiotl at delve level 24.",
+      "category": "CHALLENGE",
+      "content": "Doom of Mokhaiotl",
+      "conditions": [
+        {
+          "type": "MIN_DELVE_LEVEL",
+          "value": 24
+        }
+      ]
+    },
+    {
+      "id": "doom_delve_32",
+      "name": "Deep Delver II",
+      "description": "Defeat the Doom of Mokhaiotl at delve level 32.",
+      "category": "CHALLENGE",
+      "content": "Doom of Mokhaiotl",
+      "conditions": [
+        {
+          "type": "MIN_DELVE_LEVEL",
+          "value": 32
+        }
+      ]
+    },
+    {
+      "id": "doom_delve_40",
+      "name": "Deep Delver III",
+      "description": "Defeat the Doom of Mokhaiotl at delve level 40.",
+      "category": "CHALLENGE",
+      "content": "Doom of Mokhaiotl",
+      "conditions": [
+        {
+          "type": "MIN_DELVE_LEVEL",
+          "value": 40
+        }
+      ]
+    },
+    {
+      "id": "doom_delve_48",
+      "name": "Deep Delver IV",
+      "description": "Defeat the Doom of Mokhaiotl at delve level 48.",
+      "category": "CHALLENGE",
+      "content": "Doom of Mokhaiotl",
+      "conditions": [
+        {
+          "type": "MIN_DELVE_LEVEL",
+          "value": 48
+        }
+      ]
+    },
+    {
+      "id": "doom_delve_56",
+      "name": "Deep Delver V",
+      "description": "Defeat the Doom of Mokhaiotl at delve level 56.",
+      "category": "CHALLENGE",
+      "content": "Doom of Mokhaiotl",
+      "conditions": [
+        {
+          "type": "MIN_DELVE_LEVEL",
+          "value": 56
+        }
+      ]
+    },
+    {
+      "id": "doom_delve_64",
+      "name": "Deep Delver VI",
+      "description": "Defeat the Doom of Mokhaiotl at delve level 64.",
+      "category": "CHALLENGE",
+      "content": "Doom of Mokhaiotl",
+      "conditions": [
+        {
+          "type": "MIN_DELVE_LEVEL",
+          "value": 64
+        }
+      ]
+    },
+    {
+      "id": "dt2_awakened_all_one_inventory",
+      "name": "Awakened Quartet",
+      "description": "Defeat all four awakened Desert Treasure II bosses on one inventory, without a looting bag.",
+      "category": "CHALLENGE",
+      "content": "Awakened Bosses",
+      "trip": {
+        "Duke Sucellus (awakened)": 1,
+        "Leviathan (awakened)": 1,
+        "Whisperer (awakened)": 1,
+        "Vardorvis (awakened)": 1
+      }
+    },
+    {
+      "id": "dt2_awakened_leviathan_x2_one_inventory",
+      "name": "Snake Charmer",
+      "description": "Defeat the awakened Leviathan twice on one inventory, without a looting bag.",
+      "category": "CHALLENGE",
+      "content": "Awakened Bosses",
+      "trip": {
+        "Leviathan (awakened)": 2
+      }
+    },
+    {
+      "id": "dt2_awakened_vardorvis_x2_one_inventory",
+      "name": "I'm Wide Awake",
+      "description": "Defeat awakened Vardorvis twice on one inventory, without a looting bag.",
+      "category": "CHALLENGE",
+      "content": "Awakened Bosses",
+      "trip": {
+        "Vardorvis (awakened)": 2
+      }
+    },
+    {
+      "id": "yama_radiant_contracts_one_inventory",
+      "name": "You Did What?",
+      "description": "Complete all five Radiant contracts against Yama on one inventory, without a looting bag.",
+      "category": "CHALLENGE",
+      "content": "Yama Contracts",
+      "tracked": false
+    }
+  ]
+}
