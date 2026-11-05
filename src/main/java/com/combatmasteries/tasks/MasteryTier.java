@@ -25,11 +25,12 @@ public enum MasteryTier
 	private final Color color;
 
 	/**
-	 * @return tasks needed for this tier, rounded up
+	 * @return tasks needed for this tier, rounded down (90% of 92 tasks is 82.8, so 82),
+	 * and never less than one
 	 */
 	public int threshold(int totalTasks)
 	{
-		return (totalTasks * percent + 99) / 100;
+		return Math.max(1, totalTasks * percent / 100);
 	}
 
 	/**

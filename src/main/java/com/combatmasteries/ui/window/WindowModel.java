@@ -33,7 +33,7 @@ public class WindowModel
 		"Chambers of Xeric: CM",
 		"Tombs of Amascut",
 		"Doom of Mokhaiotl",
-		"Awakened DT2",
+		"Awakened Bosses",
 		"Yama Contracts"));
 
 	/**

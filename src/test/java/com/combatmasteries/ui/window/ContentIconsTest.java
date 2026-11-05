@@ -17,6 +17,7 @@ public class ContentIconsTest
 		assertEquals("chambers_of_xeric_cm.png", ContentIcons.fileName("Chambers of Xeric: CM"));
 		assertEquals("theatre_of_blood_hard_mode.png", ContentIcons.fileName("Theatre of Blood: Hard Mode"));
 		assertEquals("awakened_dt2.png", ContentIcons.fileName("Awakened DT2"));
+		assertEquals("awakened_dt2.png", ContentIcons.fileName("Awakened Bosses"));
 	}
 
 	@Test

@@ -32,7 +32,7 @@ final class Tasks
 		task.setName(id);
 		task.setDescription("");
 		task.setCategory(TaskCategory.CHALLENGE);
-		task.setContent("Awakened DT2");
+		task.setContent("Awakened Bosses");
 		task.setTrip(kills);
 		return task;
 	}

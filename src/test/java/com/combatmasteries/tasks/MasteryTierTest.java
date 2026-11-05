@@ -9,24 +9,26 @@ public class MasteryTierTest
 	@Test
 	public void thresholdsRoundUp()
 	{
-		assertEquals(3, MasteryTier.ASCENDED.threshold(10));
+		assertEquals(2, MasteryTier.ASCENDED.threshold(10));
 		assertEquals(5, MasteryTier.EXALTED.threshold(10));
 		assertEquals(9, MasteryTier.IMMORTAL.threshold(10));
+		assertEquals(82, MasteryTier.IMMORTAL.threshold(92));
+		assertEquals(1, MasteryTier.ASCENDED.threshold(1));
 
 		assertEquals(25, MasteryTier.ASCENDED.threshold(100));
 		assertEquals(50, MasteryTier.EXALTED.threshold(100));
 		assertEquals(90, MasteryTier.IMMORTAL.threshold(100));
-		// Rounding up, e.g. 37 tasks gives 10 / 19 / 34
-		assertEquals(10, MasteryTier.ASCENDED.threshold(37));
-		assertEquals(19, MasteryTier.EXALTED.threshold(37));
-		assertEquals(34, MasteryTier.IMMORTAL.threshold(37));
+		// Rounding down, e.g. 37 tasks gives 9 / 18 / 33
+		assertEquals(9, MasteryTier.ASCENDED.threshold(37));
+		assertEquals(18, MasteryTier.EXALTED.threshold(37));
+		assertEquals(33, MasteryTier.IMMORTAL.threshold(37));
 	}
 
 	@Test
 	public void tierForPoints()
 	{
-		assertNull(MasteryTier.forPoints(2, 10));
-		assertEquals(MasteryTier.ASCENDED, MasteryTier.forPoints(3, 10));
+		assertNull(MasteryTier.forPoints(1, 10));
+		assertEquals(MasteryTier.ASCENDED, MasteryTier.forPoints(2, 10));
 		assertEquals(MasteryTier.ASCENDED, MasteryTier.forPoints(4, 10));
 		assertEquals(MasteryTier.EXALTED, MasteryTier.forPoints(8, 10));
 		assertEquals(MasteryTier.IMMORTAL, MasteryTier.forPoints(9, 10));

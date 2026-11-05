@@ -832,7 +832,7 @@
     },
     {
       "id": "toa_solo_600",
-      "name": "Maxed Out",
+      "name": "This Is Insanity",
       "description": "Complete a solo Tombs of Amascut with every invocation activated. Note: You do not need to meet the invocation time limits to complete this achievement.",
       "category": "CHALLENGE",
       "content": "Tombs of Amascut",
@@ -845,6 +845,96 @@
         {
           "type": "MIN_RAID_LEVEL",
           "value": 600
+        }
+      ]
+    },
+    {
+      "id": "toa_solo_sub_22",
+      "name": "Tombs Speed-Runner IV",
+      "description": "Complete the Tombs of Amascut: Expert Mode solo in less than 22 minutes.",
+      "category": "SPEED",
+      "content": "Tombs of Amascut",
+      "boss": "Tombs of Amascut: Expert Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 1
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1320
+        }
+      ]
+    },
+    {
+      "id": "toa_solo_sub_20",
+      "name": "Tombs Speed-Runner V",
+      "description": "Complete the Tombs of Amascut: Expert Mode solo in less than 20 minutes.",
+      "category": "SPEED",
+      "content": "Tombs of Amascut",
+      "boss": "Tombs of Amascut: Expert Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 1
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1200
+        }
+      ]
+    },
+    {
+      "id": "toa_solo_sub_19",
+      "name": "Tombs Speed-Runner VI",
+      "description": "Complete the Tombs of Amascut: Expert Mode solo in less than 19 minutes.",
+      "category": "SPEED",
+      "content": "Tombs of Amascut",
+      "boss": "Tombs of Amascut: Expert Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 1
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1140
+        }
+      ]
+    },
+    {
+      "id": "toa_solo_sub_18",
+      "name": "Tombs Speed-Runner VII",
+      "description": "Complete the Tombs of Amascut: Expert Mode solo in less than 18 minutes.",
+      "category": "SPEED",
+      "content": "Tombs of Amascut",
+      "boss": "Tombs of Amascut: Expert Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 1
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1080
+        }
+      ]
+    },
+    {
+      "id": "toa_solo_sub_17",
+      "name": "Tombs Speed-Runner VIII",
+      "description": "Complete the Tombs of Amascut: Expert Mode solo in less than 17 minutes.",
+      "category": "SPEED",
+      "content": "Tombs of Amascut",
+      "boss": "Tombs of Amascut: Expert Mode",
+      "conditions": [
+        {
+          "type": "TEAM_SIZE",
+          "value": 1
+        },
+        {
+          "type": "UNDER_TIME",
+          "seconds": 1020
         }
       ]
     },
@@ -931,7 +1021,7 @@
       "name": "Awakened Quartet",
       "description": "Defeat all four awakened Desert Treasure II bosses on one inventory, without a looting bag.",
       "category": "CHALLENGE",
-      "content": "Awakened DT2",
+      "content": "Awakened Bosses",
       "trip": {
         "Duke Sucellus (awakened)": 1,
         "Leviathan (awakened)": 1,
@@ -944,7 +1034,7 @@
       "name": "Snake Charmer",
       "description": "Defeat the awakened Leviathan twice on one inventory, without a looting bag.",
       "category": "CHALLENGE",
-      "content": "Awakened DT2",
+      "content": "Awakened Bosses",
       "trip": {
         "Leviathan (awakened)": 2
       }
@@ -954,7 +1044,7 @@
       "name": "I'm Wide Awake",
       "description": "Defeat awakened Vardorvis twice on one inventory, without a looting bag.",
       "category": "CHALLENGE",
-      "content": "Awakened DT2",
+      "content": "Awakened Bosses",
       "trip": {
         "Vardorvis (awakened)": 2
       }

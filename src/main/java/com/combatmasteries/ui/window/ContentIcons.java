@@ -62,6 +62,11 @@ public final class ContentIcons
 
 	static String fileName(String content)
 	{
+		if ("Awakened Bosses".equals(content))
+		{
+			// Named "Awakened DT2" when the icon was made
+			return "awakened_dt2.png";
+		}
 		String slug = content.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9]+", "_").replaceAll("^_|_$", "");
 		return slug + ".png";
 	}

@@ -6,7 +6,8 @@ challenge tasks from endgame content, mostly solo, and deliberately aspirational
 
 - **Tasks** are worth 1 point each. Each is either **Speed** or **Challenge**. Tasks are only
   ever added (new content, or new time tasks as gear improves), never removed.
-- **Tiers** unlock at a fixed share of all points, so thresholds rise as tasks are added:
+- **Tiers** unlock at a fixed share of all points, rounded down (90% of 92 tasks is 82.8, so 82),
+  so thresholds rise as tasks are added:
 
   | Tier | Needs | Tzkal Slayer Helmet eyes |
   |---|---|---|
@@ -25,7 +26,7 @@ spills onto the metal around the eyes.*
 
 ![The side panel's Overview and Tasks tabs](docs/panel.png)
 
-> **Status:** prototype. 60 tasks are in. Tasks with times still TBD are listed under
+> **Status:** prototype. 65 tasks are in. Tasks with times still TBD are listed under
 > [Planned tasks](#planned-tasks).
 
 ## Testing in-game
@@ -80,7 +81,7 @@ work too, with `_` for spaces. Examples:
      solo vs. duo and the ToA raid level were picked up, using a matching dev kill as a reference.
    - **Inferno:** run `::cmattempt` after wave 4 starts. It should show pillars seen 3, and
      `pillarsCleared=true` only if all three were down.
-   - **Awakened DT2:** after each kill, `::cmtrip` should list it. Banking, a pool, an altar,
+   - **Awakened Bosses:** after each kill, `::cmtrip` should list it. Banking, a pool, an altar,
      picking up food or potions, a looting bag, dying, or a heal/veng/energy transfer from
      someone else should clear it. Logging out or hopping should not.
    - **Doom:** after a delve, run `::cmdoom` and tell me the deepest level you *cleared* and
@@ -148,8 +149,6 @@ Tasks live in `src/main/resources/com/combatmasteries/tasks.json`:
 
 ## Planned tasks
 
-- Solo ToA 300 speed, 6 tasks (times TBD): **Tombs Speed-Runner IV, V, VI, …** (the official
-  Combat Achievements already have I–III)
 - You Did What? is listed but shows "Tracking soon" until its kill message is confirmed
 
 ## Credits

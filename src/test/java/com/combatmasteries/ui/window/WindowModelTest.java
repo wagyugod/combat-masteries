@@ -95,7 +95,7 @@ public class WindowModelTest
 		WindowState state = new WindowState();
 		assertEquals(model.getTasks().size(), state.filter(model.getTasks()).size());
 
-		state.setContentFilter("Awakened DT2");
+		state.setContentFilter("Awakened Bosses");
 		assertEquals(3, state.filter(model.getTasks()).size());
 		state.setCompletedFilter(true);
 		assertTrue(state.filter(model.getTasks()).isEmpty());

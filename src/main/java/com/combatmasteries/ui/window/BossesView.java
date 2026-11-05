@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * The Bosses tab (interface 716, scripts 4791-4800): a search box and a three-column grid of stone cards,
- * one per content, with "Tasks: N" where Combat Achievements shows the boss's level.
+ * one per content, with the boss level under the name as Combat Achievements shows it.
  */
 final class BossesView
 {
@@ -38,6 +38,25 @@ final class BossesView
 		CARD_NAMES.put("Chambers of Xeric: CM", "Chambers of Xeric:<br>Challenge Mode");
 		CARD_NAMES.put("Tombs of Amascut", "Tombs of Amascut:<br>Expert Mode");
 		CARD_NAMES.put("Yama Contracts", "Yama");
+	}
+
+	/**
+	 * Combat level shown under each card's name, as the Combat Achievements Bosses tab does.
+	 * Doom shows its deep-delve level; the awakened card shows two of the bosses' levels.
+	 */
+	private static final Map<String, String> CARD_LEVELS = new HashMap<>();
+
+	static
+	{
+		CARD_LEVELS.put("Inferno", "1400");
+		CARD_LEVELS.put("Colosseum", "1563");
+		CARD_LEVELS.put("Theatre of Blood", "1520");
+		CARD_LEVELS.put("Theatre of Blood: Hard Mode", "1520");
+		CARD_LEVELS.put("Chambers of Xeric: CM", "1043");
+		CARD_LEVELS.put("Tombs of Amascut", "544");
+		CARD_LEVELS.put("Doom of Mokhaiotl", "908");
+		CARD_LEVELS.put("Awakened Bosses", "1157 / 1136");
+		CARD_LEVELS.put("Yama Contracts", "1238");
 	}
 
 	private BossesView()
@@ -97,7 +116,8 @@ final class BossesView
 		String name = CARD_NAMES.getOrDefault(content.getName(), content.getName());
 		p.text(name, GameFont.BOLD, done ? WindowChrome.GREEN : WindowChrome.LIGHT_ORANGE, true,
 			x + 3, y + 3, CARD_W - 6, 30, WidgetPainter.CENTRE, WidgetPainter.MIDDLE, 13);
-		p.text("<col=ff9933>Tasks:</col><col=ffffff> " + content.getTasks() + "</col>", GameFont.SMALL, WindowChrome.WHITE, true,
+		String level = CARD_LEVELS.getOrDefault(content.getName(), "-");
+		p.text("<col=ff9933>Level:</col><col=ffffff> " + level + "</col>", GameFont.SMALL, WindowChrome.WHITE, true,
 			x, y + 32, CARD_W, 24, WidgetPainter.CENTRE, WidgetPainter.MIDDLE, 0);
 		if (content.getTasks() > 0)
 		{

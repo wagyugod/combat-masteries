@@ -18,7 +18,7 @@ public class MasteryTask
 	private String description;
 	private TaskCategory category;
 	/**
-	 * Which content the task belongs to, e.g. "Inferno" or "Awakened DT2". Used for grouping.
+	 * Which content the task belongs to, e.g. "Inferno" or "Awakened Bosses". Used for grouping.
 	 */
 	private String content;
 	/**
