@@ -6,7 +6,7 @@ import net.runelite.api.JagexColor;
 /**
  * Eye colours for each tier. Each tier drifts slowly between two nearby shades, with the
  * brightness travelling across the slit, so the eyes read as a calm glow rather than a flat
- * colour. Every tier also spills a little of its colour onto the metal around the eyes.
+ * colour. Ascended also spills a little of its colour onto the metal around the eyes.
  * <p>
  * Model colours are Jagex packed HSL (6-bit hue, 3-bit saturation, 7-bit luminance), handled
  * as unsigned 16-bit values.
@@ -20,11 +20,11 @@ public enum GlowStyle
 	/**
 	 * Ice blue drifting to azure: lighter blues read better against the black helmet.
 	 */
-	EXALTED(new int[]{36, 6, 76}, new int[]{39, 7, 60}, true),
+	EXALTED(new int[]{36, 6, 76}, new int[]{39, 7, 60}, false),
 	/**
 	 * Radiant oathplate's white (HSL 37999 = 37/0/111) drifting to a faint cool white.
 	 */
-	IMMORTAL(new int[]{37, 0, 111}, new int[]{37, 2, 100}, true);
+	IMMORTAL(new int[]{37, 0, 111}, new int[]{37, 2, 100}, false);
 
 	/**
 	 * One full drift from the first shade to the second and back.
@@ -51,7 +51,9 @@ public enum GlowStyle
 	private final int[] from;
 	private final int[] to;
 	/**
-	 * Whether the glow tints the metal around the slit (all tiers, as the user asked).
+	 * Whether the glow tints the metal around the slit. Reads as light on the warm Ascended
+	 * glow; on the blue and white tiers it reads as a two-tone fixture, so they glow in the
+	 * slit only. (Their reward lines still describe light on the metal, by the user's choice.)
 	 */
 	private final boolean lightsMetal;
 
